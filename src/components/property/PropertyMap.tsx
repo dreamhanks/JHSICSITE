@@ -20,6 +20,20 @@ const MAX_BOUNDS: [[number, number], [number, number]] = [
 ]
 const MIN_ZOOM = 11.5
 const MAX_ZOOM = 16
+
+/** How long to wait for maplibre's `load` event before declaring failure.
+ *
+ *  Without this the map has no failure path at all for anything that goes
+ *  wrong asynchronously after construction. A worker that 404s does not
+ *  throw and does not reject — the Map is constructed, `load` simply never
+ *  fires — so the component sat on 'loading' indefinitely and a broken map
+ *  was indistinguishable from a slow one. That is how the production
+ *  worker failure reached the deployed site unnoticed.
+ *
+ *  10s is deliberately generous: OpenFreeMap on a cold cache over a poor
+ *  connection is well inside it, so this fires for real breakage, not for
+ *  slowness. */
+const LOAD_TIMEOUT_MS = 10_000
 const FIT_PADDING = 40
 const FIT_DURATION = 400
 const CENTRE: [number, number] = [139.81210, 35.70540]
@@ -87,11 +101,51 @@ export function PropertyMap({
   useEffect(() => {
     let cancelled = false
     let map: import('maplibre-gl').Map | null = null
+    let loaded = false
+    let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+    /** Single route to the failed state, so every cause logs its reason.
+     *  Ignores anything arriving after a successful load, and after
+     *  unmount, so neither can tear down a working map. */
+    const fail = (reason: string, detail?: unknown) => {
+      if (cancelled || loaded) return
+      console.error(`[map] FAILED — ${reason}`, detail ?? '')
+      setStatus('failed')
+    }
 
     ;(async () => {
       try {
-        const { Map } = await import('maplibre-gl')
+        const { Map, setWorkerUrl } = await import('maplibre-gl')
         await import('maplibre-gl/dist/maplibre-gl.css')
+
+        /* Point maplibre at a worker WE emit, before constructing the Map.
+         *
+         * Why the deep dist/ path — do not "tidy" this into a bare
+         * 'maplibre-gl' import, it will break the deployed map:
+         *
+         * v6 went ESM-only and DELETED the UMD bundles, including
+         * maplibre-gl-csp.js, which was the build that existed precisely
+         * for bundlers that cannot serve a worker as a sibling file. What
+         * remains resolves its worker at runtime as
+         *   new URL('./maplibre-gl-worker.mjs', import.meta.url)
+         * which is correct for CDN use, where the worker sits next to the
+         * entry, and wrong under any bundler: import.meta.url points at
+         * our hashed chunk in /assets/, where no such file exists. It 404s,
+         * and because a Worker built on a bad URL neither throws nor
+         * rejects, the map hangs on 'loading' forever rather than erroring.
+         *
+         * ?worker&url makes Vite compile that file as a worker entry and
+         * hand back the emitted URL. It bundles the worker's own
+         * dependency graph — maplibre-gl-shared.mjs above all — into the
+         * chunk, so there is no sibling file to keep adjacent and nothing
+         * to hand-copy into public/.
+         *
+         * The import is dynamic and sits inside this lazy path on purpose:
+         * it must not drag maplibre into the initial bundle. */
+        const { default: workerUrl } =
+          await import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url')
+        setWorkerUrl(workerUrl)
+
         if (cancelled || !hostRef.current) return
 
         const m = new Map({
@@ -111,24 +165,41 @@ export function PropertyMap({
 
         m.on('load', () => {
           if (cancelled) return
+          loaded = true
+          clearTimeout(timeoutId)
           const report = applyHomilleStyle(m)
           console.log('[map] style:', report.recoloured, 'of', report.total,
             'layers recoloured;', report.labelsChanged, 'of', report.symbolTotal,
             'symbol layers set to name:ja')
           setStatus('ready')
         })
-        m.on('error', (e) => { console.error('[map] maplibre error', e) })
+
+        m.on('error', (e) => {
+          // Before load, an error means the map will never come up — the
+          // worker 404 surfaces here. After load, maplibre also emits
+          // RECOVERABLE errors (a missing tile, an absent sprite), which
+          // must not tear down a map that is already working.
+          if (loaded) { console.error('[map] maplibre error (post-load, ignored)', e); return }
+          fail('maplibre error before load', e)
+        })
+
+        // Backstop for failures that never raise an event at all: a Worker
+        // built on a 404 URL fires no error maplibre forwards, so only the
+        // absence of `load` is observable.
+        timeoutId = setTimeout(() => {
+          fail(`no load event after ${LOAD_TIMEOUT_MS}ms — the worker script or the style may have failed to load`)
+        }, LOAD_TIMEOUT_MS)
 
         map = m
         mapRef.current = m
       } catch (err) {
-        console.error('[map] CAUGHT in effect:', err)
-        if (!cancelled) setStatus('failed')
+        fail('threw during import or construction', err)
       }
     })()
 
     return () => {
       cancelled = true
+      clearTimeout(timeoutId)
       cancelClose()
       markersRef.current.forEach((mk) => mk.remove())
       markersRef.current = []
