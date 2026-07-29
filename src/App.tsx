@@ -32,7 +32,9 @@ export function App() {
     <>
       <Header onOpenSheet={() => setSheetOpen(true)} />
       <MobileSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      <main>
+      {/* Design B Stage 2: only 物件検索 goes full-bleed. Every other view
+          keeps main's 1320px measure and 20px padding. */}
+      <main className={view === 'list' ? 'mfull' : undefined}>
         {view === 'list' && <ListPage />}
         {view === 'detail' && <DetailPage />}
         {view === 'member' && <MemberPage />}

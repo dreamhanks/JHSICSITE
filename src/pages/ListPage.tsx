@@ -1,9 +1,10 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { getProperties } from '../api/properties'
 import { CHIPS } from '../components/layout/filterChips'
 import { MapPanel } from '../components/property/MapPanel'
 import { PropertyList, type AppliedPill } from '../components/property/PropertyList'
 import { useAppState } from '../context/useAppState'
+import { useMediaQuery } from '../hooks/useMediaQuery'
 import {
   buildAreaOptions, buildPlanOptions, buildPriceOptions, buildStationOptions,
   filterProperties, pageCount, pageSlice, sortProperties,
@@ -18,7 +19,12 @@ export function ListPage() {
   const {
     activeId, setActiveId, setCurrentPropertyId, setView,
     appliedFilters, commitFilters, resetFilters, sortKey, page, setPage,
+    mapOpen, setMapOpen,
   } = useAppState()
+
+  /** The split only exists above 1060; below it the row card is still the
+   *  right shape for a full-width column. */
+  const isSplit = useMediaQuery('(min-width: 1061px)')
 
   const [all, setAll] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
@@ -86,11 +92,31 @@ export function ListPage() {
     setView('detail')
   }
 
-  /* SUUMO-style stack: full-width map on top, then the result rows.
-     The old .split two-column grid is gone. */
+  /* Card hover drives the same activeId the pins already use — no
+     parallel state. The ref is what stops the two hover sources fighting:
+     a card only clears the highlight if the highlight is still ITS OWN.
+     So if the pointer leaves a card and then lands on a pin, the pin's
+     onHighlight has already moved activeId on, the ids no longer match,
+     and the card's leave is ignored instead of wiping the pin — which
+     also covers the pin popup being open, since that only happens while
+     activeId belongs to the pin. */
+  const hoveredCardRef = useRef<number | null>(null)
+  const hoverCard = (id: number | null) => {
+    if (id === null) {
+      if (activeId === hoveredCardRef.current) setActiveId(null)
+      hoveredCardRef.current = null
+    } else {
+      hoveredCardRef.current = id
+      setActiveId(id)
+    }
+  }
+
+  /* Design B Stage 2: map left, list right, the map sticky and the page
+     scrolling as one document. Below 1060 this reflows to the map above
+     the list, which is the shape Design A had. */
   return (
-    <div>
-      <div className="reslayout">
+    <div className={mapOpen ? 'splitwrap' : 'splitwrap mapclosed'}>
+      {mapOpen ? (
         <MapPanel
           pageItems={items}
           total={results.length}
@@ -99,6 +125,21 @@ export function ListPage() {
           onHighlight={setActiveId}
           onOpen={open}
         />
+      ) : null}
+
+      <div className="splitlist">
+        {/* The toggle lives here rather than over the map, so it is in the
+            same place whether the map is showing or not. */}
+        <div className="listtop">
+          <button
+            className="map-toggle"
+            aria-expanded={mapOpen}
+            onClick={() => setMapOpen(!mapOpen)}
+          >
+            {mapOpen ? '地図を閉じる' : '地図を表示する'}
+          </button>
+        </div>
+
         <PropertyList
           pageItems={items}
           total={results.length}
@@ -106,9 +147,11 @@ export function ListPage() {
           page={safePage}
           activeId={activeId}
           pills={pills}
+          variant={isSplit ? 'card' : 'row'}
           onOpen={open}
           onPageChange={setPage}
           onReset={resetFilters}
+          onHover={hoverCard}
         />
       </div>
     </div>

@@ -4,11 +4,11 @@ import type { ChipId } from '../../context/appState'
 import { useAppState } from '../../context/useAppState'
 import {
   buildAreaOptions, buildPlanOptions, buildPriceOptions, buildStationOptions,
-  countActiveFilters, hasActiveFilters, SORT_OPTIONS,
+  countActiveFilters, filterProperties, hasActiveFilters, SORT_OPTIONS,
   type FieldOptions, type FilterSelectKey, type SortKey,
 } from '../../lib/propertySearch'
 import type { Property } from '../../types/property'
-import { SearchIcon } from '../art/Icons'
+import { FilterIcon, SearchIcon } from '../art/Icons'
 import { CHIPS } from './filterChips'
 import { FilterSheet } from './FilterSheet'
 
@@ -32,6 +32,10 @@ const FIELDS: { key: FilterSelectKey; label: string; short: string }[] = [
 /** `墨田区（62）` -> `墨田区`. A set pill shows the value, not the count. */
 const stripCount = (label: string) => label.replace(/（\d+）$/, '')
 
+/** Long enough that the commit does not fire per keystroke, short enough
+ *  that the count still feels live. */
+const KEYWORD_DEBOUNCE_MS = 250
+
 export function HeaderFilters() {
   const {
     pendingFilters, appliedFilters, commitFilters, resetFilters,
@@ -39,10 +43,14 @@ export function HeaderFilters() {
   } = useAppState()
 
   const [all, setAll] = useState<Property[]>([])
+  const [loaded, setLoaded] = useState(false)
   const [options, setOptions] = useState<FieldOptions>(PLACEHOLDER)
   const [sheetOpen, setSheetOpen] = useState(false)
   /** Which pill's panel is open, or null. Only ever one at a time. */
   const [openPill, setOpenPill] = useState<string | null>(null)
+  /** The text box's own state. Committed to appliedFilters on a debounce,
+   *  so every keystroke does not re-filter 100 records and reset the page. */
+  const [kw, setKw] = useState(appliedFilters.keyword)
   const barRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -50,6 +58,7 @@ export function HeaderFilters() {
     getProperties().then((list) => {
       if (!alive) return
       setAll(list)
+      setLoaded(true)
       setOptions({
         ward: buildAreaOptions(list),
         station: buildStationOptions(list),
@@ -59,6 +68,21 @@ export function HeaderFilters() {
     })
     return () => { alive = false }
   }, [])
+
+  /* Keep the box in step when the keyword is cleared from elsewhere —
+     条件をリセット in the こだわり panel, or the mobile sheet. */
+  useEffect(() => { setKw(appliedFilters.keyword) }, [appliedFilters.keyword])
+
+  /* Debounced commit. The equality guard is what stops this ping-ponging
+     with the sync effect above, and also makes the mount pass a no-op. */
+  useEffect(() => {
+    if (kw === appliedFilters.keyword) return
+    const t = setTimeout(
+      () => commitFilters({ ...appliedFilters, keyword: kw }),
+      KEYWORD_DEBOUNCE_MS,
+    )
+    return () => clearTimeout(t)
+  }, [kw, appliedFilters, commitFilters])
 
   /* Dismiss an open pill on outside click or Escape. Plain listeners
      rather than a library; the panel is a menu of buttons, so the native
@@ -88,6 +112,16 @@ export function HeaderFilters() {
       chips: { ...appliedFilters.chips, [id]: !appliedFilters.chips[id] },
     })
 
+  /** Clearing is immediate — waiting 250ms to undo feels broken. */
+  const clearKeyword = () => {
+    setKw('')
+    commitFilters({ ...appliedFilters, keyword: '' })
+  }
+
+  /* Same function the list page uses, over the same applied filters, so
+     this count and the one the results render can never disagree. */
+  const resultCount = loaded ? filterProperties(all, appliedFilters).length : null
+
   const activeCount = countActiveFilters(appliedFilters)
   const chipCount = CHIPS.filter((c) => appliedFilters.chips[c.id]).length
   const showReset = hasActiveFilters(pendingFilters) || hasActiveFilters(appliedFilters)
@@ -103,6 +137,25 @@ export function HeaderFilters() {
   return (
     <div className="hfilters" ref={barRef}>
       <div className="hfwrap">
+        {/* First in the row, and the only control besides 絞り込み that
+            survives to mobile. A light field on the dark bar so it reads
+            as an input rather than a sixth pill. */}
+        <div className="hf-search">
+          <SearchIcon />
+          <input
+            type="text"
+            value={kw}
+            onChange={(e) => setKw(e.target.value)}
+            placeholder="エリア・駅・キーワードで検索"
+            aria-label="エリア・駅・キーワードで検索"
+          />
+          {kw !== '' ? (
+            <button className="hf-search-x" onClick={clearKeyword} aria-label="検索キーワードを消す">
+              ×
+            </button>
+          ) : null}
+        </div>
+
         {FIELDS.map((f) => {
           const { text, short, set } = labelFor(f)
           const open = openPill === f.key
@@ -167,6 +220,13 @@ export function HeaderFilters() {
           ) : null}
         </div>
 
+        {/* The count sits with the controls, not only above the list: on a
+            filter-driven bar, changing a pill has to visibly move a number
+            or it reads as having done nothing. */}
+        {resultCount !== null ? (
+          <span className="hf-count" aria-live="polite"><b>{resultCount}</b>件</span>
+        ) : null}
+
         <span className="hf-spacer"></span>
 
         {/* Moved out of .listhead: sort belongs with the other controls
@@ -179,13 +239,16 @@ export function HeaderFilters() {
           {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
 
-        {/* Below 640px the pills are hidden and this is the only control. */}
+        {/* Below 640px the pills are hidden and this sits beside the search
+            box as a compact icon-plus-count button — the long label is
+            dropped there so both fit one line. */}
         <button
           className="filter-trigger"
           aria-expanded={sheetOpen}
+          aria-label={`絞り込み条件を変更（${activeCount}件適用中）`}
           onClick={() => setSheetOpen(true)}
         >
-          <SearchIcon />
+          <FilterIcon />
           <span className="ft-label">絞り込み</span>
           {activeCount > 0 ? <span className="ft-badge">{activeCount}</span> : null}
         </button>

@@ -15,6 +15,10 @@ export interface SearchFilters {
   price: string
   /** '' = すべて, otherwise the minimum room count as a string */
   plan: string
+  /** Design B free-text search. '' = no keyword constraint. Lives in the
+   *  same filter object as everything else so the list, the count and the
+   *  map all pick it up from appliedFilters with no extra wiring. */
+  keyword: string
   chips: ChipFilters
 }
 
@@ -116,11 +120,23 @@ export const SORT_OPTIONS: { value: SortKey; label: string }[] = [
 
 /* ------------------------------ filter ------------------------------ */
 
+/** The fields the free-text box searches. Address parts, transport and
+ *  the headline — the things a visitor actually types. Deliberately not
+ *  price or room count: those have their own controls, and matching them
+ *  as text would make "3" behave unpredictably. */
+const KEYWORD_FIELDS = ['headline', 'ward', 'town', 'addressSuffix', 'station', 'line'] as const
+
 export function filterProperties(all: Property[], f: SearchFilters): Property[] {
   const bracket = PRICE_BRACKETS.find((b) => b.id === f.price)
   const minRooms = f.plan === '' ? null : Number(f.plan)
+  // Normalised once, not per record. Case-insensitive; Japanese is
+  // unaffected by casing but the fields also carry Latin (JR, LDK).
+  const kw = f.keyword.trim().toLowerCase()
 
   return all.filter((p) => {
+    if (kw !== '' && !KEYWORD_FIELDS.some((k) => String(p[k]).toLowerCase().includes(kw))) {
+      return false
+    }
     if (f.ward !== '' && p.ward !== f.ward) return false
     if (f.station !== '' && p.station !== f.station) return false
     if (bracket && !bracket.test(p.priceYen)) return false
@@ -139,13 +155,17 @@ export function filterProperties(all: Property[], f: SearchFilters): Property[] 
  *  visibility of 条件をリセット, so it never shows as a dead control. */
 export function hasActiveFilters(f: SearchFilters): boolean {
   return f.ward !== '' || f.station !== '' || f.price !== '' || f.plan !== ''
+    || f.keyword.trim() !== ''
     || Object.values(f.chips).some(Boolean)
 }
 
-/** How many filters are narrowing the set — the .filter-trigger badge. */
+/** How many filters are narrowing the set — the .filter-trigger badge.
+ *  The keyword counts: it narrows the set exactly like a select does, and
+ *  omitting it would show 絞り込み with no badge while results were cut. */
 export function countActiveFilters(f: SearchFilters): number {
   return (f.ward !== '' ? 1 : 0) + (f.station !== '' ? 1 : 0)
     + (f.price !== '' ? 1 : 0) + (f.plan !== '' ? 1 : 0)
+    + (f.keyword.trim() !== '' ? 1 : 0)
     + Object.values(f.chips).filter(Boolean).length
 }
 

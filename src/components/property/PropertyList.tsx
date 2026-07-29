@@ -1,13 +1,13 @@
 import type { Property } from '../../types/property'
 import { Pagination } from './Pagination'
-import { PropertyCard } from './PropertyCard'
+import { PropertyCard, type CardVariant } from './PropertyCard'
 
 /** One removable pill per active filter. */
 export type AppliedPill = { key: string; label: string; clear: () => void }
 
 export function PropertyList({
-  pageItems: items, total, loading, page, activeId, pills,
-  onOpen, onPageChange, onReset,
+  pageItems: items, total, loading, page, activeId, pills, variant = 'row',
+  onOpen, onPageChange, onReset, onHover,
 }: {
   /** Just the current page's results. */
   pageItems: Property[]
@@ -19,9 +19,12 @@ export function PropertyList({
   /** Applied-filter pills, built by the page from the same options the
    *  header bar uses. */
   pills: AppliedPill[]
+  variant?: CardVariant
   onOpen: (id: number) => void
   onPageChange: (p: number) => void
   onReset: () => void
+  /** Card hover highlights the matching pin. Absent on マイページ. */
+  onHover?: (id: number | null) => void
 }) {
   return (
     <div>
@@ -47,6 +50,10 @@ export function PropertyList({
         ) : null}
       </div>
 
+      {/* Stage 1b: the bare number moved to the header bar, where it can
+          be seen while a filter is being changed. What stays here is the
+          claim the number qualifies — 全件が既存住宅診断済み is a selling
+          point, not a count, and it would be lost if the whole span went. */}
       <div className="listhead">
         <h2>掲載物件</h2>
         <span className="cnt">
@@ -67,11 +74,12 @@ export function PropertyList({
         </div>
       ) : (
         <>
-          <div className="plist">
+          <div className={variant === 'card' ? 'plist pgrid' : 'plist'}>
             {items.map((p, i) => (
               <PropertyCard
                 key={p.id} property={p} active={p.id === activeId}
                 onOpen={onOpen} eager={i < 2}
+                variant={variant} onHover={onHover}
               />
             ))}
           </div>

@@ -6,25 +6,72 @@ import type { Property } from '../../types/property'
 import { FavoriteButton } from './FavoriteButton'
 import { PropertyPhoto } from './PropertyPhoto'
 
-/** The single de-duplicated result row, used by 物件検索 and マイページ.
+/** `row` is Design A's horizontal result row, still used by マイページ.
+ *  `card` is Design B's vertical card for the split list column. */
+export type CardVariant = 'row' | 'card'
+
+/** The single de-duplicated result card, used by 物件検索 and マイページ.
  *
- *  The card is a plain <div>; the title holds a real <button class="hit">
- *  stretched over the whole row by `.pcard .hit:after{inset:0}`, and the
- *  favourite button sits above it on z-index:2 — the pattern already in
- *  homille.css, not a new one. The favourite is a sibling of the hit
- *  area, never nested inside it. */
+ *  Both variants share one skeleton: a plain <div>, a real
+ *  <button class="hit"> stretched over the whole card by
+ *  `.pcard .hit:after{inset:0}`, and the favourite button above it on
+ *  z-index — the pattern already in homille.css, not a new one. The
+ *  favourite is a sibling of the hit area, never nested inside it. */
 export function PropertyCard({
-  property, active, onOpen, eager = false,
+  property, active, onOpen, eager = false, variant = 'row', onHover,
 }: {
   property: Property
   active: boolean
   onOpen: (id: number) => void
   /** Set for the first two rows so they do not lazy-load. */
   eager?: boolean
+  variant?: CardVariant
+  /** Design B: hovering or focusing a card highlights its pin. Passing
+   *  null on leave clears it. Omitted by マイページ, which has no map. */
+  onHover?: (id: number | null) => void
 }) {
   const p = property
+
+  const hoverProps = onHover
+    ? {
+        onMouseEnter: () => onHover(p.id),
+        onMouseLeave: () => onHover(null),
+        onFocus: () => onHover(p.id),
+        onBlur: () => onHover(null),
+      }
+    : {}
+
+  if (variant === 'card') {
+    return (
+      <div className={active ? 'pcard vcard active' : 'pcard vcard'} {...hoverProps}>
+        <span className="pthumb">
+          <PropertyPhoto property={p} room="exterior" eager={eager} />
+          <span className="tg">外観</span>
+          <span className="pfav"><FavoriteButton id={p.id} /></span>
+        </span>
+
+        <span className="pbody">
+          <div className="vprice">{formatPriceMan(p)}</div>
+          <div className="vspec">{formatRoomsShort(p)} ・ {formatAreaShort(p)}</div>
+          <div className="vaddr">{p.station} {formatWalk(p)}</div>
+          {/* Carries the accessible name and the whole-card click target.
+              The headline is not drawn in this variant — the price leads —
+              so the text is visually hidden rather than removed. */}
+          <h3 className="vhit">
+            <button className="hit" onClick={() => onOpen(p.id)}>{formatTitle(p)}</button>
+          </h3>
+          <div className="badges">
+            {deriveBadges(p).map((b, i) => (
+              <span key={i} className={`bdg ${b.variant}`}>{b.label}</span>
+            ))}
+          </div>
+        </span>
+      </div>
+    )
+  }
+
   return (
-    <div className={active ? 'pcard active' : 'pcard'}>
+    <div className={active ? 'pcard active' : 'pcard'} {...hoverProps}>
       <span className="pthumb">
         <PropertyPhoto property={p} room="exterior" eager={eager} />
         <span className="tg">外観</span>

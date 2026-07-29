@@ -2,31 +2,13 @@ import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
 import { derivePinKind, formatPriceMan, formatTitle } from '../../lib/propertyFormat'
-import type { PinKind, Property } from '../../types/property'
+import { pinColor } from '../../lib/pinColors'
+import type { Property } from '../../types/property'
 import { applyHomilleStyle } from '../art/mapStyle'
 import { MapBottomCard } from './MapBottomCard'
 import { MapPopupCard } from './MapPopupCard'
 
-/** Pin colours, DERIVED from the @theme tokens rather than duplicated, so
- *  a palette swap reaches the map without anyone remembering to edit here.
- *
- *  Read lazily inside pinColor: @theme compiles to a :root rule, which is
- *  not applied at module-evaluation time. The fallbacks are the Design B
- *  values, used only if a token is ever removed.
- *
- *  The three stay semantically distinct: g is 診断済み＋10年保証, o is
- *  診断済み, s is 会員限定. */
-const PIN_TOKEN: Record<PinKind, { token: string; fallback: string }> = {
-  g: { token: '--color-green', fallback: '#067647' },
-  o: { token: '--color-orange', fallback: '#d9480f' },
-  s: { token: '--color-soil', fallback: '#0041D9' },
-}
-
-function pinColor(kind: PinKind): string {
-  const { token, fallback } = PIN_TOKEN[kind]
-  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim()
-  return v || fallback
-}
+/* Pin colours moved to lib/pinColors so the legend can share them. */
 
 /** OpenFreeMap Positron — no key, no signup, no cookies.
  *  Attribution is a licence requirement and must stay visible. */
@@ -121,6 +103,47 @@ export function PropertyMap({
     let map: import('maplibre-gl').Map | null = null
     let loaded = false
     let timeoutId: ReturnType<typeof setTimeout> | undefined
+    let ro: ResizeObserver | null = null
+    let cancelFrame: (() => void) | null = null
+
+    /** Size audit. Two distinct faults, both invisible to every other
+     *  check because MapLibre loads happily into either:
+     *
+     *    1. the container has no size at all — the Stage 2 collapse;
+     *    2. the container is right but the CANVAS is smaller, which is
+     *       tiles filling only part of the box with dead space below.
+     *
+     *  (2) is what a stale canvas looks like, and the container-only
+     *  version of this guard did not catch it. Never sets 'failed':
+     *  the map is working, its box is not. */
+    const checkSize = (m: import('maplibre-gl').Map) => {
+      const host = hostRef.current
+      if (!host) return
+      const box = host.getBoundingClientRect()
+      if (box.width < 1 || box.height < 1) {
+        console.error(
+          `[map] CONTAINER HAS NO SIZE — ${Math.round(box.width)}x${Math.round(box.height)}px. ` +
+          'MapLibre loaded fine, so the map is working and simply invisible. ' +
+          'Check the height chain in homille.css: PropertyMap renders .mapbody ' +
+          'between the layout and .maphost, and .mapbody has no height of its own, ' +
+          'so any percentage height on .maphost collapses to 0. Give .maphost an ' +
+          'outright length, or a flex stretch from a definite-height ancestor.',
+        )
+        return
+      }
+      const c = m.getCanvas().getBoundingClientRect()
+      // 2px covers sub-pixel layout and devicePixelRatio rounding.
+      if (Math.abs(c.width - box.width) > 2 || Math.abs(c.height - box.height) > 2) {
+        console.error(
+          `[map] CANVAS DOES NOT MATCH ITS CONTAINER — canvas ${Math.round(c.width)}x${Math.round(c.height)}px ` +
+          `inside a ${Math.round(box.width)}x${Math.round(box.height)}px container. ` +
+          'Tiles will fill only part of the box. Either the container resized after ' +
+          'MapLibre measured it and no resize followed, or a stale height rule is ' +
+          'still on .maphost — check that nothing sets an explicit height on it ' +
+          'inside the flex chain, which would defeat the flex sizing.',
+        )
+      }
+    }
 
     /** Single route to the failed state, so every cause logs its reason.
      *  Ignores anything arriving after a successful load, and after
@@ -185,6 +208,18 @@ export function PropertyMap({
           if (cancelled) return
           loaded = true
           clearTimeout(timeoutId)
+
+          /* A 0-size container is INVISIBLE BUT NOT BROKEN, so nothing
+             else catches it: the style loads, `load` fires, status goes
+             ready, and the 10s timeout never runs. Twice now that has
+             cost a full debugging round, so measure and shout.
+             Deliberately NOT setStatus('failed') — the map is working
+             correctly; its container is the fault. */
+          // The container's height resolves after construction in a flex
+          // chain, so square the canvas with it before anything measures.
+          m.resize()
+          checkSize(m)
+
           const report = applyHomilleStyle(m)
           console.log('[map] style:', report.recoloured, 'of', report.total,
             'layers recoloured;', report.labelsChanged, 'of', report.symbolTotal,
@@ -208,6 +243,31 @@ export function PropertyMap({
           fail(`no load event after ${LOAD_TIMEOUT_MS}ms — the worker script or the style may have failed to load`)
         }, LOAD_TIMEOUT_MS)
 
+        /* Follow the container for the rest of the map's life.
+         *
+         * MapLibre v6 already observes the container itself (throttled
+         * 50ms, and trackResize does default to true — it is in the
+         * options defaults, despite the `=== true` read). This is
+         * deliberately kept anyway: its observer SKIPS its own first
+         * callback, so a size that settles once right after construction
+         * — a web font landing and reflowing the disclosure band, the
+         * list column changing width — can be the one it ignores. rAF
+         * throttling means a drag-resize coalesces to one resize per
+         * frame instead of thrashing the GL context. */
+        if (hostRef.current && typeof ResizeObserver !== 'undefined') {
+          let frame = 0
+          ro = new ResizeObserver(() => {
+            if (frame) return
+            frame = requestAnimationFrame(() => {
+              frame = 0
+              if (cancelled || !mapRef.current) return
+              mapRef.current.resize()
+            })
+          })
+          ro.observe(hostRef.current)
+          cancelFrame = () => { if (frame) cancelAnimationFrame(frame) }
+        }
+
         map = m
         mapRef.current = m
       } catch (err) {
@@ -218,6 +278,8 @@ export function PropertyMap({
     return () => {
       cancelled = true
       clearTimeout(timeoutId)
+      ro?.disconnect()
+      cancelFrame?.()
       cancelClose()
       markersRef.current.forEach((mk) => mk.remove())
       markersRef.current = []

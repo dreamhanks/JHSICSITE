@@ -82,6 +82,19 @@ export function SearchIcon() {
   )
 }
 
+/** Design B: the 絞り込み trigger. Sliders, not a magnifier — the search
+ *  box beside it now owns SearchIcon, and two magnifiers in one row would
+ *  read as two search controls. Stroke and viewBox match SearchIcon so it
+ *  inherits the same sizing rules. */
+export function FilterIcon() {
+  return (
+    <svg viewBox="0 0 24 24">
+      <path d="M4 7h10M18 7h2M4 17h4M12 17h8" />
+      <circle cx="16" cy="7" r="2" /><circle cx="10" cy="17" r="2" />
+    </svg>
+  )
+}
+
 /* ---- 購入サポート：地盤保証という土台の安心 ---- */
 
 export function HouseIcon() {

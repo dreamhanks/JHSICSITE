@@ -534,13 +534,11 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
 
 /* 並び替え, moved out of the search bar into the result header. */
 .listhead{flex-wrap:wrap}
-.listhead .sortsel{margin-left:auto; flex:none; align-self:center}
 
 @media(max-width:640px){
   /* Step 2b superseded the mobile scrollers here — .sw-primary and
      .sw-refine are hidden below 640px and replaced by the filter
      sheet, so their overflow rules and .sw .go{flex:none} are gone. */
-  .listhead .sortsel{margin-left:0; width:100%}
 }
 
 /* =============================================================
@@ -589,11 +587,37 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
    21px halo, and on .active a 2.5px white ring plus the halo at
    28% opacity.
    ============================================================= */
-/* The map host owns its height outright rather than stretching to fill
-   .mapbody via inset:0. An absolutely-positioned host resolves its
-   height only from its parent, so any failure to apply .mapbody's
-   height silently handed MapLibre a 0px-tall container — which is
-   exactly what happened: the console reported 1278.67 x 0. */
+/* ============ READ THIS BEFORE WRITING ANY .maphost RULE ============
+
+   .mapbody IS THE ELEMENT THAT BREAKS HEIGHT CHAINS.
+
+   PropertyMap renders .mapbody as its own root, so the real DOM is
+       <parent> -> .mapbody -> .maphost
+   NOT parent -> maphost. .mapbody carries position:relative and a
+   background and NOTHING ELSE — no height, ever. So:
+
+     height:100% on .maphost resolves against .mapbody, .mapbody is
+     auto, a percentage against auto is indeterminate, and BOTH
+     collapse to 0. MapLibre then loads perfectly into a 0px box:
+     the style fetches, `load` fires, status goes ready, and the map
+     is invisible with no error anywhere.
+
+   This has now shipped twice.
+     Step 2d: .maphost was absolute with inset:0 -> 1278.67 x 0.
+     Stage 2: .maphost was height:100% inside .splitmap-surface, and
+              whoever wrote it (me) read the chain off the CSS instead
+              of the rendered tree and never saw .mapbody in between.
+
+   THE RULE: give .maphost a height that does not depend on .mapbody.
+   An outright length is best — that is what the stacked layout does.
+   Where the height must track the viewport, use a flex stretch chain
+   with a definite height at the top, never a percentage. Both are safe;
+   percentages through .mapbody are not.
+
+   A runtime guard now backs this up: PropertyMap measures the host on
+   `load` and console.errors if it has no size. If you are reading this
+   because of that message, the chain above is where to look.
+   ==================================================================== */
 /* .mapcard takes no width rule at all: it is a stretch child of
    .reslayout, whose box IS main's content box (max-width:1320px minus
    20px padding = 1280px at 1440). That is exactly .sw's computed width,
@@ -1285,3 +1309,183 @@ nav a.on:after{background:var(--color-orange)}
    the same treatment as the pill count in row 2: one badge look across
    the header, and 5.95:1. Orange stays the 診断済み signal elsewhere. */
 .fav-n{background:#5b8cff; color:#111116}
+
+/* -------------------------------------------------------------
+   Design B Stage 1b: search box, count, mobile row 2
+   ------------------------------------------------------------- */
+
+/* A LIGHT field on the dark bar. Deliberately not pill-shaped and not
+   transparent: it has to read as somewhere you type, not as a sixth
+   dropdown. 340px fits about 27 full-width characters at 13px. */
+.hf-search{position:relative; flex:0 1 340px; min-width:210px;
+  display:flex; align-items:center; gap:7px;
+  background:var(--color-card); border:1px solid var(--color-rule);
+  border-radius:4px; padding:0 10px; height:34px}
+.hf-search svg{width:15px; height:15px; flex:none;
+  stroke:var(--color-ink-2); fill:none; stroke-width:2}
+.hf-search input{flex:1; min-width:0; border:0; outline:none; background:transparent;
+  font-family:inherit; font-size:13px; color:var(--color-ink); padding:0}
+.hf-search input::placeholder{color:#6b7079}
+.hf-search:focus-within{border-color:#5b8cff; box-shadow:0 0 0 2px rgba(91,140,255,.35)}
+.hf-search-x{flex:none; border:0; background:transparent; padding:0 2px;
+  font-size:16px; line-height:1; color:var(--color-ink-2); font-family:inherit}
+.hf-search-x:hover{color:var(--color-ink)}
+
+/* The live result count, beside the controls that change it. */
+.hf-count{flex:none; font-size:12.5px; color:#c9ccd4; white-space:nowrap; padding:0 2px}
+.hf-count b{color:#fff; font-size:14px; font-weight:700}
+
+@media(max-width:1160px){
+  .hf-search{flex:0 1 250px; min-width:170px}
+}
+
+/* Mobile row 2: search takes the width it can, 絞り込み shrinks to an
+   icon plus its count. Both on one line, nothing full-width. */
+@media(max-width:640px){
+  .hf-count{display:none}
+  .hf-search{display:flex; flex:1 1 auto; min-width:0; height:32px}
+  .hfilters .filter-trigger{flex:none; width:auto; justify-content:center;
+    gap:5px; padding:7px 11px}
+  .hfilters .filter-trigger .ft-label{display:none}
+  .hfilters .filter-trigger svg{width:16px; height:16px}
+  .hfilters .filter-trigger .ft-badge{padding:1px 6px; font-size:10.5px}
+}
+
+/* Nav active underline: still Design A's orange. The set pills settled on
+   #5b8cff for accent-on-dark, and the underline is the same job — mark
+   the current thing against the dark bar. */
+nav a.on:after{background:#5b8cff}
+
+/* =============================================================
+   Design B Stage 2 — split map and list
+
+   The list page becomes full-bleed and divides in half: map on
+   the left, sticky, filling the viewport below the header; cards
+   on the right, scrolling with the PAGE. No nested scroll
+   container — nine call sites use window.scrollTo, and body
+   scroll-lock drives the mobile filter sheet, so the document
+   has to remain the scroller.
+
+   Prose here avoids slashes and leading dots: Tailwind scans
+   this file as raw text and would mint utilities from them.
+   ============================================================= */
+
+/* One source for the header's height, used by BOTH the sticky offset
+   and the map's calc. Two literals would drift the moment a row
+   changes. Row 1 + the 1px rule on row 2 + row 2. */
+:root{--header-h:119px}
+@media(max-width:640px){:root{--header-h:103px}}
+
+/* Full-bleed, applied to main itself rather than by negative margins on
+   a child. 100vw techniques include the scrollbar width and produce a
+   horizontal scrollbar; dropping main's own max-width and padding
+   cannot, because no element is ever wider than its container. Scoped
+   to the list view by a class App.tsx sets, so every other page keeps
+   the 1320px measure. */
+main.mfull{max-width:none; padding:0}
+
+.splitwrap{display:flex; align-items:flex-start}
+
+/* ---- the map side ---- */
+.splitmap{flex:0 0 55%; min-width:0; align-self:stretch;
+  display:flex; flex-direction:column;
+  position:sticky; top:var(--header-h); height:calc(100vh - var(--header-h));
+  background:var(--color-rule-2)}
+/* HEIGHT CHAIN — read the Step 2d warning before touching any of this.
+   Every link is a FLEX STRETCH against a definite height. Not one of
+   them is a percentage, and that is deliberate: .mapbody sits between
+   .splitmap-surface and .maphost, owns no height, and a percentage
+   anywhere in the chain therefore resolves against auto and collapses
+   to 0 — which is exactly what shipped in Stage 2.
+
+   Yes, .mapbody gets a height here. It has to: the disclosure band
+   below the map wraps to a variable number of lines, so the map cannot
+   be given a static calc without hardcoding that band's height. Flex
+   stretch has no auto-parent failure mode — flex:1 in a column resolves
+   against the container's definite height — so the chain is
+   .splitmap (explicit calc) -> .splitmap-surface -> .mapbody -> .maphost,
+   each one a stretching item of a definite-height flex container.
+
+   flex-direction:column is EXPLICIT on every container here. Without it
+   flex defaults to row, flex:1 grows the WIDTH, and the height falls to
+   cross-axis stretch — which silently does nothing when the item already
+   has a height. That is precisely how height:380px from the base
+   .maphost rule survived this chain and left the canvas 380px tall in a
+   725px box. height:auto below is not cosmetic: it is what lets the
+   flex sizing apply at all. */
+.splitmap-surface{position:relative; flex:1; min-height:0;
+  display:flex; flex-direction:column}
+.splitmap-surface > .mapbody{flex:1; min-width:0; min-height:0;
+  display:flex; flex-direction:column}
+.splitmap-surface .maphost{flex:1; width:auto; height:auto; min-height:0}
+.splitmap .mapfoot{flex:none; background:var(--color-card);
+  border-top:1px solid var(--color-rule)}
+
+/* Legend floats over the map, bottom-left, clear of maplibre's own
+   bottom-left control which sits at 0. */
+.splitmap .legend{position:absolute; left:12px; bottom:34px; z-index:2;
+  margin-left:0; display:flex; flex-direction:column; gap:5px;
+  background:rgba(255,255,255,.94); border:1px solid var(--color-rule);
+  border-radius:4px; padding:8px 10px; font-size:11px;
+  color:var(--color-ink); box-shadow:var(--shadow-card)}
+
+/* ---- the list side ---- */
+.splitlist{flex:1 1 45%; min-width:0; padding:16px 20px 40px}
+.listtop{display:flex; justify-content:flex-end; margin-bottom:10px}
+
+/* ---- vertical cards ---- */
+.pgrid{display:grid; gap:14px; grid-template-columns:1fr}
+.pcard.vcard{display:block; padding:0; overflow:hidden}
+.pcard.vcard .pthumb{display:block; width:100%; aspect-ratio:16/10;
+  border-radius:0; grid-area:auto}
+.pcard.vcard .pbody{display:block; padding:11px 13px 13px}
+.pcard.vcard .pfav{position:absolute; top:8px; right:8px; z-index:2}
+.pcard.vcard .pfav .favbtn{position:static}
+.vprice{font-size:21px; font-weight:700; color:var(--color-ink); line-height:1.2}
+.vspec{font-size:12.5px; color:var(--color-ink); margin-top:5px}
+.vaddr{font-size:12px; color:var(--color-ink-2); margin-top:3px}
+.pcard.vcard .badges{margin-top:8px}
+
+/* 1400: two cards need ~290px each inside a 45% column, which 1400
+   is the first width to allow. Below it one card per row, full width
+   of the column, rather than two cramped ones. */
+@media(min-width:1400px){ .pgrid{grid-template-columns:1fr 1fr} }
+
+/* Map closed: the list takes the whole width and goes three across. */
+.splitwrap.mapclosed .splitlist{flex:1 1 100%}
+@media(min-width:1061px){
+  .splitwrap.mapclosed .pgrid{grid-template-columns:repeat(3,1fr)}
+}
+
+/* ---- below 1060: map above the list, not sticky, fixed height ---- */
+/* Stacked: the flex chain is unwound and .maphost owns an outright
+   pixel height again, exactly as Step 2d left it. Nothing here is a
+   percentage either, so this half of the layout cannot collapse. */
+@media(max-width:1060px){
+  main.mfull{padding:0}
+  .splitwrap{display:block}
+  .splitmap{position:static; height:auto; display:block;
+    flex:none; background:transparent}
+  .splitmap-surface{display:block; flex:none; height:auto}
+  .splitmap-surface > .mapbody{display:block; flex:none}
+  .splitmap-surface .maphost{flex:none; width:100%; height:340px}
+  .splitlist{padding:16px 20px 40px}
+}
+@media(max-width:640px){
+  .splitmap-surface .maphost{height:260px}
+  .splitlist{padding:12px 12px 32px}
+  .splitmap .legend{left:8px; bottom:30px; font-size:10px; padding:6px 8px}
+}
+
+/* ---- Design A leftovers, cleared ---- */
+
+/* Was rgba(122,92,46,.15), Design A's soil. This is the pin-to-card
+   highlight and is about to be the most visible interaction on the
+   page, so it takes the accent. */
+.pcard.active{border-color:var(--color-soil);
+  box-shadow:0 0 0 2px rgba(0,65,217,.20)}
+
+/* Visually hidden but still announced. Used by the map's h2, whose
+   heading band no longer exists, and by the vertical card's headline. */
+.vh,.vhit{position:absolute; width:1px; height:1px; margin:-1px;
+  padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap}

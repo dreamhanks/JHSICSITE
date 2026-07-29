@@ -25,6 +25,7 @@ export const INITIAL_FILTERS: SearchFilters = {
   station: '',
   price: '',
   plan: '',
+  keyword: '',
   chips: INITIAL_CHIP_FILTERS,
 }
 
