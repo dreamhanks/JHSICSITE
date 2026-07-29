@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Homille 中古物件EC（イメージ）｜JHS保証付き物件</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --soil:#7a5c2e; --soil-d:#5c4322;
+  --green:#0f5c35; --orange:#e07b1e; --blue:#1b5fa8;
+  --paper:#fbfaf7; --card:#fff; --ink:#2a2622; --ink-2:#6b635a;
+  --rule:#e3ded4; --rule-2:#f0ece4;
+  --shadow:0 1px 2px rgba(42,38,34,.06), 0 8px 24px rgba(42,38,34,.06);
+  --mincho:"Shippori Mincho","Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
+  --gothic:"Noto Sans JP","Yu Gothic","YuGothic","Hiragino Sans","Meiryo",sans-serif;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--gothic); color:var(--ink); background:var(--paper);
+  font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+button{font-family:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--soil); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+.mockbar{background:var(--ink); color:#fff; font-size:11.5px; letter-spacing:.02em;
+  padding:7px 20px; display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+.mockbar b{font-weight:700}
+.mockbar .tag{border:1px solid rgba(255,255,255,.4); border-radius:2px;
+  padding:1px 7px; font-size:10.5px; letter-spacing:.08em}
+.mockbar .spacer{flex:1}
+
+header{background:#fff; border-bottom:1px solid var(--rule); position:sticky; top:0; z-index:40}
+.hwrap{max-width:1320px; margin:0 auto; padding:0 20px;
+  display:flex; align-items:center; gap:28px; height:66px}
+.logo{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit}
+.logo .mark{width:36px; height:36px; border-radius:8px; background:var(--soil);
+  display:grid; place-items:center; flex:none}
+.logo .mark svg{width:20px; height:20px}
+.logo .lt{line-height:1.15}
+.logo .lt .n{font-family:var(--mincho); font-weight:700; font-size:21px; letter-spacing:.01em}
+.logo .lt .n small{font-family:var(--gothic); font-weight:500; font-size:10px;
+  letter-spacing:.14em; color:var(--ink-2); margin-left:6px}
+.logo .lt .c{font-size:9.5px; color:var(--ink-2); letter-spacing:.02em}
+nav{display:flex; gap:2px; margin-left:auto}
+nav a{text-decoration:none; color:var(--ink); font-size:13px; font-weight:500;
+  padding:8px 13px; border-radius:4px; position:relative}
+nav a:hover{background:var(--rule-2)}
+nav a.on{color:var(--soil)}
+nav a.on:after{content:""; position:absolute; left:13px; right:13px; bottom:1px;
+  height:2px; background:var(--soil); border-radius:2px}
+.hactions{display:flex; align-items:center; gap:8px; border-left:1px solid var(--rule); padding-left:16px}
+.iconbtn{border:1px solid var(--rule); background:#fff; border-radius:4px;
+  padding:6px 11px; font-size:11.5px; color:var(--ink-2); display:flex; align-items:center; gap:6px}
+.iconbtn:hover{border-color:var(--soil); color:var(--soil)}
+.memtoggle{display:flex; align-items:center; border:1px solid var(--rule);
+  border-radius:5px; overflow:hidden; background:var(--rule-2)}
+.memtoggle button{border:0; background:transparent; font-size:11.5px; font-weight:700;
+  padding:7px 13px; color:var(--ink-2); letter-spacing:.02em}
+.memtoggle button[aria-pressed="true"]{background:var(--green); color:#fff}
+.hamb{display:none; border:1px solid var(--rule); background:#fff; border-radius:5px;
+  width:38px; height:34px; align-items:center; justify-content:center}
+.hamb svg{width:18px;height:18px}
+
+.searchbar{background:#fff; border-bottom:1px solid var(--rule)}
+.sw{max-width:1320px; margin:0 auto; padding:13px 20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.sw .field{border:1px solid var(--rule); border-radius:4px; padding:6px 11px;
+  font-size:12.5px; background:#fff; min-width:112px; color:var(--ink); font-family:inherit}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-left:4px}
+.chip{border:1px solid var(--rule); background:#fff; border-radius:100px;
+  padding:5px 13px; font-size:12px; font-weight:500; color:var(--ink-2);
+  display:flex; align-items:center; gap:6px; transition:.15s}
+.chip .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.5}
+.chip[aria-pressed="true"]{border-color:var(--green); background:#f1f7f3; color:var(--green)}
+.chip[aria-pressed="true"] .dot{opacity:1}
+.chip.o[aria-pressed="true"]{border-color:var(--orange); background:#fdf4ea; color:var(--orange)}
+.chip.b[aria-pressed="true"]{border-color:var(--blue); background:#eef3fa; color:var(--blue)}
+.sw .go{margin-left:auto; border:0; background:var(--soil); color:#fff;
+  border-radius:4px; padding:8px 22px; font-size:13px; font-weight:700}
+.sw .go:hover{background:var(--soil-d)}
+.axisnote{max-width:1320px; margin:0 auto; padding:0 20px 12px; font-size:11.5px; color:var(--ink-2)}
+.axisnote b{color:var(--soil)}
+
+main{max-width:1320px; margin:0 auto; padding:20px}
+.split{display:grid; grid-template-columns:1fr 400px; gap:20px; align-items:start}
+
+.mapcard{background:#fff; border:1px solid var(--rule); border-radius:6px;
+  overflow:hidden; box-shadow:var(--shadow)}
+.maphead{display:flex; align-items:center; gap:14px; padding:11px 15px;
+  border-bottom:1px solid var(--rule-2); flex-wrap:wrap}
+.maphead h2{margin:0; font-size:13px; font-weight:700; letter-spacing:.02em}
+.legend{display:flex; gap:14px; margin-left:auto; font-size:11px; color:var(--ink-2); flex-wrap:wrap}
+.legend span{display:flex; align-items:center; gap:5px}
+.legend i{width:9px; height:9px; border-radius:50%; display:block}
+.mapbody{position:relative; background:#f5f3ee}
+.mapbody svg{display:block; width:100%; height:auto}
+.pin{cursor:pointer}
+.pin circle.halo{opacity:0; transition:.2s}
+.pin:hover circle.halo,.pin.active circle.halo{opacity:.28}
+.pin.active circle.core{stroke:#fff; stroke-width:2.5}
+.mapfoot{padding:9px 15px; border-top:1px solid var(--rule-2); font-size:11px; color:var(--ink-2)}
+
+.listhead{display:flex; align-items:baseline; gap:10px; margin:0 0 11px}
+.listhead h2{margin:0; font-family:var(--mincho); font-size:17px; font-weight:700}
+.listhead .cnt{font-size:12px; color:var(--ink-2)}
+.listhead .cnt b{color:var(--soil); font-size:15px; font-family:var(--gothic)}
+.plist{display:flex; flex-direction:column; gap:11px}
+.pcard{background:#fff; border:1px solid var(--rule); border-radius:6px;
+  padding:13px; display:grid; grid-template-columns:120px 1fr; gap:13px;
+  cursor:pointer; transition:.15s; text-align:left; width:100%; font-family:inherit}
+.pcard:hover{border-color:var(--soil); box-shadow:var(--shadow)}
+.pcard.active{border-color:var(--soil); box-shadow:0 0 0 2px rgba(122,92,46,.15)}
+.pthumb{aspect-ratio:4/3; border-radius:5px; overflow:hidden; background:#e8e3d8; position:relative}
+.pthumb svg{width:100%; height:100%; display:block}
+.pthumb .tg{position:absolute; left:5px; top:5px; background:rgba(15,92,53,.92);
+  color:#fff; font-size:9px; font-weight:700; padding:1px 6px; border-radius:2px; letter-spacing:.02em}
+.pcard h3{margin:0 0 3px; font-size:13.5px; font-weight:700; line-height:1.45}
+.pcard .addr{font-size:11.5px; color:var(--ink-2); margin-bottom:6px}
+.pcard .price{font-family:var(--mincho); font-size:19px; font-weight:700;
+  color:var(--soil-d); letter-spacing:-.01em}
+.pcard .price small{font-family:var(--gothic); font-size:10.5px; font-weight:500;
+  color:var(--ink-2); margin-left:5px}
+.badges{display:flex; gap:5px; flex-wrap:wrap; margin-top:7px}
+.bdg{font-size:10px; font-weight:700; padding:2px 7px; border-radius:2px; letter-spacing:.02em; white-space:nowrap}
+.bdg.g{background:#e9f2ec; color:var(--green)}
+.bdg.o{background:#fdf1e4; color:#b7620f}
+.bdg.b{background:#eaf1f9; color:var(--blue)}
+.bdg.s{background:#f4efe4; color:var(--soil-d)}
+
+.detail{display:none}
+.detail.show{display:block}
+.backlink{border:0; background:transparent; color:var(--ink-2); font-size:12.5px;
+  padding:0 0 12px; display:flex; align-items:center; gap:6px}
+.backlink:hover{color:var(--soil)}
+.dhead{background:var(--ink); color:#fff; border-radius:6px 6px 0 0;
+  padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.dhead .t{font-size:15px; font-weight:700; letter-spacing:.01em}
+.dhead .g{margin-left:auto; display:flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,.12); border-radius:3px; padding:4px 11px; font-size:12px}
+.dhead .g b{color:#8fd6a9}
+.dbody{background:#fff; border:1px solid var(--rule); border-top:0;
+  border-radius:0 0 6px 6px; padding:20px; box-shadow:var(--shadow)}
+.dgrid{display:grid; grid-template-columns:1.15fr 1fr; gap:24px}
+
+.gal{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
+.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:6px; overflow:hidden; position:relative}
+.gmain svg{width:100%; height:100%; display:block}
+.gmain .rb{position:absolute; left:12px; bottom:12px; background:rgba(255,255,255,.94);
+  border-radius:3px; padding:4px 10px; font-size:11px; font-weight:700; color:var(--soil-d)}
+.gth{aspect-ratio:4/3; border-radius:4px; overflow:hidden; cursor:pointer;
+  border:2px solid transparent; position:relative; background:#e8e3d8}
+.gth svg{width:100%; height:100%; display:block}
+.gth.on{border-color:var(--soil)}
+.gth .cap{position:absolute; left:0; right:0; bottom:0; background:rgba(42,38,34,.6);
+  color:#fff; font-size:9px; text-align:center; padding:1px 0; letter-spacing:.03em}
+
+.spec{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px}
+.spec th{text-align:left; font-weight:500; color:var(--ink-2); width:88px;
+  padding:7px 0; border-bottom:1px solid var(--rule-2); vertical-align:top; font-size:11.5px}
+.spec td{padding:7px 0; border-bottom:1px solid var(--rule-2); font-weight:500}
+.spec .big{font-family:var(--mincho); font-size:25px; font-weight:700; color:var(--soil-d)}
+
+.karte{margin-top:26px; border-top:2px solid var(--ink); padding-top:16px}
+.karte .kh{display:flex; align-items:baseline; gap:12px; margin-bottom:3px; flex-wrap:wrap}
+.karte .kh h3{margin:0; font-family:var(--mincho); font-size:19px; font-weight:700}
+.karte .kh .en{font-size:9.5px; letter-spacing:.22em; color:var(--ink-2)}
+.karte .kd{font-size:12px; color:var(--ink-2); margin-bottom:14px}
+.strata{border:1px solid var(--rule); border-radius:5px; overflow:hidden}
+.stratum{display:grid; grid-template-columns:118px 1fr 250px;
+  border-bottom:1px solid var(--rule-2); align-items:stretch}
+.stratum:last-child{border-bottom:0}
+.stratum .when{padding:12px 14px; font-size:11.5px; font-weight:700; color:#fff;
+  display:flex; flex-direction:column; justify-content:center; gap:2px}
+.stratum .when small{font-weight:500; opacity:.8; font-size:10px}
+.stratum .what{padding:12px 16px; border-right:1px solid var(--rule-2)}
+.stratum .what b{font-size:13px; display:block; margin-bottom:2px}
+.stratum .what span{font-size:11.5px; color:var(--ink-2)}
+.stratum .docs{padding:11px 14px; display:flex; flex-direction:column; gap:5px; background:#fdfcfa}
+.s1 .when{background:#3d3a34}
+.s2 .when{background:#5c5347}
+.s3 .when{background:#7a6b52}
+.s4 .when{background:#9c8560}
+.s5 .when{background:var(--soil)}
+.doc{display:flex; align-items:center; gap:8px; border:1px solid var(--rule);
+  border-radius:3px; padding:6px 10px; background:#fff; font-size:11.5px;
+  text-align:left; width:100%; font-family:inherit; color:var(--ink)}
+.doc .ic{width:16px; height:16px; border-radius:2px; flex:none; display:grid;
+  place-items:center; color:#fff; font-size:9px; font-weight:700}
+.doc.o .ic{background:var(--orange)} .doc.b .ic{background:var(--blue)} .doc.g .ic{background:var(--green)}
+.doc .lb{flex:1}
+.doc .st{font-size:10px; font-weight:700; color:var(--ink-2)}
+.doc:not(:disabled):hover{border-color:var(--soil); background:#fdfbf7}
+.doc:disabled{cursor:not-allowed; background:#f7f5f0; color:#a39a8d}
+.doc:disabled .ic{background:#c4bcb0}
+.doc:disabled .st{color:var(--soil)}
+
+.gate{margin-top:16px; border:1px dashed var(--soil); border-radius:5px; background:#fdfbf6;
+  padding:15px 18px; display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+.gate.hidden{display:none}
+.gate .gt{flex:1; min-width:230px}
+.gate .gt b{display:block; font-size:13.5px; margin-bottom:3px; color:var(--soil-d)}
+.gate .gt span{font-size:11.5px; color:var(--ink-2)}
+.gate .gb{border:0; background:var(--soil); color:#fff; border-radius:4px; padding:10px 22px; font-size:13px; font-weight:700}
+.gate .gb:hover{background:var(--soil-d)}
+.opened{margin-top:16px; border:1px solid var(--green); border-radius:5px; background:#f2f8f4;
+  padding:13px 18px; font-size:12px; color:#0b4527; display:none}
+.opened.show{display:block}
+.opened b{font-weight:700}
+
+.cta{margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.cta button{border:0; border-radius:4px; padding:13px; font-size:13.5px; font-weight:700}
+.cta .p{background:var(--green); color:#fff}
+.cta .p:hover{background:#0b4527}
+.cta .s{background:#fff; border:1px solid var(--rule); color:var(--ink)}
+.cta .s:hover{border-color:var(--soil); color:var(--soil)}
+.ctanote{font-size:10.5px; color:var(--ink-2); margin-top:8px; line-height:1.6}
+
+/* お気に入りハート */
+.fav-n{background:var(--orange); color:#fff; border-radius:9px; padding:0 5px; font-size:10px; font-weight:700}
+.favbtn{position:absolute; right:6px; top:6px; width:30px; height:30px; border-radius:50%;
+  border:0; background:rgba(255,255,255,.92); display:grid; place-items:center; z-index:2;
+  box-shadow:0 1px 4px rgba(42,38,34,.18); padding:0}
+.favbtn svg{width:17px; height:17px; display:block}
+.favbtn .hs{fill:none; stroke:#b3aca1; stroke-width:2}
+.favbtn.on{background:#fff}
+.favbtn.on .hs{fill:var(--orange); stroke:var(--orange)}
+.pthumb .favbtn{right:6px; top:auto; bottom:6px}
+.cta .fav{background:#fff; border:1px solid var(--rule); color:var(--ink); display:flex; align-items:center; justify-content:center; gap:8px}
+.cta .fav svg{width:16px;height:16px}
+.cta .fav .hs{fill:none;stroke:currentColor;stroke-width:2}
+.cta .fav.on{border-color:var(--orange); color:var(--orange); background:#fdf6ef}
+.cta .fav.on .hs{fill:var(--orange); stroke:var(--orange)}
+
+/* サブページ共通 */
+.page{display:none}
+.page.show{display:block}
+.pagehero{background:linear-gradient(135deg,#0f5c35,#0b4527); color:#fff;
+  border-radius:8px; padding:30px 34px; margin-bottom:22px}
+.pagehero .ey{font-size:11px; letter-spacing:.2em; opacity:.75; margin-bottom:8px}
+.pagehero h1{font-family:var(--mincho); font-size:26px; font-weight:700; margin:0 0 8px}
+.pagehero p{font-size:13px; margin:0; opacity:.92; line-height:1.8; max-width:760px}
+.sec{margin-bottom:26px}
+.sec h2{font-family:var(--mincho); font-size:19px; font-weight:700; color:var(--ink);
+  margin:0 0 4px; padding-left:12px; border-left:4px solid var(--green)}
+.sec .lead{font-size:12.5px; color:var(--ink-2); margin:0 0 16px; padding-left:14px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+.vc{background:#fff; border:1px solid var(--rule); border-radius:7px; padding:20px; box-shadow:var(--shadow)}
+.vc .ic{width:44px; height:44px; border-radius:10px; background:#f1f7f3; display:grid;
+  place-items:center; margin-bottom:12px}
+.vc .ic svg{width:22px; height:22px; stroke:var(--green); fill:none; stroke-width:1.8}
+.vc h3{margin:0 0 6px; font-size:15px; font-weight:700}
+.vc p{margin:0; font-size:12.5px; color:var(--ink-2); line-height:1.75}
+.vc .tagm{display:inline-block; margin-top:10px; font-size:10.5px; font-weight:700;
+  color:var(--soil); background:#f4efe4; padding:2px 9px; border-radius:3px}
+.warrantybox{background:#fff; border:1px solid var(--rule); border-radius:8px; overflow:hidden; box-shadow:var(--shadow)}
+.wbh{background:var(--soil); color:#fff; padding:16px 22px}
+.wbh .nm{font-family:var(--mincho); font-size:20px; font-weight:700}
+.wbh .sub{font-size:12px; opacity:.9; margin-top:2px}
+.wbrow{display:flex; border-bottom:1px solid var(--rule-2)}
+.wbrow:last-child{border-bottom:0}
+.wbrow .k{width:150px; flex:none; background:#faf8f4; padding:13px 18px; font-size:12.5px;
+  font-weight:700; color:var(--soil-d); display:flex; align-items:center}
+.wbrow .v{padding:13px 18px; font-size:12.5px; line-height:1.7}
+.wbrow .v b{color:var(--green)}
+.steps{counter-reset:st; display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.step{background:#fff; border:1px solid var(--rule); border-radius:7px; padding:16px; position:relative}
+.step:before{counter-increment:st; content:"STEP " counter(st); font-size:10px; font-weight:700;
+  color:var(--green); letter-spacing:.08em}
+.step h4{margin:6px 0 5px; font-size:13.5px; font-weight:700}
+.step p{margin:0; font-size:11.5px; color:var(--ink-2); line-height:1.65}
+.calloutbar{background:#f1f7f3; border:1px solid #cfe0d5; border-radius:7px;
+  padding:16px 20px; font-size:13px; color:#0b4527; line-height:1.8}
+.calloutbar b{font-weight:800}
+
+/* マイページ */
+.mypanel{background:#fff; border:1px solid var(--rule); border-radius:8px; padding:22px; box-shadow:var(--shadow)}
+.mynav{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap}
+.mynav .t{border:1px solid var(--rule); background:#fff; border-radius:100px; padding:6px 16px;
+  font-size:12.5px; font-weight:700; color:var(--ink-2)}
+.mynav .t.on{background:var(--green); color:#fff; border-color:var(--green)}
+.emptyfav{text-align:center; padding:44px 20px; color:var(--ink-2)}
+.emptyfav svg{width:48px; height:48px; stroke:#cfc7ba; fill:none; stroke-width:1.5; margin-bottom:12px}
+.emptyfav b{display:block; font-size:15px; color:var(--ink); margin-bottom:6px}
+.emptyfav .go2{margin-top:16px; border:0; background:var(--soil); color:#fff;
+  border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
+
+/* フォーム */
+.formwrap{display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start}
+.formcard{background:#fff; border:1px solid var(--rule); border-radius:8px; padding:24px; box-shadow:var(--shadow)}
+.formcard h2{font-family:var(--mincho); font-size:19px; margin:0 0 4px}
+.formcard .fd{font-size:12px; color:var(--ink-2); margin:0 0 18px}
+.frow{margin-bottom:15px}
+.frow label{display:block; font-size:12.5px; font-weight:700; margin-bottom:6px}
+.frow label .req{color:#c0221a; font-size:10.5px; margin-left:6px; font-weight:700}
+.frow label .opt{color:var(--ink-2); font-size:10.5px; margin-left:6px; font-weight:500}
+.frow input,.frow select,.frow textarea{width:100%; border:1px solid var(--rule); border-radius:5px;
+  padding:9px 11px; font-size:13px; font-family:inherit; color:var(--ink); background:#fff}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--green); outline:none;
+  box-shadow:0 0 0 2px rgba(15,92,53,.12)}
+.frow.err input,.frow.err select{border-color:#c0221a}
+.frow .msg{font-size:10.5px; color:#c0221a; margin-top:5px; display:none}
+.frow.err .msg{display:block}
+.f2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.checks{display:flex; flex-direction:column; gap:8px}
+.checks label{display:flex; align-items:flex-start; gap:8px; font-size:12px; font-weight:500; cursor:pointer}
+.checks input{width:auto; margin-top:2px}
+.consent{background:#faf8f4; border:1px solid var(--rule-2); border-radius:6px; padding:12px 14px;
+  font-size:11px; color:var(--ink-2); line-height:1.7; margin:6px 0 16px; max-height:110px; overflow-y:auto}
+.fsubmit{width:100%; border:0; background:var(--green); color:#fff; border-radius:6px;
+  padding:14px; font-size:14px; font-weight:700; margin-top:4px}
+.fsubmit:hover{background:#0b4527}
+.fsubmit:disabled{background:#a9b8b1; cursor:not-allowed}
+.fside{background:#faf8f4; border:1px solid var(--rule); border-radius:8px; padding:20px}
+.fside h3{margin:0 0 12px; font-size:14px; font-weight:700; color:var(--soil-d)}
+.fside .pinfo{display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--rule)}
+.fside .pinfo .th{width:80px; flex:none; border-radius:5px; overflow:hidden; aspect-ratio:4/3; background:#e8e3d8}
+.fside .pinfo .th svg{width:100%;height:100%;display:block}
+.fside .pinfo .nm{font-size:12px; font-weight:700; line-height:1.5}
+.fside .pinfo .pr{font-family:var(--mincho); font-size:16px; color:var(--soil-d); font-weight:700; margin-top:3px}
+.fside ul{margin:0; padding-left:0; list-style:none}
+.fside li{font-size:11.5px; color:var(--ink-2); padding:6px 0 6px 22px; position:relative; line-height:1.6}
+.fside li:before{content:""; position:absolute; left:2px; top:10px; width:11px; height:11px;
+  border-radius:50%; background:#dcebe1; border:2px solid var(--green)}
+.doneview{text-align:center; padding:40px 20px}
+.doneview .ok{width:60px; height:60px; border-radius:50%; background:#e9f2ec; display:grid;
+  place-items:center; margin:0 auto 16px}
+.doneview .ok svg{width:30px; height:30px; stroke:var(--green); fill:none; stroke-width:2.5}
+.doneview h2{font-family:var(--mincho); font-size:22px; margin:0 0 8px}
+.doneview p{font-size:13px; color:var(--ink-2); line-height:1.8; max-width:460px; margin:0 auto 8px}
+.doneview .back2{margin-top:18px; border:1px solid var(--rule); background:#fff; color:var(--ink);
+  border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
+
+@media(max-width:1060px){
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .formwrap{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .pagehero{padding:22px 18px}
+  .pagehero h1{font-size:21px}
+  .grid3,.grid2{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .wbrow{flex-direction:column}
+  .wbrow .k{width:100%}
+  .f2{grid-template-columns:1fr}
+  .sec h2{font-size:17px}
+}
+
+footer{border-top:1px solid var(--rule); margin-top:36px; background:#fff}
+.fw{max-width:1320px; margin:0 auto; padding:22px 20px; display:flex; gap:18px;
+  align-items:center; font-size:11px; color:var(--ink-2); flex-wrap:wrap}
+.fw .sp{flex:1}
+
+@media(max-width:1060px){
+  .split{grid-template-columns:1fr}
+  .dgrid{grid-template-columns:1fr}
+  .stratum{grid-template-columns:100px 1fr}
+  .stratum .docs{grid-column:1/-1; border-top:1px solid var(--rule-2)}
+  nav{display:none}
+}
+
+@media(max-width:640px){
+  .mockbar{font-size:10.5px; padding:6px 12px; gap:8px}
+  .mockbar .tag{font-size:9.5px}
+  .hwrap{padding:0 12px; height:56px; gap:10px}
+  .logo .mark{width:30px; height:30px; border-radius:6px}
+  .logo .mark svg{width:16px; height:16px}
+  .logo .lt .n{font-size:17px}
+  .logo .lt .n small{display:none}
+  .logo .lt .c{display:none}
+  .hactions{margin-left:auto; padding-left:0; border-left:0; gap:6px}
+  .hactions .iconbtn{display:none}
+  .memtoggle button{padding:6px 9px; font-size:10.5px}
+  .hamb{display:flex}
+  .msheet{display:none; position:fixed; inset:0; z-index:60}
+  .msheet.show{display:block}
+  .msheet .bg{position:absolute; inset:0; background:rgba(42,38,34,.4)}
+  .msheet .pane{position:absolute; top:0; right:0; width:74%; max-width:300px;
+    height:100%; background:#fff; box-shadow:-4px 0 24px rgba(0,0,0,.15);
+    padding:18px; display:flex; flex-direction:column; gap:4px}
+  .msheet .pane .mh{display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--rule)}
+  .msheet .pane .mh b{font-family:var(--mincho); font-size:18px; color:var(--soil)}
+  .msheet .pane a{text-decoration:none; color:var(--ink); font-size:15px;
+    font-weight:500; padding:12px 8px; border-radius:6px}
+  .msheet .pane a:active{background:var(--rule-2)}
+  .msheet .pane .x{border:0; background:transparent; font-size:22px; color:var(--ink-2); line-height:1}
+  .sw{padding:10px 12px; gap:8px; flex-wrap:nowrap; overflow-x:auto;
+    -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .sw::-webkit-scrollbar{display:none}
+  .sw .field{min-width:auto; flex:none; font-size:12px; padding:6px 9px}
+  .chips{margin-left:0; flex-wrap:nowrap}
+  .chip{flex:none; white-space:nowrap}
+  .sw .go{position:sticky; right:0; margin-left:4px; padding:8px 16px;
+    box-shadow:-8px 0 8px -6px rgba(251,250,247,.9)}
+  .axisnote{padding:8px 12px 10px; font-size:11px}
+  main{padding:12px}
+  .split{gap:14px}
+  .maphead{padding:10px 12px; gap:8px}
+  .maphead h2{font-size:12px; width:100%}
+  .legend{margin-left:0; gap:10px; font-size:10px}
+  .mapfoot{font-size:10px; padding:8px 12px}
+  .listhead h2{font-size:16px}
+  .pcard{grid-template-columns:1fr; gap:10px; padding:10px}
+  .pthumb{aspect-ratio:16/10}
+  .pcard h3{font-size:14px}
+  .pcard .price{font-size:20px}
+  .dhead{padding:12px 14px; gap:8px}
+  .dhead .t{font-size:13px; line-height:1.5}
+  .dhead .g{margin-left:0; font-size:11px; padding:3px 9px}
+  .dbody{padding:14px}
+  .dgrid{gap:18px}
+  .gal{grid-template-columns:repeat(3,1fr); gap:6px}
+  .gth .cap{font-size:8px}
+  .spec .big{font-size:22px}
+  .karte{padding-top:14px}
+  .karte .kh h3{font-size:17px}
+  .stratum{grid-template-columns:1fr}
+  .stratum .when{flex-direction:row; align-items:baseline; gap:6px; padding:8px 12px}
+  .stratum .what{border-right:0; border-bottom:1px solid var(--rule-2); padding:10px 12px}
+  .stratum .docs{padding:10px 12px}
+  .cta{grid-template-columns:1fr}
+  .gate{padding:13px 14px; gap:12px}
+  .gate .gb{width:100%; text-align:center}
+  .fw{padding:16px 12px; font-size:10px; gap:8px}
+}
+@media(max-width:380px){
+  .memtoggle button{padding:5px 7px; font-size:10px}
+  .gal{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+
+<div class="mockbar">
+  <span class="tag">MOCKUP</span>
+  <span>JHS保証付き中古物件ECサイト　画面イメージ（提案用モックアップ／実データではありません）</span>
+  <span class="spacer"></span>
+  <span>右上の<b>「非会員／会員」</b>を切り替えると、閲覧範囲の違いをご確認いただけます</span>
+</div>
+
+<header>
+  <div class="hwrap">
+    <a class="logo" href="#">
+      <span class="mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.8"
+             stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M3 10.5 12 3l9 7.5"/><path d="M5.5 9.5V21h13V9.5"/><path d="M12 21v-6"/>
+        </svg>
+      </span>
+      <span class="lt">
+        <span class="n">Homille<small>ホーミル</small></span>
+        <span class="c">家のこと、土地のこと、しっかり調べて安心生活。</span>
+      </span>
+    </a>
+    <nav aria-label="メインメニュー">
+      <a href="https://www.j-shield.co.jp/" target="_blank" rel="noopener">トップ</a>
+      <a href="#" class="on" data-view="list">物件検索</a>
+      <a href="#" data-view="member">会員限定</a>
+      <a href="#" data-view="support">購入サポート</a>
+    </nav>
+    <div class="hactions">
+      <div class="memtoggle" role="group" aria-label="閲覧権限の切り替え">
+        <button id="btnGuest" aria-pressed="true">非会員</button>
+        <button id="btnMember" aria-pressed="false">会員</button>
+      </div>
+      <button class="iconbtn" data-view="mypage">マイページ</button>
+      <button class="iconbtn" data-view="mypage">お気に入り <span class="fav-n" id="favN">0</span></button>
+      <button class="hamb" id="hamb" aria-label="メニューを開く">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2a2622" stroke-width="2" stroke-linecap="round">
+          <path d="M4 7h16M4 12h16M4 17h16"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<div class="msheet" id="msheet">
+  <div class="bg" id="msheetbg"></div>
+  <div class="pane">
+    <div class="mh"><b>Homille</b><button class="x" id="msheetx" aria-label="閉じる">×</button></div>
+    <a href="https://www.j-shield.co.jp/" target="_blank" rel="noopener">トップ（JHS公式サイト）</a>
+    <a href="#" data-view="list">物件検索</a>
+    <a href="#" data-view="member">会員限定</a>
+    <a href="#" data-view="support">購入サポート</a>
+    <a href="#" data-view="mypage">マイページ</a>
+    <a href="#" data-view="mypage">お気に入り（<span id="favN2">0</span>）</a>
+  </div>
+</div>
+
+<div class="searchbar">
+  <div class="sw">
+    <select class="field"><option>東京都 墨田区</option><option>東京都 台東区</option><option>東京都 江東区</option></select>
+    <select class="field"><option>価格帯</option><option>〜6,000万円</option><option>6,000〜9,000万円</option><option>9,000万円〜</option></select>
+    <select class="field"><option>間取り</option><option>3LDK以上</option><option>4LDK以上</option><option>5LDK以上</option></select>
+    <div class="chips" role="group" aria-label="こだわり条件">
+      <button class="chip" data-f="warranty" aria-pressed="true"><span class="dot"></span>10年保証付き</button>
+      <button class="chip o" data-f="inspected" aria-pressed="true"><span class="dot"></span>既存住宅診断済み</button>
+      <button class="chip b" data-f="ground" aria-pressed="false"><span class="dot"></span>地盤評価 A・B</button>
+      <button class="chip" data-f="newbuild" aria-pressed="false"><span class="dot"></span>新築時履歴あり</button>
+    </div>
+    <button class="go">探す</button>
+  </div>
+  <div class="axisnote">
+    <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
+    地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
+  </div>
+</div>
+
+<main>
+  <div id="viewList">
+    <div class="split">
+      <div class="mapcard">
+        <div class="maphead">
+          <h2>マップから探す（墨田区・両国周辺）</h2>
+          <div class="legend">
+            <span><i style="background:#0f5c35"></i>診断済み＋10年保証</span>
+            <span><i style="background:#e07b1e"></i>診断済み</span>
+            <span><i style="background:#7a5c2e"></i>会員限定公開</span>
+          </div>
+        </div>
+        <div class="mapbody">
+          <svg viewBox="0 0 800 500" role="img" aria-label="物件所在地を示した地図">
+            <rect width="800" height="500" fill="#f2efe8"/>
+            <g fill="#e8e4da">
+              <rect x="40" y="40" width="150" height="110" rx="3"/><rect x="205" y="40" width="120" height="110" rx="3"/>
+              <rect x="40" y="165" width="150" height="130" rx="3"/><rect x="205" y="165" width="120" height="130" rx="3"/>
+              <rect x="40" y="310" width="285" height="150" rx="3"/><rect x="470" y="40" width="140" height="150" rx="3"/>
+              <rect x="625" y="40" width="135" height="150" rx="3"/><rect x="470" y="205" width="140" height="120" rx="3"/>
+              <rect x="625" y="205" width="135" height="120" rx="3"/><rect x="470" y="340" width="290" height="120" rx="3"/>
+            </g>
+            <rect x="220" y="325" width="95" height="80" rx="4" fill="#dce6d5"/>
+            <text x="267" y="370" font-size="10" fill="#7d8a74" text-anchor="middle" font-family="sans-serif">錦糸公園</text>
+            <path d="M380 0 C 360 120, 420 240, 385 380 C 370 440, 400 480, 395 500" stroke="#c6d8e2" stroke-width="46" fill="none"/>
+            <text x="345" y="130" font-size="10" fill="#8ba6b5" font-family="sans-serif" transform="rotate(-82 345 130)">隅田川</text>
+            <g stroke="#fff" stroke-width="9"><path d="M0 155 H 800"/><path d="M0 300 H 800"/><path d="M195 0 V 500"/><path d="M615 0 V 500"/></g>
+            <path d="M0 420 C 200 400, 480 440, 800 405" stroke="#a9a29a" stroke-width="4" fill="none"/>
+            <path d="M0 420 C 200 400, 480 440, 800 405" stroke="#fff" stroke-width="1.6" stroke-dasharray="7 7" fill="none"/>
+            <g font-family="sans-serif" font-size="10.5" fill="#5c554d">
+              <circle cx="205" cy="411" r="6" fill="#fff" stroke="#8d857b" stroke-width="2.5"/><text x="205" y="437" text-anchor="middle">両国駅</text>
+              <circle cx="615" cy="428" r="6" fill="#fff" stroke="#8d857b" stroke-width="2.5"/><text x="615" y="454" text-anchor="middle">錦糸町駅</text>
+            </g>
+            <g id="pins"></g>
+          </svg>
+        </div>
+        <div class="mapfoot">
+          物件所在エリア・価格・間取りは<strong>一般公開</strong>。診断報告書・図面・地盤調査報告書は<strong>会員限定</strong>で公開します。
+        </div>
+      </div>
+      <div>
+        <div class="listhead">
+          <h2>掲載物件</h2>
+          <span class="cnt"><b id="cnt">6</b> 件／全件が既存住宅診断済み</span>
+        </div>
+        <div class="plist" id="plist"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="viewDetail" class="detail">
+    <button class="backlink" id="back">← 検索結果に戻る</button>
+    <div class="dhead">
+      <span class="t" id="dTitle"></span>
+      <span class="g">閲覧権限：<b id="dRole">非会員</b></span>
+    </div>
+    <div class="dbody">
+      <div class="dgrid">
+        <div>
+          <div class="gmain" id="gmain"></div>
+          <div class="gal" id="gthumbs" style="margin-top:7px"></div>
+        </div>
+        <div>
+          <table class="spec">
+            <tr><th>販売価格</th><td><span class="big" id="dPrice"></span></td></tr>
+            <tr><th>所在地</th><td id="dAddr"></td></tr>
+            <tr><th>間取り</th><td id="dPlan"></td></tr>
+            <tr><th>面積</th><td id="dArea"></td></tr>
+            <tr><th>築年数</th><td id="dAge"></td></tr>
+            <tr><th>構造</th><td id="dStr"></td></tr>
+            <tr><th>交通</th><td id="dAcc"></td></tr>
+            <tr><th>地盤評価</th><td id="dGround"></td></tr>
+          </table>
+          <div class="cta">
+            <button class="p" id="ctaReq">資料請求・内見を申し込む</button>
+            <button class="fav" id="ctaFav">お気に入りに追加</button>
+          </div>
+          <p class="ctanote">
+            資料請求・内見申込・電話問い合わせが「反響」として計上され、担当不動産会社へ会員情報が連携されます。
+          </p>
+        </div>
+      </div>
+
+      <section class="karte">
+        <div class="kh">
+          <h3>建物カルテ</h3>
+          <span class="en">BUILDING RECORD ／ 着工前から現在までの全記録</span>
+        </div>
+        <p class="kd">この建物に対してJHSが実施した検査・点検・保証の履歴です。下段が古く、上段が新しい記録になります。</p>
+        <div class="strata">
+          <div class="stratum s5">
+            <div class="when">2026年6月<small>売却前</small></div>
+            <div class="what"><b>既存住宅診断（建物状況調査）</b><span>構造耐力上主要な部分・雨水の浸入を防止する部分の劣化状況を調査</span></div>
+            <div class="docs">
+              <button class="doc o" data-gate="1"><span class="ic">PDF</span><span class="lb">既存住宅調査診断報告書</span><span class="st"></span></button>
+              <button class="doc o" data-gate="1"><span class="ic">JPG</span><span class="lb">隠蔽部・小屋裏写真（18点）</span><span class="st"></span></button>
+            </div>
+          </div>
+          <div class="stratum s4">
+            <div class="when">2026年6月<small>リフォーム後</small></div>
+            <div class="what"><b>既存住宅向け10年品質保証</b><span>リフォーム完了に伴い、10年間の品質保証を付与</span></div>
+            <div class="docs"><button class="doc g" data-gate="1"><span class="ic">PDF</span><span class="lb">保証書・保証範囲一覧</span><span class="st"></span></button></div>
+          </div>
+          <div class="stratum s3">
+            <div class="when">2015・2020年<small>居住中</small></div>
+            <div class="what"><b>定期点検（2回実施）</b><span>引渡し後の定期点検記録および指摘事項への対応履歴</span></div>
+            <div class="docs">
+              <button class="doc o" data-gate="1"><span class="ic">PDF</span><span class="lb">定期点検報告書（5年・10年）</span><span class="st"></span></button>
+              <button class="doc o" data-gate="1"><span class="ic">PDF</span><span class="lb">修繕履歴</span><span class="st"></span></button>
+            </div>
+          </div>
+          <div class="stratum s2">
+            <div class="when">2004年<small>工事中</small></div>
+            <div class="what"><b>新築時 品質検査・図面</b><span>施工状況の品質検査記録、確認済証、竣工図面一式</span></div>
+            <div class="docs">
+              <button class="doc b" data-gate="1"><span class="ic">PDF</span><span class="lb">各種図面・建築確認済証</span><span class="st"></span></button>
+              <button class="doc b" data-gate="1"><span class="ic">PDF</span><span class="lb">新築時品質検査記録</span><span class="st"></span></button>
+            </div>
+          </div>
+          <div class="stratum s1">
+            <div class="when">2003年<small>着工前</small></div>
+            <div class="what"><b>地盤調査（SDS試験）</b><span>地層構成・支持層深度の解析結果。周辺の地盤傾向も併せて確認可能</span></div>
+            <div class="docs">
+              <button class="doc b" data-gate="1"><span class="ic">PDF</span><span class="lb">地盤調査報告書</span><span class="st"></span></button>
+              <button class="doc b" data-gate="0"><span class="ic">MAP</span><span class="lb">地盤サポートマップ（周辺）</span><span class="st">公開</span></button>
+            </div>
+          </div>
+        </div>
+
+        <div class="gate" id="gate">
+          <div class="gt">
+            <b>会員登録で、この物件の全記録を閲覧できます</b>
+            <span>診断報告書・図面・地盤調査報告書・保証書は、会員限定で公開しています。登録は無料です。</span>
+          </div>
+          <button class="gb" id="gbtn">無料で会員登録する</button>
+        </div>
+        <div class="opened" id="opened">
+          <b>会員としてログイン中です。</b>
+          全8点の書類を閲覧・ダウンロードできます。売買契約の締結後は、購入者様のみ閲覧可能な状態にクローズされます。
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===== 会員限定 ===== -->
+  <div id="viewMember" class="page">
+    <div class="pagehero">
+      <div class="ey">MEMBERS ONLY</div>
+      <h1>会員だけが見られる、建物の「本当のところ」</h1>
+      <p>Homilleの会員登録は無料です。JHSが自ら調査・保証した物件の診断報告書・図面・地盤データ・保証内容まで、
+      建物の全記録を閲覧できます。「見えないリスク」に不安を抱えたまま購入を判断する必要はありません。</p>
+    </div>
+
+    <div class="sec">
+      <h2>会員登録で解放される4つの権限</h2>
+      <p class="lead">一般公開されているのは物件概要まで。判断に必要な情報は、会員登録した方だけにお届けします。</p>
+      <div class="grid2">
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M9 13h6M9 17h6"/></svg></div>
+          <h3>既存住宅診断報告書の閲覧</h3>
+          <p>構造耐力上主要な部分・雨水の浸入を防止する部分の劣化状況を記した、建物状況調査の報告書そのものを閲覧できます。隠蔽部・小屋裏の写真も含みます。</p>
+          <span class="tagm">会員限定</span>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 3h18v18H3z"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <h3>各種図面・建築確認済証・地盤調査報告書</h3>
+          <p>新築時の竣工図面、建築確認済証、そしてJHSの地盤調査（SDS試験）報告書まで。建物の素性を裏付ける一次資料を確認できます。</p>
+          <span class="tagm">会員限定</span>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg></div>
+          <h3>10年保証の内容確認</h3>
+          <p>「建物サポートシステム ストック型」による10年品質保証の対象範囲・保証書を、購入前に確認できます。保証の中身が見えるから安心して判断できます。</p>
+          <span class="tagm">会員限定</span>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+          <h3>会員限定公開物件の閲覧</h3>
+          <p>一般には公開していない会員限定物件を閲覧できます。人気の物件や希少な物件が、登録者だけに先行して届きます。</p>
+          <span class="tagm">会員限定</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>登録するとできること</h2>
+      <div class="grid3">
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7z"/></svg></div>
+          <h3>お気に入り登録</h3>
+          <p>気になる物件を保存して、マイページでいつでも見返せます。価格変更や成約のお知らせも受け取れます。</p>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M4 4h16v12H5.17L4 17.17z"/><path d="M8 9h8M8 12h5"/></svg></div>
+          <h3>資料請求・内見申込</h3>
+          <p>会員情報を一度登録すれば、次回以降はワンクリックで資料請求・内見予約ができます。担当不動産会社へ直接つながります。</p>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.3-4.3"/></svg></div>
+          <h3>こだわり条件で検索</h3>
+          <p>「10年保証付き」「診断済み」「地盤評価A・B」「新築時履歴あり」など、他社にない検索軸で理想の一軒を絞り込めます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="calloutbar" style="text-align:center">
+      <b>会員登録は無料・1分で完了します。</b><br>
+      物件詳細ページの「無料で会員登録する」ボタン、または資料請求時にご登録いただけます。<br>
+      <span style="font-size:11.5px">※売買契約の締結後は、購入者様のみ閲覧可能な状態にクローズされ、個人情報は適切に管理されます。</span>
+    </div>
+  </div>
+
+  <!-- ===== 購入サポート ===== -->
+  <div id="viewSupport" class="page">
+    <div class="pagehero">
+      <div class="ey">PURCHASE SUPPORT</div>
+      <h1>買ったあとも、ずっと安心が続く仕組み</h1>
+      <p>JHSは地盤調査・解析実績250万棟、住宅インスペクションの豊富な実績を持つ住宅品質の専門会社です。
+      中古住宅の購入を、新築同様の安心とともにお届けするための保証・リフォームの仕組みをご紹介します。</p>
+    </div>
+
+    <div class="sec">
+      <h2>既存住宅向け 10年品質保証</h2>
+      <p class="lead">築25年までの既存住宅を対象とした、JHSの品質保証サービスです。</p>
+      <div class="warrantybox">
+        <div class="wbh">
+          <div class="nm">建物サポートシステム ストック型</div>
+          <div class="sub">中古住宅を、保証付きの安心な住まいへ</div>
+        </div>
+        <div class="wbrow"><div class="k">対象</div><div class="v">築25年までの既存戸建住宅。JHSのインスペクション（建物状況調査）を実施した物件が対象です。</div></div>
+        <div class="wbrow"><div class="k">保証期間</div><div class="v"><b>最長10年間</b>の品質保証。引渡し後の主要構造部・雨水の浸入を防止する部分の不具合をカバーします。</div></div>
+        <div class="wbrow"><div class="k">保証の承継</div><div class="v">売買時に保証を次のオーナーへ引き継げる物件もあります。資産価値の維持につながります。</div></div>
+        <div class="wbrow"><div class="k">背景</div><div class="v">見えにくい劣化・不具合への不安、信頼できるリフォーム事業者の選定の難しさ。こうした課題に、豊富なインスペクション実績で応えます。</div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>地盤保証という土台の安心</h2>
+      <p class="lead">建物だけでなく、その下の地盤まで。JHSは地盤の専門会社です。</p>
+      <div class="grid3">
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg></div>
+          <h3>最大5,000万円の地盤保証</h3>
+          <p>万一の不同沈下に備え、1事故あたり最大5,000万円を保証。調査・仮住まい費用もそれぞれ200万円まで対応します（規程に基づく）。</p>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10"/><path d="M12 6v6l4 2"/></svg></div>
+          <h3>SDS試験による地盤調査</h3>
+          <p>JAXAとの共同研究にも採択されたスクリュードライビングサウンディング（SDS）試験。地層構成・支持層深度を精密に解析します。</p>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 12-9 12S3 17 3 10a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <h3>地盤サポートマップで周辺確認</h3>
+          <p>250万棟の調査データを地図上に可視化。購入検討エリアの地盤傾向を、住所からひと目で確認できます。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>リフォーム・リノベーションのご提案</h2>
+      <p class="lead">AIを活用した業務支援システム「Homilleリノベナビ」で、根拠あるリノベーションを実現します。</p>
+      <div class="grid2">
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M14.7 6.3a5 5 0 0 0-7 7l-4 4 1 1 4-4a5 5 0 0 0 7-7l-2.5 2.5-2-2z"/></svg></div>
+          <h3>診断にもとづくリノベーション</h3>
+          <p>建物状況調査の結果をもとに、直すべき箇所を明確にしてからリノベーションを計画。感覚ではなくデータで、必要な工事を見極めます。劣化の指摘は、リフォームで価値を高めるための出発点です。</p>
+          <span class="tagm">Homilleリノベナビ</span>
+        </div>
+        <div class="vc">
+          <div class="ic"><svg viewBox="0 0 24 24"><path d="M12 2l2.4 7.4H22l-6 4.6 2.3 7.4-6.3-4.6L5.7 21 8 14 2 9.4h7.6z"/></svg></div>
+          <h3>リノベ後は10年保証付きの住まいへ</h3>
+          <p>リフォーム完了に伴い、10年間の品質保証を付与できます。「診断 → リノベーション → 保証」がひとつながりになることで、中古とは思えない安心の住まいが完成します。</p>
+          <span class="tagm">建物サポートシステム ストック型</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <h2>ご購入までの流れ</h2>
+      <div class="steps">
+        <div class="step"><h4>物件を探す</h4><p>マップやこだわり条件から、診断済み・保証付きの物件を探します。</p></div>
+        <div class="step"><h4>会員登録・資料請求</h4><p>無料の会員登録で全記録を閲覧。気になる物件は資料請求・内見をお申し込みください。</p></div>
+        <div class="step"><h4>内見・ご相談</h4><p>担当不動産会社が対応。診断結果や保証内容を確認しながら検討できます。</p></div>
+        <div class="step"><h4>ご契約・保証開始</h4><p>ご契約後、10年保証が適用。購入後も定期点検やサポートが続きます。</p></div>
+      </div>
+    </div>
+
+    <div class="calloutbar" style="text-align:center">
+      JHSの保証・リフォームサービスの詳細は、<a href="https://www.j-shield.co.jp/" target="_blank" rel="noopener" style="color:var(--green); font-weight:700">ジャパンホームシールド公式サイト</a>でもご案内しています。
+    </div>
+  </div>
+
+  <!-- ===== マイページ ===== -->
+  <div id="viewMypage" class="page">
+    <div class="pagehero" style="background:linear-gradient(135deg,#7a5c2e,#5c4322)">
+      <div class="ey">MY PAGE</div>
+      <h1>マイページ</h1>
+      <p>お気に入り登録した物件の一覧です。気になる物件を保存して、じっくり比較検討いただけます。</p>
+    </div>
+    <div class="mypanel">
+      <div class="mynav"><span class="t on">お気に入り物件</span><span class="t">資料請求履歴</span><span class="t">会員情報</span></div>
+      <div id="favList"></div>
+    </div>
+  </div>
+
+  <!-- ===== 資料請求フォーム ===== -->
+  <div id="viewForm" class="page">
+    <button class="backlink" id="formBack">← 物件詳細に戻る</button>
+    <div class="formwrap">
+      <div class="formcard" id="formCard">
+        <h2>資料請求・内見のお申し込み</h2>
+        <p class="fd">下記のフォームにご入力ください。あわせて無料の会員登録が完了し、この物件の全記録を閲覧できるようになります。<span style="color:#c0221a">＊は必須項目です。</span></p>
+
+        <div class="frow" id="f-name">
+          <label>お名前 <span class="req">＊必須</span></label>
+          <input type="text" placeholder="山田 太郎" autocomplete="name">
+          <div class="msg">お名前をご入力ください。</div>
+        </div>
+        <div class="frow" id="f-kana">
+          <label>フリガナ <span class="opt">任意</span></label>
+          <input type="text" placeholder="ヤマダ タロウ">
+        </div>
+        <div class="f2">
+          <div class="frow" id="f-mail">
+            <label>メールアドレス <span class="req">＊必須</span></label>
+            <input type="email" placeholder="example@mail.com" autocomplete="email">
+            <div class="msg">正しいメールアドレスをご入力ください。</div>
+          </div>
+          <div class="frow" id="f-tel">
+            <label>電話番号 <span class="req">＊必須</span></label>
+            <input type="tel" placeholder="090-1234-5678" autocomplete="tel">
+            <div class="msg">電話番号をご入力ください。</div>
+          </div>
+        </div>
+        <div class="f2">
+          <div class="frow" id="f-zip">
+            <label>郵便番号 <span class="opt">任意</span></label>
+            <input type="text" placeholder="130-0000">
+          </div>
+          <div class="frow" id="f-pref">
+            <label>お住まいの都道府県 <span class="opt">任意</span></label>
+            <select><option value="">選択してください</option><option>東京都</option><option>神奈川県</option><option>千葉県</option><option>埼玉県</option><option>その他</option></select>
+          </div>
+        </div>
+        <div class="frow" id="f-when">
+          <label>ご購入検討時期 <span class="opt">任意</span></label>
+          <select><option value="">選択してください</option><option>すぐにでも</option><option>3か月以内</option><option>半年以内</option><option>1年以内</option><option>未定・情報収集中</option></select>
+        </div>
+        <div class="frow">
+          <label>ご希望の連絡方法 <span class="opt">任意</span></label>
+          <div class="checks">
+            <label><input type="checkbox" checked> メールで連絡してほしい</label>
+            <label><input type="checkbox"> 電話で連絡してほしい</label>
+            <label><input type="checkbox"> 内見（現地見学）を希望する</label>
+          </div>
+        </div>
+        <div class="frow" id="f-msg2">
+          <label>ご質問・ご要望 <span class="opt">任意</span></label>
+          <textarea rows="3" placeholder="例）週末に内見を希望します。リフォームの相談もできますか？"></textarea>
+        </div>
+
+        <div class="consent">
+          【個人情報の取り扱いについて】ご入力いただいた個人情報は、資料送付・お問い合わせ対応・担当不動産会社との連携の目的に利用します。
+          ご本人の同意なく第三者に提供することはありません（担当不動産会社への連携を除く）。売買契約の締結後は、物件情報の閲覧を購入者様のみに制限します。
+          詳細はプライバシーポリシーをご確認ください。
+        </div>
+        <label class="checks" style="margin-bottom:14px"><input type="checkbox" id="agree"> <span style="font-size:12.5px">個人情報の取り扱いに同意します <span style="color:#c0221a;font-weight:700">＊必須</span></span></label>
+
+        <button class="fsubmit" id="fsubmit" disabled>この内容で資料請求・会員登録する</button>
+      </div>
+
+      <aside class="fside">
+        <h3>お申し込み対象の物件</h3>
+        <div class="pinfo" id="formProp"></div>
+        <ul>
+          <li>資料請求と同時に、無料の会員登録が完了します</li>
+          <li>診断報告書・図面・地盤データ・保証書を閲覧できます</li>
+          <li>担当不動産会社より、ご希望の方法でご連絡します</li>
+          <li>しつこい営業は行いません。ご検討ペースを尊重します</li>
+        </ul>
+      </aside>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <div class="fw">
+    <span>Homille 中古物件EC（画面イメージ）</span>
+    <span class="sp"></span>
+    <span>本モックアップは提案説明用に作成したものです。掲載情報・イラストはすべて架空のサンプルです。</span>
+    <span>© 2026 DreamHanks Co., Ltd.</span>
+  </div>
+</footer>
+
+<script>
+const PAL = {
+  warm:{wall:"#efe9df",wall2:"#e5ddce",floor:"#c8a878",floorL:"#d8bb8f",accent:"#6b8e6f",wood:"#a9895f",sky:"#cfe4ef",roof:"#9c7f5c"},
+  gray:{wall:"#ededec",wall2:"#e0e0df",floor:"#bcb7af",floorL:"#cbc7c0",accent:"#7c8a99",wood:"#9a9186",sky:"#d6e2e8",roof:"#8f8b83"},
+  navy:{wall:"#eaeef1",wall2:"#dde4ea",floor:"#c0a982",floorL:"#d0bd9a",accent:"#3f5a70",wood:"#a68a62",sky:"#c9dbe6",roof:"#6d7f8c"},
+  sand:{wall:"#f1ece2",wall2:"#e7ddca",floor:"#cbb086",floorL:"#dcc59d",accent:"#b07b4e",wood:"#a9895f",sky:"#d8e8ee",roof:"#a07b52"},
+};
+function exterior(c){return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+<rect width="400" height="250" fill="${c.sky}"/><rect y="185" width="400" height="65" fill="#dfe6d8"/>
+<circle cx="52" cy="150" r="26" fill="#9cb894"/><rect x="49" y="150" width="6" height="42" fill="#8a7457"/>
+<circle cx="358" cy="158" r="20" fill="#a7c09e"/><rect x="355" y="158" width="6" height="36" fill="#8a7457"/>
+<rect x="110" y="70" width="180" height="122" fill="#f4f1ea"/><rect x="110" y="70" width="180" height="52" fill="${c.wall2}"/>
+<polygon points="100,72 200,34 300,72" fill="${c.roof}"/><polygon points="200,34 300,72 292,72 200,42" fill="#7d6448"/>
+<rect x="132" y="86" width="34" height="26" fill="#b7d2df" stroke="#fff" stroke-width="3"/>
+<rect x="182" y="86" width="34" height="26" fill="#b7d2df" stroke="#fff" stroke-width="3"/>
+<rect x="232" y="86" width="34" height="26" fill="#b7d2df" stroke="#fff" stroke-width="3"/>
+<rect x="132" y="138" width="52" height="42" fill="#b7d2df" stroke="#fff" stroke-width="3"/><line x1="158" y1="138" x2="158" y2="180" stroke="#fff" stroke-width="2"/>
+<rect x="222" y="126" width="46" height="7" fill="#7d6448"/><rect x="228" y="132" width="34" height="60" fill="${c.wood}"/>
+<rect x="233" y="140" width="24" height="44" fill="#7a6248"/><circle cx="239" cy="163" r="2" fill="#e8dcc0"/>
+<polygon points="238,192 252,192 268,232 224,232" fill="#cfc7b8"/></svg>`;}
+function living(c){return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+<rect width="400" height="250" fill="${c.wall}"/><polygon points="0,0 60,26 60,192 0,218" fill="${c.wall2}"/>
+<polygon points="0,218 60,192 400,175 400,250 0,250" fill="${c.floor}"/>
+<g stroke="${c.floorL}" stroke-width="1.5" opacity="0.6"><line x1="70" y1="192" x2="120" y2="250"/><line x1="160" y1="188" x2="200" y2="250"/><line x1="250" y1="184" x2="280" y2="250"/><line x1="340" y1="180" x2="356" y2="250"/></g>
+<rect x="250" y="40" width="130" height="120" fill="#cfe4ef" stroke="#fff" stroke-width="4"/><line x1="315" y1="40" x2="315" y2="160" stroke="#fff" stroke-width="3"/>
+<rect x="228" y="120" width="18" height="24" fill="#b7936a"/><path d="M237 120 Q220 90 232 78 Q240 96 237 120" fill="${c.accent}"/><path d="M237 120 Q254 92 246 76 Q240 98 237 120" fill="#7fa07f"/>
+<rect x="96" y="150" width="150" height="46" rx="8" fill="${c.accent}"/><rect x="90" y="140" width="26" height="56" rx="8" fill="${c.accent}"/><rect x="226" y="140" width="26" height="56" rx="8" fill="${c.accent}"/>
+<rect x="120" y="150" width="44" height="24" rx="6" fill="#fff" opacity="0.28"/><rect x="180" y="150" width="44" height="24" rx="6" fill="#fff" opacity="0.28"/>
+<ellipse cx="172" cy="216" rx="120" ry="18" fill="#e8d9c2" opacity="0.65"/>
+<rect x="132" y="198" width="80" height="14" rx="3" fill="${c.wood}"/><rect x="138" y="212" width="6" height="12" fill="#8a7052"/><rect x="200" y="212" width="6" height="12" fill="#8a7052"/>
+<rect x="96" y="60" width="40" height="52" fill="#fff" stroke="${c.wood}" stroke-width="3"/><rect x="104" y="70" width="24" height="32" fill="${c.accent}" opacity="0.5"/>
+<line x1="180" y1="0" x2="180" y2="30" stroke="#8a7052" stroke-width="2"/><path d="M166 30 h28 l-6 14 h-16 z" fill="${c.wood}"/></svg>`;}
+function kitchen(c){return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+<rect width="400" height="250" fill="${c.wall}"/><polygon points="0,218 400,200 400,250 0,250" fill="${c.floor}"/>
+<rect x="40" y="30" width="320" height="46" fill="${c.wall2}"/><g stroke="${c.wall}" stroke-width="2"><line x1="120" y1="30" x2="120" y2="76"/><line x1="200" y1="30" x2="200" y2="76"/><line x1="280" y1="30" x2="280" y2="76"/></g>
+<rect x="40" y="76" width="320" height="44" fill="#f2ede2"/><rect x="40" y="120" width="320" height="14" fill="#e8e2d5"/>
+<g fill="none" stroke="${c.wall2}" stroke-width="1"><line x1="120" y1="76" x2="120" y2="120"/><line x1="200" y1="76" x2="200" y2="120"/><line x1="280" y1="76" x2="280" y2="120"/><line x1="40" y1="98" x2="360" y2="98"/></g>
+<path d="M150 30 h100 l-14 34 h-72 z" fill="#c9c4ba"/>
+<rect x="176" y="120" width="48" height="14" fill="#5a564f"/><circle cx="192" cy="127" r="4" fill="#3a3733"/><circle cx="208" cy="127" r="4" fill="#3a3733"/>
+<rect x="70" y="150" width="260" height="70" rx="4" fill="${c.wood}"/><rect x="70" y="150" width="260" height="16" rx="3" fill="#efe9dd"/>
+<g stroke="#8a7052" stroke-width="1.5" opacity="0.5"><line x1="160" y1="166" x2="160" y2="220"/><line x1="240" y1="166" x2="240" y2="220"/></g>
+<rect x="96" y="156" width="42" height="6" rx="3" fill="#cfcabf"/><path d="M120 156 v-14 q0 -6 8 -6" fill="none" stroke="#9a958b" stroke-width="3"/>
+<circle cx="150" cy="236" r="11" fill="${c.accent}"/><rect x="148" y="236" width="4" height="12" fill="#7a7568"/><circle cx="250" cy="236" r="11" fill="${c.accent}"/><rect x="248" y="236" width="4" height="12" fill="#7a7568"/>
+<line x1="150" y1="30" x2="150" y2="70" stroke="#8a7052" stroke-width="2"/><circle cx="150" cy="74" r="8" fill="${c.accent}"/><line x1="250" y1="30" x2="250" y2="70" stroke="#8a7052" stroke-width="2"/><circle cx="250" cy="74" r="8" fill="${c.accent}"/></svg>`;}
+function bath(c){return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice">
+<rect width="400" height="250" fill="#e7edf0"/><polygon points="0,0 400,0 400,180 0,205" fill="#dfe7ea"/>
+<polygon points="230,20 380,20 380,170 230,182" fill="${c.wood}" opacity="0.72"/>
+<polygon points="0,205 400,180 400,250 0,250" fill="#c5ccce"/>
+<g stroke="#d3d9da" stroke-width="1.5"><line x1="100" y1="196" x2="120" y2="250"/><line x1="220" y1="188" x2="230" y2="250"/><line x1="320" y1="182" x2="326" y2="250"/></g>
+<rect x="40" y="150" width="200" height="64" rx="14" fill="#ffffff"/><rect x="52" y="158" width="176" height="44" rx="10" fill="#dcebf2"/><ellipse cx="140" cy="180" rx="80" ry="16" fill="#cfe4ef" opacity="0.6"/>
+<rect x="120" y="128" width="40" height="8" rx="4" fill="#b9c2c5"/><rect x="136" y="112" width="8" height="18" fill="#c7cfd1"/>
+<rect x="272" y="70" width="70" height="50" rx="3" fill="#cfe0e6" stroke="#fff" stroke-width="3"/><rect x="278" y="128" width="58" height="10" rx="3" fill="#eef3f4"/><path d="M300 128 v-10 q0 -4 6 -4" fill="none" stroke="#9aa4a7" stroke-width="3"/>
+<line x1="360" y1="60" x2="360" y2="150" stroke="#c7cfd1" stroke-width="4"/><circle cx="360" cy="58" r="8" fill="#c7cfd1"/>
+<rect x="200" y="120" width="26" height="34" rx="3" fill="${c.accent}" opacity="0.7"/></svg>`;}
+function plan2f(c){return `<svg viewBox="0 0 400 250" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid meet">
+<rect width="400" height="250" fill="#fbfaf7"/>
+<text x="20" y="26" font-size="13" font-weight="700" fill="#5c4322" font-family="sans-serif">1F</text>
+<text x="220" y="26" font-size="13" font-weight="700" fill="#5c4322" font-family="sans-serif">2F</text>
+<g stroke="#7a5c2e" stroke-width="2" fill="none"><rect x="20" y="36" width="170" height="200"/><line x1="20" y1="150" x2="120" y2="150"/><line x1="120" y1="120" x2="120" y2="236"/><line x1="120" y1="120" x2="190" y2="120"/></g>
+<g font-size="11" fill="#6b635a" font-family="sans-serif" text-anchor="middle"><text x="70" y="98">LDK 18帖</text><text x="70" y="196">和室 6帖</text><text x="155" y="86">洋室 6帖</text><text x="155" y="182">水回り</text></g>
+<g stroke="#7a5c2e" stroke-width="2" fill="none"><rect x="210" y="36" width="170" height="200"/><line x1="210" y1="136" x2="380" y2="136"/><line x1="295" y1="36" x2="295" y2="136"/><line x1="295" y1="136" x2="295" y2="236"/></g>
+<g font-size="11" fill="#6b635a" font-family="sans-serif" text-anchor="middle"><text x="252" y="92">洋室 8帖</text><text x="338" y="92">洋室 6帖</text><text x="252" y="190">洋室 6帖</text><text x="338" y="190">WIC・納戸</text></g>
+<g stroke="#a9895f" stroke-width="1"><rect x="128" y="128" width="54" height="18" fill="none"/><line x1="128" y1="134" x2="182" y2="134"/><line x1="128" y1="140" x2="182" y2="140"/></g></svg>`;}
+
+const ART={exterior,living,kitchen,bath,plan2f};
+function tone(name){return PAL[name]||PAL.warm;}
+
+const props = [
+  { id:1, x:120, y:95, kind:"g", tone:"warm",
+    title:"2階建て木造 5LDK 戸建リノベ物件　安心の10年保証付",
+    addr:"東京都墨田区XX　XX-1", price:"¥89,800,000", plan:"5LDK（2階建て）",
+    area:"延床 117.50㎡／土地 108.72㎡", age:"築22年（2026年フルリノベ）", str:"木造 2階建て",
+    acc:"都営大江戸線「両国」駅 徒歩8分", ground:"A（良好）／SDS試験実施済",
+    badges:[["g","10年保証付"],["o","診断済み"],["b","新築時履歴あり"]] },
+  { id:2, x:262, y:210, kind:"g", tone:"gray",
+    title:"南向き角地　2階建て 5LDK リフォーム済戸建",
+    addr:"東京都墨田区YY　YY-4", price:"¥74,500,000", plan:"5LDK（2階建て）",
+    area:"延床 112.30㎡／土地 95.11㎡", age:"築18年（2025年リノベ）", str:"木造 2階建て",
+    acc:"JR総武線「錦糸町」駅 徒歩11分", ground:"A（良好）",
+    badges:[["g","10年保証付"],["o","診断済み"]] },
+  { id:3, x:530, y:120, kind:"o", tone:"navy",
+    title:"駅近　2階建て 5LDK スケルトンリノベ済",
+    addr:"東京都墨田区ZZ　ZZ-9", price:"¥68,000,000", plan:"5LDK（2階建て）",
+    area:"延床 106.04㎡／土地 82.40㎡", age:"築26年（2026年リノベ）", str:"木造 2階建て",
+    acc:"JR総武線「錦糸町」駅 徒歩5分", ground:"B（概ね良好）",
+    badges:[["o","診断済み"],["s","リノベ提案可"]] },
+  { id:4, x:690, y:255, kind:"s", tone:"sand",
+    title:"【会員限定】公園隣接　2階建て 5LDK 二世帯対応",
+    addr:"東京都墨田区VV　VV-2", price:"¥112,000,000", plan:"5LDK＋書斎（2階建て）",
+    area:"延床 138.90㎡／土地 132.05㎡", age:"築14年（2025年リノベ）", str:"木造 2階建て",
+    acc:"JR総武線「錦糸町」駅 徒歩9分", ground:"A（良好）／新築時記録あり",
+    badges:[["s","会員限定公開"],["g","10年保証付"],["o","診断済み"]] },
+  { id:5, x:150, y:375, kind:"o", tone:"warm",
+    title:"整形地　2階建て 5LDK 庭付きリノベ戸建",
+    addr:"東京都墨田区WW　WW-7", price:"¥56,800,000", plan:"5LDK（2階建て）",
+    area:"延床 108.66㎡／土地 121.44㎡", age:"築31年（2026年リノベ）", str:"木造 2階建て",
+    acc:"都営大江戸線「両国」駅 徒歩13分", ground:"B（概ね良好）",
+    badges:[["o","診断済み"]] },
+  { id:6, x:560, y:395, kind:"g", tone:"navy",
+    title:"再建築可　二方角地　2階建て 5LDK 保証承継可",
+    addr:"東京都墨田区UU　UU-5", price:"¥93,200,000", plan:"5LDK（2階建て）",
+    area:"延床 124.18㎡／土地 110.90㎡", age:"築9年（2026年リノベ）", str:"木造 2階建て",
+    acc:"JR総武線「錦糸町」駅 徒歩7分", ground:"A（良好）／新築時記録あり",
+    badges:[["g","10年保証付"],["o","診断済み"],["b","新築時履歴あり"]] },
+];
+const COLOR = { g:"#0f5c35", o:"#e07b1e", s:"#7a5c2e" };
+const GAL = [
+  {key:"exterior",cap:"外観"},{key:"living",cap:"リビング"},
+  {key:"kitchen",cap:"キッチン"},{key:"bath",cap:"浴室"},{key:"plan2f",cap:"間取り図"},
+];
+const CAPMAP={exterior:"外観 2階建て木造",living:"リビング（リノベ後）",kitchen:"対面キッチン（リノベ後）",bath:"浴室（リノベ後）",plan2f:"間取り 5LDK"};
+
+let isMember=false, activeId=null, curProp=null;
+
+document.getElementById("pins").innerHTML = props.map(p=>`
+  <g class="pin" data-id="${p.id}" tabindex="0" role="button" aria-label="${p.title} ${p.price}">
+    <circle class="halo" cx="${p.x}" cy="${p.y}" r="21" fill="${COLOR[p.kind]}"/>
+    <circle class="core" cx="${p.x}" cy="${p.y}" r="9" fill="${COLOR[p.kind]}"/>
+    <circle cx="${p.x}" cy="${p.y}" r="3.4" fill="#fff"/>
+  </g>`).join("");
+
+const HEART=`<svg viewBox="0 0 24 24"><path class="hs" d="M12 21s-8-4.5-8-10.5A4.5 4.5 0 0 1 12 6a4.5 4.5 0 0 1 8 4.5C20 16.5 12 21 12 21z"/></svg>`;
+function renderList(){
+  document.getElementById("plist").innerHTML = props.map(p=>`
+    <div class="pcard" data-id="${p.id}" role="button" tabindex="0">
+      <span class="pthumb">${ART.exterior(tone(p.tone))}<span class="tg">外観</span>
+        <button class="favbtn ${favs.has(p.id)?'on':''}" data-fav="${p.id}" aria-label="お気に入り" aria-pressed="${favs.has(p.id)}">${HEART}</button>
+      </span>
+      <span>
+        <h3>${p.title}</h3>
+        <div class="addr">${p.addr}　／　${p.acc}</div>
+        <div class="price">${p.price}<small>${p.plan}・${p.age}</small></div>
+        <div class="badges">${p.badges.map(b=>`<span class="bdg ${b[0]}">${b[1]}</span>`).join("")}</div>
+      </span>
+    </div>`).join("");
+  bindCards();
+}
+document.getElementById("cnt").textContent = props.length;
+
+function highlight(id){ // eslint-disable-line
+  activeId=id;
+  document.querySelectorAll(".pin").forEach(el=>el.classList.toggle("active",+el.dataset.id===id));
+  document.querySelectorAll(".pcard").forEach(el=>el.classList.toggle("active",+el.dataset.id===id));
+}
+document.querySelectorAll(".pin").forEach(el=>{
+  el.addEventListener("click",()=>highlight(+el.dataset.id));
+  el.addEventListener("dblclick",()=>openDetail(+el.dataset.id));
+  el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(+el.dataset.id);}});
+});
+function bindCards(){
+  document.querySelectorAll(".pcard").forEach(el=>{
+    el.addEventListener("click",e=>{
+      if(e.target.closest(".favbtn"))return;
+      openDetail(+el.dataset.id);
+    });
+    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();openDetail(+el.dataset.id);}});
+  });
+  document.querySelectorAll(".favbtn").forEach(b=>{
+    b.addEventListener("click",e=>{e.stopPropagation();toggleFav(+b.dataset.fav);});
+  });
+}
+
+function renderGallery(p){
+  const t=tone(p.tone);
+  document.getElementById("gmain").innerHTML = ART[GAL[0].key](t)
+    +`<div class="rb">${p.badges.map(b=>b[1]).join("　/　")}</div>`
+    +`<button class="favbtn ${favs.has(p.id)?'on':''}" data-fav="${p.id}" aria-label="お気に入り" aria-pressed="${favs.has(p.id)}">${HEART}</button>`;
+  document.querySelector("#gmain .favbtn").addEventListener("click",e=>{e.stopPropagation();toggleFav(p.id);});
+  document.getElementById("gthumbs").innerHTML = GAL.map((g,i)=>`
+    <div class="gth ${i===0?'on':''}" data-key="${g.key}" role="button" tabindex="0" aria-label="${CAPMAP[g.key]}">
+      ${ART[g.key](t)}<span class="cap">${g.cap}</span>
+    </div>`).join("");
+  document.querySelectorAll(".gth").forEach(el=>{
+    const set=()=>{
+      document.getElementById("gmain").innerHTML = ART[el.dataset.key](t)+`<div class="rb">${CAPMAP[el.dataset.key]}</div>`;
+      document.querySelectorAll(".gth").forEach(x=>x.classList.remove("on"));
+      el.classList.add("on");
+    };
+    el.addEventListener("click",set);
+    el.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();set();}});
+  });
+}
+
+/* ---- ビュー管理 ---- */
+const VIEWS={
+  list:document.getElementById("viewList"),
+  detail:document.getElementById("viewDetail"),
+  member:document.getElementById("viewMember"),
+  support:document.getElementById("viewSupport"),
+  mypage:document.getElementById("viewMypage"),
+  form:document.getElementById("viewForm"),
+};
+function show(name){
+  // 一覧・詳細は display 制御、それ以外は .page.show
+  VIEWS.list.style.display = (name==="list")?"":"none";
+  VIEWS.detail.classList.toggle("show", name==="detail");
+  ["member","support","mypage","form"].forEach(k=>VIEWS[k].classList.toggle("show", name===k));
+  // ナビのアクティブ表示
+  document.querySelectorAll('nav a[data-view]').forEach(a=>a.classList.toggle("on", a.dataset.view===name || (name==="detail"&&a.dataset.view==="list")));
+  if(name==="mypage") renderFavList();
+  window.scrollTo({top:0,behavior:"instant"});
+}
+function openDetail(id){
+  const p=props.find(x=>x.id===id); curProp=p; highlight(id);
+  document.getElementById("dTitle").textContent="物件詳細："+p.addr+"　"+p.title;
+  document.getElementById("dPrice").textContent=p.price;
+  document.getElementById("dAddr").textContent=p.addr;
+  document.getElementById("dPlan").textContent=p.plan;
+  document.getElementById("dArea").textContent=p.area;
+  document.getElementById("dAge").textContent=p.age;
+  document.getElementById("dStr").textContent=p.str;
+  document.getElementById("dAcc").textContent=p.acc;
+  document.getElementById("dGround").textContent=p.ground;
+  renderGallery(p);
+  syncCtaFav();
+  show("detail");
+}
+document.getElementById("back").addEventListener("click",()=>show("list"));
+
+/* ナビ・メニューのクリックでビュー切替 */
+document.querySelectorAll('[data-view]').forEach(el=>{
+  el.addEventListener("click",e=>{
+    e.preventDefault(); closeSheet(); show(el.dataset.view);
+  });
+});
+
+/* ---- お気に入り ---- */
+const favs=new Set();
+function updateFavCount(){
+  const n=favs.size;
+  document.getElementById("favN").textContent=n;
+  const f2=document.getElementById("favN2"); if(f2)f2.textContent=n;
+}
+function toggleFav(id){
+  if(favs.has(id))favs.delete(id); else favs.add(id);
+  updateFavCount();
+  // 全てのfavbtnの見た目を同期
+  document.querySelectorAll(`.favbtn[data-fav="${id}"]`).forEach(b=>{
+    const on=favs.has(id); b.classList.toggle("on",on); b.setAttribute("aria-pressed",String(on));
+  });
+  syncCtaFav();
+  if(VIEWS.mypage.classList.contains("show")) renderFavList();
+}
+function syncCtaFav(){
+  if(!curProp)return;
+  const on=favs.has(curProp.id);
+  const btn=document.getElementById("ctaFav");
+  btn.classList.toggle("on",on);
+  btn.innerHTML=(on?HEART+"お気に入り登録済み":HEART+"お気に入りに追加");
+}
+document.getElementById("ctaFav").addEventListener("click",()=>{ if(curProp)toggleFav(curProp.id); });
+document.getElementById("ctaReq").addEventListener("click",()=>openForm(curProp));
+
+function renderFavList(){
+  const box=document.getElementById("favList");
+  const items=props.filter(p=>favs.has(p.id));
+  if(items.length===0){
+    box.innerHTML=`<div class="emptyfav">
+      ${HEART.replace('class="hs"','class="hs" style="stroke:#cfc7ba"')}
+      <b>お気に入りはまだありません</b>
+      <div>気になる物件のハートマークを押すと、ここに保存されます。</div>
+      <button class="go2" data-view="list">物件を探す</button></div>`;
+    box.querySelector(".go2").addEventListener("click",()=>show("list"));
+    return;
+  }
+  box.innerHTML=`<div class="plist">`+items.map(p=>`
+    <div class="pcard" data-id="${p.id}" role="button" tabindex="0">
+      <span class="pthumb">${ART.exterior(tone(p.tone))}<span class="tg">外観</span>
+        <button class="favbtn on" data-fav="${p.id}" aria-label="お気に入り解除" aria-pressed="true">${HEART}</button></span>
+      <span>
+        <h3>${p.title}</h3>
+        <div class="addr">${p.addr}　／　${p.acc}</div>
+        <div class="price">${p.price}<small>${p.plan}・${p.age}</small></div>
+        <div class="badges">${p.badges.map(b=>`<span class="bdg ${b[0]}">${b[1]}</span>`).join("")}</div>
+      </span>
+    </div>`).join("")+`</div>`;
+  box.querySelectorAll(".pcard").forEach(el=>{
+    el.addEventListener("click",e=>{ if(e.target.closest(".favbtn"))return; openDetail(+el.dataset.id); });
+  });
+  box.querySelectorAll(".favbtn").forEach(b=>{
+    b.addEventListener("click",e=>{e.stopPropagation();toggleFav(+b.dataset.fav);});
+  });
+}
+
+/* ---- 資料請求フォーム ---- */
+function openForm(p){
+  if(!p)return;
+  document.getElementById("formProp").innerHTML=
+    `<span class="th">${ART.exterior(tone(p.tone))}</span>
+     <span><span class="nm">${p.title}</span><span class="pr">${p.price}</span>
+     <span style="font-size:11px;color:var(--ink-2)">${p.plan}・${p.area}</span></span>`;
+  // フォーム内容をリセット表示に
+  document.getElementById("formCard").style.display="";
+  show("form");
+}
+document.getElementById("formBack").addEventListener("click",()=>{ if(curProp)openDetail(curProp.id); else show("list"); });
+
+// 同意チェックで送信ボタン活性
+document.getElementById("agree").addEventListener("change",e=>{
+  document.getElementById("fsubmit").disabled=!e.target.checked;
+});
+// 簡易バリデーション＋送信
+document.getElementById("fsubmit").addEventListener("click",()=>{
+  const card=document.getElementById("formCard");
+  let ok=true;
+  const need=[["f-name",v=>v.trim().length>0],
+    ["f-mail",v=>/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)],
+    ["f-tel",v=>v.replace(/[^0-9]/g,"").length>=10]];
+  need.forEach(([id,test])=>{
+    const row=document.getElementById(id);
+    const val=row.querySelector("input").value;
+    const bad=!test(val); row.classList.toggle("err",bad); if(bad)ok=false;
+  });
+  if(!ok){ card.querySelector(".frow.err input").focus(); return; }
+  // 会員登録完了扱い
+  setMember(true);
+  card.innerHTML=`<div class="doneview">
+    <div class="ok"><svg viewBox="0 0 24 24"><path d="M4 12l5 5L20 6"/></svg></div>
+    <h2>お申し込みを受け付けました</h2>
+    <p>ご入力ありがとうございます。あわせて<b>無料の会員登録が完了</b>しました。
+    担当不動産会社より、ご希望の連絡方法でご連絡いたします。</p>
+    <p>会員として、この物件の診断報告書・図面・地盤データ・保証書をすべて閲覧できるようになりました。</p>
+    <button class="back2" id="doneBack">物件詳細を見る</button></div>`;
+  card.querySelector("#doneBack").addEventListener("click",()=>{ if(curProp)openDetail(curProp.id); });
+});
+
+const bG=document.getElementById("btnGuest"), bM=document.getElementById("btnMember");
+function setMember(v){
+  isMember=v;
+  bG.setAttribute("aria-pressed",String(!v)); bM.setAttribute("aria-pressed",String(v));
+  document.getElementById("dRole").textContent=v?"会員（ログイン中）":"非会員";
+  document.getElementById("gate").classList.toggle("hidden",v);
+  document.getElementById("opened").classList.toggle("show",v);
+  document.querySelectorAll(".doc").forEach(d=>{
+    if(d.dataset.gate==="0")return;
+    d.disabled=!v; d.querySelector(".st").textContent=v?"開く":"会員限定";
+  });
+}
+bG.addEventListener("click",()=>setMember(false));
+bM.addEventListener("click",()=>setMember(true));
+document.getElementById("gbtn").addEventListener("click",()=>setMember(true));
+setMember(false);
+
+const msheet=document.getElementById("msheet");
+function closeSheet(){msheet.classList.remove("show");}
+document.getElementById("hamb").addEventListener("click",()=>msheet.classList.add("show"));
+document.getElementById("msheetbg").addEventListener("click",closeSheet);
+document.getElementById("msheetx").addEventListener("click",closeSheet);
+// 外部リンク（JHS公式）を押したときはメニューだけ閉じる
+msheet.querySelectorAll('a[target="_blank"]').forEach(a=>a.addEventListener("click",closeSheet));
+
+/* ---- 初期描画 ---- */
+renderList();
+updateFavCount();
+show("list");
+</script>
+</body>
+</html>

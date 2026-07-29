@@ -1,0 +1,1171 @@
+/* =============================================================
+   Homille — CSS ported from mockup.html <style> block.
+
+   Ported verbatim. The ONLY mechanical change is that the
+   :root custom properties moved into @theme in index.css and
+   every var() reference was renamed to the Tailwind v4 token
+   name:
+       var(--soil)    -> var(--color-soil)
+       var(--soil-d)  -> var(--color-soil-d)
+       var(--green)   -> var(--color-green)
+       var(--orange)  -> var(--color-orange)
+       var(--blue)    -> var(--color-blue)
+       var(--paper)   -> var(--color-paper)
+       var(--card)    -> var(--color-card)
+       var(--ink)     -> var(--color-ink)
+       var(--ink-2)   -> var(--color-ink-2)
+       var(--rule)    -> var(--color-rule)
+       var(--rule-2)  -> var(--color-rule-2)
+       var(--shadow)  -> var(--shadow-card)
+       var(--mincho)  -> var(--font-mincho)
+       var(--gothic)  -> var(--font-gothic)
+
+   Three clearly-marked blocks at the end of this file are NOT
+   from the original: Preflight compensation, the .pcard
+   stretched-button rules, and the named classes that replace
+   the original's inline style= attributes.
+   ============================================================= */
+
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{font-family:var(--font-gothic); color:var(--color-ink); background:var(--color-paper);
+  font-size:14px; line-height:1.7; -webkit-font-smoothing:antialiased}
+img,svg{max-width:100%}
+button{font-family:inherit; cursor:pointer}
+:focus-visible{outline:2px solid var(--color-soil); outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* Step 2i DELETION: the .mockbar block stood here. The bar and its
+   component are gone; nothing was positioned relative to its height. */
+
+header{background:#fff; border-bottom:1px solid var(--color-rule); position:sticky; top:0; z-index:40}
+.hwrap{max-width:1320px; margin:0 auto; padding:0 20px;
+  display:flex; align-items:center; gap:28px; height:66px}
+.logo{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit}
+.logo .mark{width:36px; height:36px; border-radius:8px; background:var(--color-soil);
+  display:grid; place-items:center; flex:none}
+.logo .mark svg{width:20px; height:20px}
+.logo .lt{line-height:1.15}
+.logo .lt .n{font-family:var(--font-mincho); font-weight:700; font-size:21px; letter-spacing:.01em}
+.logo .lt .n small{font-family:var(--font-gothic); font-weight:500; font-size:10px;
+  letter-spacing:.14em; color:var(--color-ink-2); margin-left:6px}
+.logo .lt .c{font-size:9.5px; color:var(--color-ink-2); letter-spacing:.02em}
+nav{display:flex; gap:2px; margin-left:auto}
+nav a{text-decoration:none; color:var(--color-ink); font-size:13px; font-weight:500;
+  padding:8px 13px; border-radius:4px; position:relative}
+nav a:hover{background:var(--color-rule-2)}
+nav a.on{color:var(--color-soil)}
+nav a.on:after{content:""; position:absolute; left:13px; right:13px; bottom:1px;
+  height:2px; background:var(--color-soil); border-radius:2px}
+.hactions{display:flex; align-items:center; gap:8px; border-left:1px solid var(--color-rule); padding-left:16px}
+.iconbtn{border:1px solid var(--color-rule); background:#fff; border-radius:4px;
+  padding:6px 11px; font-size:11.5px; color:var(--color-ink-2); display:flex; align-items:center; gap:6px}
+.iconbtn:hover{border-color:var(--color-soil); color:var(--color-soil)}
+.hamb{display:none; border:1px solid var(--color-rule); background:#fff; border-radius:5px;
+  width:38px; height:34px; align-items:center; justify-content:center}
+.hamb svg{width:18px;height:18px}
+
+/* Original-mockup bug fix: .msheet was only styled inside the
+   640px media query, leaving it visible in the flow on desktop. */
+.msheet{display:none}
+
+.searchbar{background:#fff; border-bottom:1px solid var(--color-rule)}
+.sw{max-width:1320px; margin:0 auto; padding:13px 20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap}
+.sw .field{border:1px solid var(--color-rule); border-radius:4px; padding:6px 11px;
+  font-size:12.5px; background:#fff; min-width:112px; color:var(--color-ink); font-family:inherit}
+.chips{display:flex; gap:7px; flex-wrap:wrap; margin-left:4px}
+.chip{border:1px solid var(--color-rule); background:#fff; border-radius:100px;
+  padding:5px 13px; font-size:12px; font-weight:500; color:var(--color-ink-2);
+  display:flex; align-items:center; gap:6px; transition:.15s}
+.chip .dot{width:7px; height:7px; border-radius:50%; background:currentColor; opacity:.5}
+.chip[aria-pressed="true"]{border-color:var(--color-green); background:#f1f7f3; color:var(--color-green)}
+.chip[aria-pressed="true"] .dot{opacity:1}
+.chip.o[aria-pressed="true"]{border-color:var(--color-orange); background:#fdf4ea; color:var(--color-orange)}
+.chip.b[aria-pressed="true"]{border-color:var(--color-blue); background:#eef3fa; color:var(--color-blue)}
+.sw .go{margin-left:auto; border:0; background:var(--color-soil); color:#fff;
+  border-radius:4px; padding:8px 22px; font-size:13px; font-weight:700}
+.sw .go:hover{background:var(--color-soil-d)}
+.axisnote{max-width:1320px; margin:0 auto; padding:0 20px 12px; font-size:11.5px; color:var(--color-ink-2)}
+.axisnote b{color:var(--color-soil)}
+
+main{max-width:1320px; margin:0 auto; padding:20px}
+/* Step 2c DELETION: .split was `display:grid; grid-template-columns:1fr
+   400px; gap:20px; align-items:start`. The map/list side-by-side split
+   is replaced by the .reslayout vertical stack. */
+
+.mapcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+  overflow:hidden; box-shadow:var(--shadow-card)}
+.maphead{display:flex; align-items:center; gap:14px; padding:11px 15px;
+  border-bottom:1px solid var(--color-rule-2); flex-wrap:wrap}
+.maphead h2{margin:0; font-size:13px; font-weight:700; letter-spacing:.02em}
+.legend{display:flex; gap:14px; margin-left:auto; font-size:11px; color:var(--color-ink-2); flex-wrap:wrap}
+.legend span{display:flex; align-items:center; gap:5px}
+.legend i{width:9px; height:9px; border-radius:50%; display:block}
+.mapbody{position:relative; background:#f5f3ee}
+/* Step 2d DELETION: .mapbody svg{display:block; width:100%; height:auto}
+   was for the drawn SVG map. MapLibre renders a <canvas>, but its
+   controls contain <svg>, which this rule stretched to full width. */
+.pin{cursor:pointer}
+.pin circle.halo{opacity:0; transition:.2s}
+.pin:hover circle.halo,.pin.active circle.halo{opacity:.28}
+.pin.active circle.core{stroke:#fff; stroke-width:2.5}
+.mapfoot{padding:9px 15px; border-top:1px solid var(--color-rule-2); font-size:11px; color:var(--color-ink-2)}
+
+.listhead{display:flex; align-items:baseline; gap:10px; margin:0 0 11px}
+.listhead h2{margin:0; font-family:var(--font-mincho); font-size:17px; font-weight:700}
+.listhead .cnt{font-size:12px; color:var(--color-ink-2)}
+.listhead .cnt b{color:var(--color-soil); font-size:15px; font-family:var(--font-gothic)}
+.plist{display:flex; flex-direction:column; gap:11px}
+.pcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+  padding:13px; display:grid; grid-template-columns:120px 1fr; gap:13px;
+  cursor:pointer; transition:.15s; text-align:left; width:100%; font-family:inherit}
+.pcard:hover{border-color:var(--color-soil); box-shadow:var(--shadow-card)}
+.pcard.active{border-color:var(--color-soil); box-shadow:0 0 0 2px rgba(122,92,46,.15)}
+.pthumb{aspect-ratio:4/3; border-radius:5px; overflow:hidden; background:#e8e3d8; position:relative}
+.pthumb svg{width:100%; height:100%; display:block}
+.pthumb .tg{position:absolute; left:5px; top:5px; background:rgba(15,92,53,.92);
+  color:#fff; font-size:9px; font-weight:700; padding:1px 6px; border-radius:2px; letter-spacing:.02em}
+.pcard h3{margin:0 0 3px; font-size:13.5px; font-weight:700; line-height:1.45}
+.pcard .addr{font-size:11.5px; color:var(--color-ink-2); margin-bottom:6px}
+.pcard .price{font-family:var(--font-mincho); font-size:19px; font-weight:700;
+  color:var(--color-soil-d); letter-spacing:-.01em}
+.pcard .price small{font-family:var(--font-gothic); font-size:10.5px; font-weight:500;
+  color:var(--color-ink-2); margin-left:5px}
+.badges{display:flex; gap:5px; flex-wrap:wrap; margin-top:7px}
+.bdg{font-size:10px; font-weight:700; padding:2px 7px; border-radius:2px; letter-spacing:.02em; white-space:nowrap}
+.bdg.g{background:#e9f2ec; color:var(--color-green)}
+.bdg.o{background:#fdf1e4; color:#b7620f}
+.bdg.b{background:#eaf1f9; color:var(--color-blue)}
+.bdg.s{background:#f4efe4; color:var(--color-soil-d)}
+
+.detail{display:none}
+.detail.show{display:block}
+.backlink{border:0; background:transparent; color:var(--color-ink-2); font-size:12.5px;
+  padding:0 0 12px; display:flex; align-items:center; gap:6px}
+.backlink:hover{color:var(--color-soil)}
+.dhead{background:var(--color-ink); color:#fff; border-radius:6px 6px 0 0;
+  padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
+.dhead .t{font-size:15px; font-weight:700; letter-spacing:.01em}
+.dhead .g{margin-left:auto; display:flex; align-items:center; gap:7px;
+  background:rgba(255,255,255,.12); border-radius:3px; padding:4px 11px; font-size:12px}
+.dhead .g b{color:#8fd6a9}
+.dbody{background:#fff; border:1px solid var(--color-rule); border-top:0;
+  border-radius:0 0 6px 6px; padding:20px; box-shadow:var(--shadow-card)}
+.dgrid{display:grid; grid-template-columns:1.15fr 1fr; gap:24px}
+
+.gal{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
+.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:6px; overflow:hidden; position:relative}
+.gmain svg{width:100%; height:100%; display:block}
+.gmain .rb{position:absolute; left:12px; bottom:12px; background:rgba(255,255,255,.94);
+  border-radius:3px; padding:4px 10px; font-size:11px; font-weight:700; color:var(--color-soil-d)}
+.gth{aspect-ratio:4/3; border-radius:4px; overflow:hidden; cursor:pointer;
+  border:2px solid transparent; position:relative; background:#e8e3d8}
+.gth svg{width:100%; height:100%; display:block}
+.gth.on{border-color:var(--color-soil)}
+.gth .cap{position:absolute; left:0; right:0; bottom:0; background:rgba(42,38,34,.6);
+  color:#fff; font-size:9px; text-align:center; padding:1px 0; letter-spacing:.03em}
+
+.spec{width:100%; border-collapse:collapse; font-size:12.5px; margin-top:2px}
+.spec th{text-align:left; font-weight:500; color:var(--color-ink-2); width:88px;
+  padding:7px 0; border-bottom:1px solid var(--color-rule-2); vertical-align:top; font-size:11.5px}
+.spec td{padding:7px 0; border-bottom:1px solid var(--color-rule-2); font-weight:500}
+.spec .big{font-family:var(--font-mincho); font-size:25px; font-weight:700; color:var(--color-soil-d)}
+
+.karte{margin-top:26px; border-top:2px solid var(--color-ink); padding-top:16px}
+.karte .kh{display:flex; align-items:baseline; gap:12px; margin-bottom:3px; flex-wrap:wrap}
+.karte .kh h3{margin:0; font-family:var(--font-mincho); font-size:19px; font-weight:700}
+.karte .kh .en{font-size:9.5px; letter-spacing:.22em; color:var(--color-ink-2)}
+.karte .kd{font-size:12px; color:var(--color-ink-2); margin-bottom:14px}
+.strata{border:1px solid var(--color-rule); border-radius:5px; overflow:hidden}
+.stratum{display:grid; grid-template-columns:118px 1fr 250px;
+  border-bottom:1px solid var(--color-rule-2); align-items:stretch}
+.stratum:last-child{border-bottom:0}
+.stratum .when{padding:12px 14px; font-size:11.5px; font-weight:700; color:#fff;
+  display:flex; flex-direction:column; justify-content:center; gap:2px}
+.stratum .when small{font-weight:500; opacity:.8; font-size:10px}
+.stratum .what{padding:12px 16px; border-right:1px solid var(--color-rule-2)}
+.stratum .what b{font-size:13px; display:block; margin-bottom:2px}
+.stratum .what span{font-size:11.5px; color:var(--color-ink-2)}
+.stratum .docs{padding:11px 14px; display:flex; flex-direction:column; gap:5px; background:#fdfcfa}
+.s1 .when{background:#3d3a34}
+.s2 .when{background:#5c5347}
+.s3 .when{background:#7a6b52}
+.s4 .when{background:#9c8560}
+.s5 .when{background:var(--color-soil)}
+.doc{display:flex; align-items:center; gap:8px; border:1px solid var(--color-rule);
+  border-radius:3px; padding:6px 10px; background:#fff; font-size:11.5px;
+  text-align:left; width:100%; font-family:inherit; color:var(--color-ink)}
+.doc .ic{width:16px; height:16px; border-radius:2px; flex:none; display:grid;
+  place-items:center; color:#fff; font-size:9px; font-weight:700}
+.doc.o .ic{background:var(--color-orange)} .doc.b .ic{background:var(--color-blue)} .doc.g .ic{background:var(--color-green)}
+.doc .lb{flex:1}
+.doc .st{font-size:10px; font-weight:700; color:var(--color-ink-2)}
+.doc:not(:disabled):hover{border-color:var(--color-soil); background:#fdfbf7}
+.doc:disabled{cursor:not-allowed; background:#f7f5f0; color:#a39a8d}
+.doc:disabled .ic{background:#c4bcb0}
+.doc:disabled .st{color:var(--color-soil)}
+
+.gate{margin-top:16px; border:1px dashed var(--color-soil); border-radius:5px; background:#fdfbf6;
+  padding:15px 18px; display:flex; gap:16px; align-items:center; flex-wrap:wrap}
+.gate.hidden{display:none}
+.gate .gt{flex:1; min-width:230px}
+.gate .gt b{display:block; font-size:13.5px; margin-bottom:3px; color:var(--color-soil-d)}
+.gate .gt span{font-size:11.5px; color:var(--color-ink-2)}
+.gate .gb{border:0; background:var(--color-soil); color:#fff; border-radius:4px; padding:10px 22px; font-size:13px; font-weight:700}
+.gate .gb:hover{background:var(--color-soil-d)}
+.opened{margin-top:16px; border:1px solid var(--color-green); border-radius:5px; background:#f2f8f4;
+  padding:13px 18px; font-size:12px; color:#0b4527; display:none}
+.opened.show{display:block}
+.opened b{font-weight:700}
+
+.cta{margin-top:20px; display:grid; grid-template-columns:1fr 1fr; gap:10px}
+.cta button{border:0; border-radius:4px; padding:13px; font-size:13.5px; font-weight:700}
+.cta .p{background:var(--color-green); color:#fff}
+.cta .p:hover{background:#0b4527}
+.cta .s{background:#fff; border:1px solid var(--color-rule); color:var(--color-ink)}
+.cta .s:hover{border-color:var(--color-soil); color:var(--color-soil)}
+.ctanote{font-size:10.5px; color:var(--color-ink-2); margin-top:8px; line-height:1.6}
+
+/* お気に入りハート */
+.fav-n{background:var(--color-orange); color:#fff; border-radius:9px; padding:0 5px; font-size:10px; font-weight:700}
+.favbtn{position:absolute; right:6px; top:6px; width:30px; height:30px; border-radius:50%;
+  border:0; background:rgba(255,255,255,.92); display:grid; place-items:center; z-index:2;
+  box-shadow:0 1px 4px rgba(42,38,34,.18); padding:0}
+.favbtn svg{width:17px; height:17px; display:block}
+.favbtn .hs{fill:none; stroke:#b3aca1; stroke-width:2}
+.favbtn.on{background:#fff}
+.favbtn.on .hs{fill:var(--color-orange); stroke:var(--color-orange)}
+.pthumb .favbtn{right:6px; top:auto; bottom:6px}
+.cta .fav{background:#fff; border:1px solid var(--color-rule); color:var(--color-ink); display:flex; align-items:center; justify-content:center; gap:8px}
+.cta .fav svg{width:16px;height:16px}
+.cta .fav .hs{fill:none;stroke:currentColor;stroke-width:2}
+.cta .fav.on{border-color:var(--color-orange); color:var(--color-orange); background:#fdf6ef}
+.cta .fav.on .hs{fill:var(--color-orange); stroke:var(--color-orange)}
+
+/* サブページ共通 */
+.page{display:none}
+.page.show{display:block}
+.pagehero{background:linear-gradient(135deg,#0f5c35,#0b4527); color:#fff;
+  border-radius:8px; padding:30px 34px; margin-bottom:22px}
+.pagehero .ey{font-size:11px; letter-spacing:.2em; opacity:.75; margin-bottom:8px}
+.pagehero h1{font-family:var(--font-mincho); font-size:26px; font-weight:700; margin:0 0 8px}
+.pagehero p{font-size:13px; margin:0; opacity:.92; line-height:1.8; max-width:760px}
+.sec{margin-bottom:26px}
+.sec h2{font-family:var(--font-mincho); font-size:19px; font-weight:700; color:var(--color-ink);
+  margin:0 0 4px; padding-left:12px; border-left:4px solid var(--color-green)}
+.sec .lead{font-size:12.5px; color:var(--color-ink-2); margin:0 0 16px; padding-left:14px}
+.grid3{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+.grid2{display:grid; grid-template-columns:repeat(2,1fr); gap:14px}
+.vc{background:#fff; border:1px solid var(--color-rule); border-radius:7px; padding:20px; box-shadow:var(--shadow-card)}
+.vc .ic{width:44px; height:44px; border-radius:10px; background:#f1f7f3; display:grid;
+  place-items:center; margin-bottom:12px}
+.vc .ic svg{width:22px; height:22px; stroke:var(--color-green); fill:none; stroke-width:1.8}
+.vc h3{margin:0 0 6px; font-size:15px; font-weight:700}
+.vc p{margin:0; font-size:12.5px; color:var(--color-ink-2); line-height:1.75}
+.vc .tagm{display:inline-block; margin-top:10px; font-size:10.5px; font-weight:700;
+  color:var(--color-soil); background:#f4efe4; padding:2px 9px; border-radius:3px}
+.warrantybox{background:#fff; border:1px solid var(--color-rule); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-card)}
+.wbh{background:var(--color-soil); color:#fff; padding:16px 22px}
+.wbh .nm{font-family:var(--font-mincho); font-size:20px; font-weight:700}
+.wbh .sub{font-size:12px; opacity:.9; margin-top:2px}
+.wbrow{display:flex; border-bottom:1px solid var(--color-rule-2)}
+.wbrow:last-child{border-bottom:0}
+.wbrow .k{width:150px; flex:none; background:#faf8f4; padding:13px 18px; font-size:12.5px;
+  font-weight:700; color:var(--color-soil-d); display:flex; align-items:center}
+.wbrow .v{padding:13px 18px; font-size:12.5px; line-height:1.7}
+.wbrow .v b{color:var(--color-green)}
+.steps{counter-reset:st; display:grid; grid-template-columns:repeat(4,1fr); gap:12px}
+.step{background:#fff; border:1px solid var(--color-rule); border-radius:7px; padding:16px; position:relative}
+.step:before{counter-increment:st; content:"STEP " counter(st); font-size:10px; font-weight:700;
+  color:var(--color-green); letter-spacing:.08em}
+.step h4{margin:6px 0 5px; font-size:13.5px; font-weight:700}
+.step p{margin:0; font-size:11.5px; color:var(--color-ink-2); line-height:1.65}
+.calloutbar{background:#f1f7f3; border:1px solid #cfe0d5; border-radius:7px;
+  padding:16px 20px; font-size:13px; color:#0b4527; line-height:1.8}
+.calloutbar b{font-weight:800}
+
+/* マイページ */
+.mypanel{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:22px; box-shadow:var(--shadow-card)}
+.mynav{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap}
+.mynav .t{border:1px solid var(--color-rule); background:#fff; border-radius:100px; padding:6px 16px;
+  font-size:12.5px; font-weight:700; color:var(--color-ink-2)}
+.mynav .t.on{background:var(--color-green); color:#fff; border-color:var(--color-green)}
+.emptyfav{text-align:center; padding:44px 20px; color:var(--color-ink-2)}
+.emptyfav svg{width:48px; height:48px; stroke:#cfc7ba; fill:none; stroke-width:1.5; margin-bottom:12px}
+.emptyfav b{display:block; font-size:15px; color:var(--color-ink); margin-bottom:6px}
+.emptyfav .go2{margin-top:16px; border:0; background:var(--color-soil); color:#fff;
+  border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
+
+/* フォーム */
+.formwrap{display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start}
+.formcard{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:24px; box-shadow:var(--shadow-card)}
+.formcard h2{font-family:var(--font-mincho); font-size:19px; margin:0 0 4px}
+.formcard .fd{font-size:12px; color:var(--color-ink-2); margin:0 0 18px}
+.frow{margin-bottom:15px}
+.frow label{display:block; font-size:12.5px; font-weight:700; margin-bottom:6px}
+.frow label .req{color:#c0221a; font-size:10.5px; margin-left:6px; font-weight:700}
+.frow label .opt{color:var(--color-ink-2); font-size:10.5px; margin-left:6px; font-weight:500}
+.frow input,.frow select,.frow textarea{width:100%; border:1px solid var(--color-rule); border-radius:5px;
+  padding:9px 11px; font-size:13px; font-family:inherit; color:var(--color-ink); background:#fff}
+.frow input:focus,.frow select:focus,.frow textarea:focus{border-color:var(--color-green); outline:none;
+  box-shadow:0 0 0 2px rgba(15,92,53,.12)}
+.frow.err input,.frow.err select{border-color:#c0221a}
+.frow .msg{font-size:10.5px; color:#c0221a; margin-top:5px; display:none}
+.frow.err .msg{display:block}
+.f2{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.checks{display:flex; flex-direction:column; gap:8px}
+.checks label{display:flex; align-items:flex-start; gap:8px; font-size:12px; font-weight:500; cursor:pointer}
+.checks input{width:auto; margin-top:2px}
+.consent{background:#faf8f4; border:1px solid var(--color-rule-2); border-radius:6px; padding:12px 14px;
+  font-size:11px; color:var(--color-ink-2); line-height:1.7; margin:6px 0 16px; max-height:110px; overflow-y:auto}
+.fsubmit{width:100%; border:0; background:var(--color-green); color:#fff; border-radius:6px;
+  padding:14px; font-size:14px; font-weight:700; margin-top:4px}
+.fsubmit:hover{background:#0b4527}
+.fsubmit:disabled{background:#a9b8b1; cursor:not-allowed}
+.fside{background:#faf8f4; border:1px solid var(--color-rule); border-radius:8px; padding:20px}
+.fside h3{margin:0 0 12px; font-size:14px; font-weight:700; color:var(--color-soil-d)}
+.fside .pinfo{display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--color-rule)}
+.fside .pinfo .th{width:80px; flex:none; border-radius:5px; overflow:hidden; aspect-ratio:4/3; background:#e8e3d8}
+.fside .pinfo .th svg{width:100%;height:100%;display:block}
+.fside .pinfo .nm{font-size:12px; font-weight:700; line-height:1.5}
+.fside .pinfo .pr{font-family:var(--font-mincho); font-size:16px; color:var(--color-soil-d); font-weight:700; margin-top:3px}
+.fside ul{margin:0; padding-left:0; list-style:none}
+.fside li{font-size:11.5px; color:var(--color-ink-2); padding:6px 0 6px 22px; position:relative; line-height:1.6}
+.fside li:before{content:""; position:absolute; left:2px; top:10px; width:11px; height:11px;
+  border-radius:50%; background:#dcebe1; border:2px solid var(--color-green)}
+.doneview{text-align:center; padding:40px 20px}
+.doneview .ok{width:60px; height:60px; border-radius:50%; background:#e9f2ec; display:grid;
+  place-items:center; margin:0 auto 16px}
+.doneview .ok svg{width:30px; height:30px; stroke:var(--color-green); fill:none; stroke-width:2.5}
+.doneview h2{font-family:var(--font-mincho); font-size:22px; margin:0 0 8px}
+.doneview p{font-size:13px; color:var(--color-ink-2); line-height:1.8; max-width:460px; margin:0 auto 8px}
+.doneview .back2{margin-top:18px; border:1px solid var(--color-rule); background:#fff; color:var(--color-ink);
+  border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
+
+@media(max-width:1060px){
+  .grid3{grid-template-columns:repeat(2,1fr)}
+  .steps{grid-template-columns:repeat(2,1fr)}
+  .formwrap{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  .pagehero{padding:22px 18px}
+  .pagehero h1{font-size:21px}
+  .grid3,.grid2{grid-template-columns:1fr}
+  .steps{grid-template-columns:1fr}
+  .wbrow{flex-direction:column}
+  .wbrow .k{width:100%}
+  .f2{grid-template-columns:1fr}
+  .sec h2{font-size:17px}
+}
+
+footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
+.fw{max-width:1320px; margin:0 auto; padding:22px 20px; display:flex; gap:18px;
+  align-items:center; font-size:11px; color:var(--color-ink-2); flex-wrap:wrap}
+.fw .sp{flex:1}
+
+@media(max-width:1060px){
+  /* Step 2c DELETION: .split{grid-template-columns:1fr} — no .split. */
+  .dgrid{grid-template-columns:1fr}
+  .stratum{grid-template-columns:100px 1fr}
+  .stratum .docs{grid-column:1/-1; border-top:1px solid var(--color-rule-2)}
+  nav{display:none}
+}
+
+@media(max-width:640px){
+  .hwrap{padding:0 12px; height:56px; gap:10px}
+  .logo .mark{width:30px; height:30px; border-radius:6px}
+  .logo .mark svg{width:16px; height:16px}
+  .logo .lt .n{font-size:17px}
+  .logo .lt .n small{display:none}
+  .logo .lt .c{display:none}
+  .hactions{margin-left:auto; padding-left:0; border-left:0; gap:6px}
+  .hactions .iconbtn{display:none}
+  .hamb{display:flex}
+  .msheet{display:none; position:fixed; inset:0; z-index:60}
+  .msheet.show{display:block}
+  .msheet .bg{position:absolute; inset:0; background:rgba(42,38,34,.4)}
+  .msheet .pane{position:absolute; top:0; right:0; width:74%; max-width:300px;
+    height:100%; background:#fff; box-shadow:-4px 0 24px rgba(0,0,0,.15);
+    padding:18px; display:flex; flex-direction:column; gap:4px}
+  .msheet .pane .mh{display:flex; justify-content:space-between; align-items:center;
+    margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--color-rule)}
+  .msheet .pane .mh b{font-family:var(--font-mincho); font-size:18px; color:var(--color-soil)}
+  .msheet .pane a{text-decoration:none; color:var(--color-ink); font-size:15px;
+    font-weight:500; padding:12px 8px; border-radius:6px}
+  .msheet .pane a:active{background:var(--color-rule-2)}
+  .msheet .pane .x{border:0; background:transparent; font-size:22px; color:var(--color-ink-2); line-height:1}
+  /* Step 2b DELETION from the ported block: the horizontal scroller
+     (overflow-x/-webkit-overflow-scrolling/scrollbar-width/nowrap and
+     ::-webkit-scrollbar) and the sticky 探す with its box-shadow are
+     gone. Nothing in the search area scrolls sideways on mobile, and
+     the desktop 探す is not used there at all. */
+  .sw{padding:10px 12px; gap:8px}
+  .sw .field{min-width:auto; flex:none; font-size:12px; padding:6px 9px}
+  .chips{margin-left:0; flex-wrap:nowrap}
+  .chip{flex:none; white-space:nowrap}
+  .axisnote{padding:8px 12px 10px; font-size:11px}
+  main{padding:12px}
+  /* Step 2c DELETION: .split{gap:14px} — .reslayout sets its own gap. */
+  .maphead{padding:10px 12px; gap:8px}
+  .maphead h2{font-size:12px; width:100%}
+  .legend{margin-left:0; gap:10px; font-size:10px}
+  .mapfoot{font-size:10px; padding:8px 12px}
+  .listhead h2{font-size:16px}
+  .pcard{grid-template-columns:1fr; gap:10px; padding:10px}
+  .pthumb{aspect-ratio:16/10}
+  .pcard h3{font-size:14px}
+  .pcard .price{font-size:20px}
+  .dhead{padding:12px 14px; gap:8px}
+  .dhead .t{font-size:13px; line-height:1.5}
+  .dhead .g{margin-left:0; font-size:11px; padding:3px 9px}
+  .dbody{padding:14px}
+  .dgrid{gap:18px}
+  .gal{grid-template-columns:repeat(3,1fr); gap:6px}
+  .gth .cap{font-size:8px}
+  .spec .big{font-size:22px}
+  .karte{padding-top:14px}
+  .karte .kh h3{font-size:17px}
+  .stratum{grid-template-columns:1fr}
+  .stratum .when{flex-direction:row; align-items:baseline; gap:6px; padding:8px 12px}
+  .stratum .what{border-right:0; border-bottom:1px solid var(--color-rule-2); padding:10px 12px}
+  .stratum .docs{padding:10px 12px}
+  .cta{grid-template-columns:1fr}
+  .gate{padding:13px 14px; gap:12px}
+  .gate .gb{width:100%; text-align:center}
+  .fw{padding:16px 12px; font-size:10px; gap:8px}
+}
+@media(max-width:380px){
+  .gal{grid-template-columns:repeat(2,1fr)}
+}
+
+/* =============================================================
+   Preflight compensation
+   NOT from the original. Tailwind v4 Preflight applies
+   margin:0; padding:0; border:0 solid to *, and resets svg
+   display and anchor text-decoration. These four rules restore
+   the original rendering. See Phase 1 report §5.
+   ============================================================= */
+
+/* 1. Preflight sets svg{display:block}, which breaks the
+      text-align:center centring of the empty-favourites heart.
+      Every other svg rule in this file already declares
+      display:block itself; this one relied on inline layout. */
+.emptyfav svg{margin-inline:auto}
+
+/* 2. Preflight sets a{text-decoration:inherit}. The JHS link in
+      the 購入サポート callout relied on the UA underline. */
+.jhs-link{text-decoration:underline}
+
+/* 3. Preflight zeroes margins on *. .karte .kd is the only <p>
+      in the document that declares margin-bottom but not
+      margin-top, so it relied on the UA margin-block-start:1em
+      (=12px at its 12px font-size). */
+.karte .kd{margin-top:12px}
+
+/* 4. Preflight sets ::placeholder to a 50% currentColor mix,
+      which is warm brown here. Restore the neutral UA grey. */
+.frow input::placeholder,.frow textarea::placeholder{color:#757575}
+
+/* =============================================================
+   .pcard stretched button
+   NOT from the original. The original card was a
+   div[role="button"] containing both an <h3> and a nested
+   favourite <button> — invalid content model and nested
+   interactive elements. The card is now a plain <div>; the
+   <h3> holds a real <button> stretched over the whole card,
+   and the favourite button sits above it on z-index:2.
+   ============================================================= */
+.pcard{position:relative}
+.pcard .hit{border:0; background:transparent; padding:0; font:inherit;
+  color:inherit; text-align:left; cursor:pointer}
+.pcard .hit:after{content:""; position:absolute; inset:0; z-index:1}
+/* Focus ring belongs on the card, not on the heading box. */
+.pcard .hit:focus-visible{outline:none}
+.pcard:has(.hit:focus-visible){outline:2px solid var(--color-soil); outline-offset:2px}
+/* The favourite button must stay above the stretched hit area.
+
+   This rule used to read `.pthumb .favbtn{z-index:2}`, written when
+   the heart sat over the thumbnail. Step 2c moved it out to .pfav,
+   a sibling cell of the row grid, so that selector stopped matching
+   anything and the :after overlay above captured every click on the
+   heart — on desktop only, because the 640px rule already gives
+   .pfav its own z-index.
+
+   The z-index belongs on .pfav, not on .favbtn: `.pfav .favbtn` is
+   position:static, and z-index has no effect on a static box. .pfav
+   is a grid item of .pcard, where z-index applies without position. */
+.pfav{z-index:2}
+
+/* =============================================================
+   Named classes replacing the original's inline style=
+   attributes. Same declarations, moved out of the markup.
+   ============================================================= */
+.legend i.g{background:#0f5c35}
+.legend i.o{background:#e07b1e}
+.legend i.s{background:#7a5c2e}
+.pagehero.brown{background:linear-gradient(135deg,#7a5c2e,#5c4322)}
+.gthumbs{margin-top:7px}
+.callout-note{font-size:11.5px}
+.jhs-link{color:var(--color-green); font-weight:700}
+.req-note{color:#c0221a}
+.req-inline{color:#c0221a; font-weight:700}
+.consent-agree{margin-bottom:14px}
+.consent-agree .lbl{font-size:12.5px}
+.fside .pinfo .meta{font-size:11px; color:var(--color-ink-2)}
+
+/* =============================================================
+   Step 2a: two-row search bar
+
+   NOT from the original. The bar gained selects and outgrew one
+   row. Rather than relying on flex-wrap (which dropped 探す alone
+   onto a right-aligned second row), .sw becomes a column of two
+   explicit rows so the shape is identical at every width.
+
+   .sw's own ported rules are overridden here rather than edited
+   in place, so the verbatim port above stays auditable.
+   ============================================================= */
+.sw{flex-direction:column; align-items:stretch}
+.sw-primary,.sw-refine{display:flex; align-items:center; gap:10px; min-width:0}
+.sw-primary{flex-wrap:nowrap}
+.sw-refine{flex-wrap:wrap}
+/* .sw .go already carries margin-left:auto, which now right-aligns
+   探す within row 1 instead of within the whole bar. */
+.refine-label{font-size:11px; color:var(--color-ink-2); flex:none; white-space:nowrap}
+
+/* 並び替え, moved out of the search bar into the result header. */
+.listhead{flex-wrap:wrap}
+.listhead .sortsel{margin-left:auto; flex:none; align-self:center}
+
+@media(max-width:640px){
+  /* Step 2b superseded the mobile scrollers here — .sw-primary and
+     .sw-refine are hidden below 640px and replaced by the filter
+     sheet, so their overflow rules and .sw .go{flex:none} are gone. */
+  .listhead .sortsel{margin-left:0; width:100%}
+}
+
+/* =============================================================
+   Step 2b: desktop search panel
+
+   Scoped to @media(min-width:641px) throughout, so none of it can
+   reach the approved mobile filter sheet.
+
+   The bar becomes a bordered white panel whose outer edge lines up
+   with .mapcard below it. .mapcard sits inside main{max-width:1320px;
+   padding:20px}, so its left edge is 20px inside the 1320 box.
+   width:calc(100% - 40px) with max-width:1280px reproduces exactly
+   that inset at every width, without adding padding to .searchbar
+   (which would have shifted .axisnote too).
+   ============================================================= */
+/* min-width was dropped in v2 — the grid now controls select width. */
+.field-group{display:flex; flex-direction:column}
+.field-label{font-size:11px; color:var(--color-ink-2); margin-bottom:4px}
+.field-group .field{width:100%}
+
+@media(min-width:641px){
+  /* 4. grouped panel, aligned with the map card */
+  .searchbar{padding-top:13px}
+  .sw{width:calc(100% - 40px); max-width:1280px; margin-bottom:12px;
+    padding:14px 16px; gap:0; background:#fff;
+    border:1px solid var(--color-rule); border-radius:6px}
+  /* 1. labels sit above; v2 sets align-items on the grid below. */
+  /* Step 2f DELETION: .sw-primary .go{margin-left:0; padding:8px 26px}
+     went with the 探す button. The ported .sw .go rules near the top of
+     this file are now unreferenced but left in place — they are part of
+     the verbatim port and nothing else uses the class. */
+  /* 5. the four differentiator chips read as a separate step */
+  .sw-refine{border-top:1px solid var(--color-rule-2); margin-top:14px; padding-top:12px}
+}
+
+/* =============================================================
+   Step 2d: real map
+
+   The drawn SVG map is replaced by MapLibre GL + OpenFreeMap
+   Positron. maplibre-gl is imported on demand, so .mapbody
+   reserves its full height up front and shows the same neutral
+   skeleton fill as the list placeholders while the chunk and the
+   first tiles arrive — no layout jump, no spinner.
+
+   .mkr reproduces the retired .pin treatment: a 9px core with a
+   21px halo, and on .active a 2.5px white ring plus the halo at
+   28% opacity.
+   ============================================================= */
+/* The map host owns its height outright rather than stretching to fill
+   .mapbody via inset:0. An absolutely-positioned host resolves its
+   height only from its parent, so any failure to apply .mapbody's
+   height silently handed MapLibre a 0px-tall container — which is
+   exactly what happened: the console reported 1278.67 x 0. */
+/* .mapcard takes no width rule at all: it is a stretch child of
+   .reslayout, whose box IS main's content box (max-width:1320px minus
+   20px padding = 1280px at 1440). That is exactly .sw's computed width,
+   so the two align edge to edge without a calc. See the report — the
+   calc(100% - 40px) form would have made it 40px narrower than .sw,
+   because .sw's containing block is the full-width .searchbar while
+   .mapcard's is already inset by main's padding. */
+.mapbody{position:relative; background:var(--color-rule-2)}
+.maphost{width:100%; height:380px}
+.mapstate{position:absolute; inset:0; display:grid; place-items:center;
+  background:var(--color-rule-2); padding:16px; text-align:center;
+  font-size:11.5px; color:var(--color-ink-2); line-height:1.7}
+
+.mkr{width:18px; height:18px; padding:0; border:0; border-radius:50%;
+  background:var(--mkr-color); cursor:pointer; position:relative;
+  box-shadow:0 0 0 2px rgba(255,255,255,.9)}
+.mkr:before{content:""; position:absolute; left:50%; top:50%;
+  width:42px; height:42px; margin:-21px 0 0 -21px; border-radius:50%;
+  background:var(--mkr-color); opacity:0; transition:.2s}
+.mkr:hover:before,.mkr.active:before{opacity:.28}
+.mkr.active{box-shadow:0 0 0 2.5px #fff, 0 1px 4px rgba(42,38,34,.35)}
+/* The white dot at the centre of the old pin. */
+.mkr:after{content:""; position:absolute; left:50%; top:50%;
+  width:6.8px; height:6.8px; margin:-3.4px 0 0 -3.4px;
+  border-radius:50%; background:#fff}
+
+/* Attribution is a licence requirement — keep it legible, never hide it. */
+.maplibregl-ctrl-attrib{font-size:10px}
+
+@media(max-width:1060px){ .maphost{height:340px} }
+@media(max-width:640px){ .maphost{height:260px} }
+
+/* =============================================================
+   Step 2f: property photos
+
+   One rule. Every photo container already declares aspect-ratio and
+   overflow:hidden, so nothing there needed changing — the <img> just
+   has to fill its box the way the sibling `svg{width:100%;
+   height:100%; display:block}` rules already do. object-fit:cover
+   crops rather than letterboxes, matching the SVGs' own
+   preserveAspectRatio="xMidYMid slice".
+   ============================================================= */
+.pphoto{width:100%; height:100%; display:block; object-fit:cover}
+
+/* =============================================================
+   Step 2e: map popup
+
+   MapLibre's stock popup chrome is white-on-grey with a sharp tip
+   and a blue focus ring; it is restyled here to the card language
+   used everywhere else (white, 1px --color-rule, radius 6,
+   --shadow-card).
+   ============================================================= */
+
+/* ---- MapLibre chrome ---- */
+.mpop .maplibregl-popup-content{padding:0; border-radius:6px; background:#fff;
+  border:1px solid var(--color-rule); box-shadow:var(--shadow-card)}
+.mpop .maplibregl-popup-tip{border-top-color:var(--color-rule)}
+.mpop .maplibregl-popup-close-button{width:24px; height:24px; right:2px; top:2px;
+  border:0; background:transparent; color:var(--color-ink-2);
+  font-size:17px; line-height:1; border-radius:4px; font-family:inherit}
+.mpop .maplibregl-popup-close-button:hover{background:var(--color-rule-2); color:var(--color-soil)}
+
+/* ---- popup body ---- */
+.mpop-card{width:260px; padding:11px 12px 12px; font-family:inherit}
+.mpop-head{display:flex; gap:10px; align-items:flex-start; margin-bottom:7px}
+.mpop-thumb{width:66px; flex:none; aspect-ratio:4/3; border-radius:5px;
+  overflow:hidden; background:#e8e3d8; position:relative}
+.mpop-thumb svg{width:100%; height:100%; display:block}
+.mpop-thumb .favbtn{right:3px; top:auto; bottom:3px; width:24px; height:24px}
+.mpop-thumb .favbtn svg{width:14px; height:14px}
+.mpop-title{font-size:12px; font-weight:700; line-height:1.45; padding-right:16px}
+.mpop-price{font-family:var(--font-mincho); font-size:19px; font-weight:700;
+  color:var(--color-soil-d); margin-top:6px; letter-spacing:-.01em}
+.mpop-spec{display:flex; gap:10px; flex-wrap:wrap; margin-top:3px;
+  font-size:11px; color:var(--color-ink-2)}
+.mpop-go{width:100%; margin-top:10px; border:0; border-radius:4px;
+  background:var(--color-green); color:#fff; padding:8px;
+  font-size:12.5px; font-weight:700; font-family:inherit; cursor:pointer}
+.mpop-go:hover{background:#0b4527}
+
+/* The card now opens on hover, so the popup must be reachable by the
+   pointer. MapLibre marks popups pointer-events:none in some states;
+   this keeps the card itself interactive while the tip stays inert. */
+.mpop{pointer-events:auto}
+.mpop .maplibregl-popup-tip{pointer-events:none}
+/* The anchor flips when a pin sits near the top edge, so the tip has to
+   be recoloured on every side, not just the bottom one. */
+.mpop.maplibregl-popup-anchor-top .maplibregl-popup-tip{border-bottom-color:var(--color-rule)}
+.mpop.maplibregl-popup-anchor-left .maplibregl-popup-tip{border-right-color:var(--color-rule)}
+.mpop.maplibregl-popup-anchor-right .maplibregl-popup-tip{border-left-color:var(--color-rule)}
+
+/* ---- mobile bottom card ---- */
+.mbcard{position:absolute; left:0; right:0; bottom:0; z-index:3;
+  display:grid; grid-template-columns:64px 1fr auto; gap:10px; align-items:center;
+  padding:10px 12px; background:#fff; border-top:1px solid var(--color-rule);
+  box-shadow:0 -2px 10px rgba(42,38,34,.12)}
+.mbcard-thumb{width:64px; aspect-ratio:4/3; border-radius:5px; overflow:hidden;
+  background:#e8e3d8}
+.mbcard-thumb svg{width:100%; height:100%; display:block}
+.mbcard-body{min-width:0; display:flex; flex-direction:column; gap:2px}
+.mbcard-title{font-size:12px; font-weight:700; line-height:1.4;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+.mbcard-price{font-family:var(--font-mincho); font-size:16px; font-weight:700;
+  color:var(--color-soil-d)}
+.mbcard-go{border:0; border-radius:4px; background:var(--color-green); color:#fff;
+  padding:9px 12px; font-size:12px; font-weight:700; font-family:inherit;
+  white-space:nowrap; cursor:pointer}
+.mbcard-x{position:absolute; right:4px; top:4px; width:24px; height:24px;
+  border:0; background:transparent; color:var(--color-ink-2); font-size:17px;
+  line-height:1; font-family:inherit; cursor:pointer}
+/* Keep the attribution clear of the card — it is a licence requirement. */
+.mapbody.card-open .maplibregl-ctrl-bottom-right{bottom:96px}
+.mapbody.card-open .maplibregl-ctrl-bottom-left{bottom:96px}
+
+/* =============================================================
+   Step 2c: result rows
+
+   Replaces the .split two-column grid with a vertical stack, and
+   the two-column card with a full-width horizontal row carrying a
+   five-cell spec strip.
+
+   The map body has NO fixed height and NO explicit aspect-ratio:
+   the SVG's own viewBox supplies the intrinsic ratio, so
+   `width:100%; height:auto` derives the height from it and cannot
+   letterbox at any width. 1600x500 gives ~399px at 1440.
+   ============================================================= */
+.reslayout{display:flex; flex-direction:column; gap:20px}
+
+.map-toggle{border:0; background:transparent; padding:0; font-family:inherit;
+  font-size:11.5px; color:var(--color-ink-2); text-decoration:underline;
+  flex:none; white-space:nowrap; margin-left:12px}
+.map-toggle:hover{color:var(--color-soil)}
+
+/* Row: thumbnail, body, favourite. */
+.pcard{grid-template-columns:118px 1fr auto; gap:14px; align-items:start}
+.pbody{min-width:0}
+.pfav{align-self:center; justify-self:end}
+.pfav .favbtn{position:static}
+
+.spec-strip{display:grid; grid-template-columns:repeat(5, minmax(0, 1fr));
+  border-top:1px solid var(--color-rule-2); margin-top:9px}
+.spec-strip .sc{display:flex; flex-direction:column; gap:2px; min-width:0;
+  padding:7px 10px; border-right:1px solid var(--color-rule-2)}
+.spec-strip .sc:first-child{padding-left:0}
+.spec-strip .sc:last-child{border-right:0}
+.spec-strip .sc-l{font-size:10px; color:var(--color-ink-2); line-height:1.3}
+.spec-strip .sc-v{font-size:11.5px; color:var(--color-ink); line-height:1.4}
+.spec-strip .sc-v.price{font-size:15px; font-weight:700; color:var(--color-soil-d)}
+
+@media(max-width:1060px){
+  /* Five cells are too tight below 1060; 価格 spans the full width. */
+  .spec-strip{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .spec-strip .sc:first-child{grid-column:1 / -1; border-right:0;
+    border-bottom:1px solid var(--color-rule-2)}
+  .spec-strip .sc:nth-child(odd){border-right:0}
+  .spec-strip .sc:nth-child(even){border-right:1px solid var(--color-rule-2)}
+}
+
+@media(max-width:640px){
+  /* Stated explicitly rather than inherited from the 1060 query, so a
+     future change there cannot silently alter 375px. */
+  .spec-strip{grid-template-columns:repeat(2, minmax(0, 1fr))}
+  .spec-strip .sc:first-child{grid-column:1 / -1; border-right:0;
+    border-bottom:1px solid var(--color-rule-2)}
+  .spec-strip .sc:nth-child(odd){border-right:0}
+  .spec-strip .sc:nth-child(even){border-right:1px solid var(--color-rule-2)}
+  .spec-strip .sc{padding:6px 8px}
+  /* Mobile keeps the original card shape: one column, and the heart
+     back over the thumbnail at its original 6px inset. */
+  .pcard{grid-template-columns:1fr; grid-template-areas:"thumb" "body"; gap:10px}
+  .pthumb{grid-area:thumb}
+  .pbody{grid-area:body}
+  .pfav{grid-area:thumb; align-self:end; justify-self:end; margin:0 6px 6px 0; z-index:2}
+}
+
+/* =============================================================
+   Step 2b: desktop search panel v2
+
+   The panel is 1320px wide but the controls only filled ~800px.
+   Fixed by adding a fourth filter and letting the four selects
+   share the row equally, rather than by shrinking the panel.
+
+   min-width on .field-group is removed here: a grid item defaults
+   to min-width:auto, which refuses to shrink below its content, so
+   the four 1fr columns could never come out equal while the longest
+   option (6,000〜9,000万円（40）) set a floor. min-width:0 is what
+   makes "1fr 1fr 1fr 1fr" actually mean four equal columns.
+   ============================================================= */
+@media(min-width:641px){
+  /* Four equal selects fill the row. The `auto` track went with 探す —
+     filters now apply on change, so there is no submit control. */
+  .sw-primary{display:grid; grid-template-columns:1fr 1fr 1fr 1fr;
+    gap:10px; align-items:end}
+  .field-group{min-width:0}
+  /* Applied-filter pills and 条件をリセット sit at the far right. */
+  .sw-spacer{flex:1}
+}
+
+/* Applied-filter pills. With no 探す to confirm the action, these are
+   the feedback that a filter took effect, and each one can be dropped
+   individually to broaden the results. Same pill vocabulary as .chip,
+   deliberately lighter so they read as state rather than controls. */
+.fpills{display:flex; gap:6px; flex-wrap:wrap; align-items:center}
+.fpill{display:inline-flex; align-items:center; gap:5px; flex:none;
+  border:1px solid var(--color-rule); background:var(--color-rule-2);
+  border-radius:100px; padding:3px 9px; font-family:inherit;
+  font-size:11px; font-weight:700; color:var(--color-ink-2);
+  cursor:pointer; white-space:nowrap; transition:.15s}
+.fpill:hover{border-color:var(--color-soil); color:var(--color-soil)}
+.fpill-x{font-size:13px; line-height:1; color:var(--color-ink-2)}
+.fpill:hover .fpill-x{color:var(--color-soil)}
+
+/* Shared by the panel row and the mobile sheet header. */
+.reset-link{border:0; background:transparent; padding:0; font-family:inherit;
+  font-size:11.5px; color:var(--color-ink-2); text-decoration:underline;
+  flex:none; white-space:nowrap}
+.reset-link:hover{color:var(--color-soil)}
+.fsheet .mh-actions{display:flex; align-items:center; gap:12px}
+
+/* =============================================================
+   Step 2b: mobile filter sheet
+
+   Below 640px the two search rows are replaced by a single
+   full-width trigger that opens a full-screen filter panel.
+   Horizontal-scrolling filters fail past ~8 options and there
+   are 8, so nothing in the search area scrolls sideways now.
+
+   The panel is the EXISTING .msheet overlay: the element carries
+   `class="msheet fsheet"`, inheriting .msheet / .bg / .pane /
+   .mh / .x wholesale. Only the pane width is overridden. No new
+   overlay styles are invented.
+
+   Note .msheet.show lives inside the 640px block, so the sheet
+   is structurally unopenable above 640px — matching the trigger,
+   which is display:none there.
+   ============================================================= */
+.filter-trigger{display:none}
+
+@media(max-width:640px){
+  /* A. desktop rows out, one trigger in */
+  .sw-primary,.sw-refine{display:none}
+  .filter-trigger{display:flex; align-items:center; gap:8px; width:100%;
+    min-height:44px; padding:10px 14px; background:#fff;
+    border:1px solid var(--color-soil); border-radius:5px;
+    font-family:inherit; font-size:13px; font-weight:700;
+    color:var(--color-soil-d); text-align:left}
+  .filter-trigger svg{width:15px; height:15px; flex:none;
+    stroke:var(--color-soil); fill:none; stroke-width:2}
+  .filter-trigger .ft-label{flex:1}
+  .filter-trigger .ft-badge{flex:none; background:var(--color-green); color:#fff;
+    border-radius:100px; padding:2px 10px; font-size:11px; font-weight:700}
+
+  /* Step 2i DELETION: rule E hid the MOCKUP bar here, which reclaimed
+     ~190px of a 789px viewport. The bar no longer exists at any width. */
+
+  /* B. full-width panel instead of the nav drawer's 74% */
+  .fsheet .pane{width:100%; max-width:none; gap:0}
+  .fsheet .fs-body{flex:1; overflow-y:auto; display:flex;
+    flex-direction:column; gap:12px; padding-top:4px}
+  .fsheet .fs-row{display:flex; flex-direction:column; gap:5px}
+  .fsheet .fs-label{font-size:11.5px; font-weight:700; color:var(--color-ink-2)}
+  .fsheet .fs-row .field{width:100%; min-width:0; font-size:13px; padding:10px 11px}
+  .fsheet .fs-sep{border-top:1px solid var(--color-rule-2); margin:2px 0}
+  /* chips as a 2-column grid — no nowrap, no sideways scroll */
+  .fsheet .fs-chips{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+  .fsheet .fs-chips .chip{width:100%; min-height:42px; justify-content:center;
+    flex:none; white-space:normal; text-align:center; line-height:1.3}
+  .fsheet .fs-foot{flex:none; padding-top:12px; margin-top:4px;
+    border-top:1px solid var(--color-rule)}
+  .fsheet .fs-foot .fsubmit{margin-top:0}
+}
+
+/* Body scroll lock while the panel is open. */
+body.fsheet-open{overflow:hidden}
+
+/* =============================================================
+   Pagination. NOT from the original — added in Step 2a with the
+   100-record data set. Deliberately reuses the .chip / .mynav .t
+   pill vocabulary rather than introducing a new one.
+   ============================================================= */
+.pager{display:flex; gap:6px; flex-wrap:wrap; justify-content:center;
+  align-items:center; margin-top:16px}
+.pg{border:1px solid var(--color-rule); background:#fff; border-radius:100px;
+  min-width:34px; padding:6px 12px; font-size:12.5px; font-weight:700;
+  color:var(--color-ink-2); font-family:inherit; transition:.15s}
+.pg:not(:disabled):hover{border-color:var(--color-soil); color:var(--color-soil)}
+.pg.on{background:var(--color-green); color:#fff; border-color:var(--color-green)}
+.pg:disabled{color:#c4bcb0; cursor:not-allowed}
+.pg.gap{border:0; background:transparent; min-width:auto; padding:6px 2px;
+  color:var(--color-ink-2)}
+@media(max-width:640px){
+  .pager{gap:4px; margin-top:14px}
+  .pg{min-width:30px; padding:5px 9px; font-size:12px}
+}
+
+/* =============================================================
+   Loading skeletons. NOT from the original — required by the
+   port's async api/ layer. Neutral static blocks at the exact
+   container dimensions so there is no layout shift and no new
+   motion vocabulary.
+   ============================================================= */
+.sk{background:var(--color-rule-2); border-radius:6px}
+.sk-card{height:172px}
+.sk-gmain{aspect-ratio:16/10; border-radius:6px}
+.sk-gth{aspect-ratio:4/3; border-radius:4px}
+.sk-row{height:14px; margin:7px 0}
+.sk-strata{height:420px; border-radius:5px}
+@media(max-width:640px){.sk-card{height:260px}}
+
+/* =============================================================
+   Home logo button
+   NOT from the original, where .logo was a dead <a href="#">
+   and the sheet's wordmark was a bare <b>. Both are now real
+   buttons, so these rules restore the exact box they had.
+
+   The padding/negative-margin pairs enlarge only the hover and
+   focus area — outer size is unchanged, so nothing shifts. In
+   the sheet the vertical padding stays 0 because .mh is
+   auto-height and would otherwise grow; .hwrap is a fixed 66px
+   and centres its items, so the header can pad both axes.
+
+   Hover matches the nav links (--color-rule-2); the focus ring
+   is the global :focus-visible rule. Enter/Space come from the
+   native button, so no key handlers are needed.
+   ============================================================= */
+.logo{border:0; background:transparent; font:inherit; color:inherit;
+  text-align:left; cursor:pointer; padding:6px 8px; margin:-6px -8px;
+  border-radius:6px; transition:background .15s}
+.logo:hover{background:var(--color-rule-2)}
+
+/* The sheet is touch-first, so it tints on :active like .pane a. */
+.mlogo{border:0; background:transparent; font:inherit; color:inherit;
+  cursor:pointer; padding:0 6px; margin:0 -6px; border-radius:5px}
+.mlogo:active{background:var(--color-rule-2)}
+
+/* =============================================================
+   Step 2g: login
+   The 非会員／会員 toggle is gone; membership now follows login.
+   authbtn takes the slot the memtoggle held in hactions and, like
+   it, stays visible at EVERY width — iconbtn is hidden below
+   640px, and the MOCKUP bar points the reader at this control.
+   The two size steps below are the ones the memtoggle buttons
+   carried, so the mobile header keeps its composition.
+
+   Prose here avoids slashes and leading dots: Tailwind scans this
+   file as raw text and would mint utilities from such tokens.
+   ============================================================= */
+.authbtn{border:1px solid var(--color-green); background:var(--color-green); color:#fff;
+  border-radius:5px; padding:7px 13px; font-size:11.5px; font-weight:700;
+  letter-spacing:.02em; white-space:nowrap}
+.authbtn:hover{background:#0b4527; border-color:#0b4527}
+/* Logged in, ログアウト is the secondary action: outlined, and it
+   borrows .iconbtn's hover so the pair reads as one family. */
+.authbtn.out{background:#fff; color:var(--color-ink-2); border-color:var(--color-rule)}
+.authbtn.out:hover{background:#fff; border-color:var(--color-soil); color:var(--color-soil)}
+@media(max-width:640px){.authbtn{padding:6px 9px; font-size:10.5px}}
+@media(max-width:380px){.authbtn{padding:5px 7px; font-size:10px}}
+
+/* The login card is a single column, so it does not use the formwrap
+   sidebar grid. Width matches the form's comfortable measure rather
+   than stretching to the full page. */
+.loginwrap{max-width:460px; margin:0 auto}
+
+/* Completion screen now offers two routes side by side. */
+.doneacts{display:flex; gap:10px; flex-wrap:wrap; justify-content:center}
+.back2.login{background:var(--color-green); border-color:var(--color-green); color:#fff}
+.back2.login:hover{background:#0b4527; border-color:#0b4527}
+
+/* =============================================================
+   Step 2h: dark header
+
+   The bar was #fff between a #fbfaf7 page and a #fff search
+   panel — three near-white bands, so it never read as a header.
+   It is now --color-soil-d and opaque, with a drop shadow in
+   place of the 1px rule: a light rule under a dark bar reads as
+   a seam rather than an edge.
+
+   Everything here OVERRIDES the ported rules above rather than
+   editing them, so the ported region stays auditable. Colour
+   only — no layout, spacing or height is touched, so the bar
+   stays 66px on desktop and 56px below 640.
+
+   Prose here avoids slashes and leading dots: Tailwind scans
+   this file as raw text and would mint utilities from them.
+   ============================================================= */
+header{background:var(--color-soil-d); border-bottom:0;
+  box-shadow:0 2px 12px rgba(42,38,34,.22)}
+
+/* The mark inverts to a cream tile with a soil house. The house is a
+   STROKE, not a fill: the svg carries fill="none" stroke="#fff" as
+   presentation attributes, and any CSS rule outranks a presentation
+   attribute, so this is a colour swap with the geometry untouched. */
+.logo .mark{background:var(--color-paper)}
+.logo .mark svg{stroke:var(--color-soil-d)}
+
+.logo{color:#fff}
+.logo .lt .n small{color:#e8ded0}
+.logo .lt .c{color:#e8ded0}
+.logo:hover{background:rgba(255,255,255,.12)}
+
+nav a{color:#e8ded0}
+nav a:hover{background:rgba(255,255,255,.12); color:#fff}
+nav a.on{color:#fff}
+/* Orange underline: the soil underline would disappear into the bar. */
+nav a.on:after{background:var(--color-orange)}
+
+/* The divider is kept as a 1px transparent box rather than deleted, so
+   the group's geometry is bit-identical to before. Dropping the border
+   outright would have shifted the actions 1px left. */
+.hactions{border-left-color:transparent}
+
+/* Utility actions recede together: お気に入り, マイページ and ログアウト
+   all become cream outline buttons on transparent. */
+.iconbtn,.authbtn.out{background:transparent; border-color:#e8ded0; color:#e8ded0}
+.iconbtn:hover,.authbtn.out:hover{background:rgba(255,255,255,.12);
+  border-color:#fff; color:#fff}
+
+/* ログイン is the primary action and stays solid. A light button on a
+   dark ground is the strongest CTA available and needs no new colour.
+   --color-green measured 1.14:1 against this bar — invisible as a
+   shape — so the brand green cannot be carried up here. */
+.authbtn{background:#fff; border-color:#fff; color:var(--color-soil-d)}
+.authbtn:hover{background:#e8ded0; border-color:#e8ded0; color:var(--color-soil-d)}
+
+/* Hamburger: transparent tile, cream rule, cream glyph. The glyph's
+   stroke is a presentation attribute, overridden exactly as the mark is. */
+/* 0.45, not a lower alpha: at 0.38 the rule measured 2.70:1 against the
+   bar and missed the 3:1 needed for a control's boundary. 0.45 is 3.16:1. */
+.hamb{background:transparent; border-color:rgba(251,250,247,.45)}
+.hamb svg{stroke:var(--color-paper)}
+.hamb:hover{background:rgba(255,255,255,.12); border-color:var(--color-paper)}
+
+/* The favourites badge keeps its orange — it measures 3.08:1 against the
+   bar, so the pill itself is clearly visible. Its LABEL is the problem:
+   white on #e07b1e is 2.99:1, and being background-independent it was
+   failing on the old white header too. This is a pre-existing defect
+   surfaced by measuring, not one the dark bar introduced. Switching the
+   digits to --color-ink takes it to 5.02:1 and leaves the brand orange,
+   the pill geometry and every other use of --color-orange untouched. */
+.fav-n{color:var(--color-ink)}
+
+/* =============================================================
+   Step 2i and 2j: hero recolour
+
+   The green hero sat directly under the Step 2h brown header —
+   two heavy saturated bands stacked, which read as muddy. The
+   cream panel separates them: it measures 8.03:1 against the
+   header, where the green measured 1.14:1.
+
+   Step 2j: cream is now unconditional. All four heroes — 会員限定,
+   購入サポート, ログイン and マイページ — share it, so PageHero's
+   tone prop is gone and these rules carry no modifier class.
+
+   The two ported gradient rules above are left in place so the
+   ported region stays auditable. Both are now inert: the base
+   gradient is overridden here, and no element carries the brown
+   class any more.
+
+   The opacity resets are NOT cosmetic. The ported rules carry
+   opacity .75 on the eyebrow and .92 on the lead, tuned for
+   white text on dark green. Inherited onto cream they drag the
+   eyebrow to 3.01:1 and the lead to 4.37:1 — both below AA —
+   so the stated colours would not have been the rendered ones.
+
+   Prose here avoids slashes and leading dots: Tailwind scans
+   this file as raw text and would mint utilities from them.
+   ============================================================= */
+.pagehero{background:#f4efe4; color:var(--color-ink);
+  border:1px solid #ddd3c0; border-left:4px solid var(--color-soil)}
+/* #74674f, not the proposed #8a7d68: that measured 3.51:1 and missed
+   AA for 11px text. This is 4.82:1 at the same letter-spacing. */
+.pagehero .ey{color:#74674f; opacity:1}
+.pagehero h1{color:#3d2f1c}
+.pagehero p{color:var(--color-ink-2); opacity:1}
+
+/* =============================================================
+   Step 2k: colour cleanup
+
+   Three fixes: green-filled BUTTONS become soil, the 物件詳細
+   band leaves near-black for the header's warm brown, and the
+   ストック型 band adopts the cream hero language.
+
+   The hover rules are overridden alongside every background,
+   not left behind. They carry #0b4527 at equal-or-higher
+   specificity, so swapping only the resting background would
+   have made each button flash dark green under the cursor.
+
+   Green stays wherever it is a SIGNAL rather than a control:
+   the 10年保証付 badges, the 診断済み map pins and legend, the
+   保証書 doc icon, the 最長10年間 emphasis, the pressed filter
+   chips, and the completion tick.
+
+   Prose here avoids slashes and leading dots: Tailwind scans
+   this file as raw text and would mint utilities from them.
+   ============================================================= */
+
+/* 1. Green-filled buttons. */
+.cta .p{background:var(--color-soil)}
+.cta .p:hover{background:var(--color-soil-d)}
+.fsubmit{background:var(--color-soil)}
+.fsubmit:hover{background:var(--color-soil-d)}
+/* Was #a9b8b1, a desaturated green. Warm neutral to match the new
+   fill; disabled controls are exempt from the contrast minimum. */
+.fsubmit:disabled{background:#c4bcb0}
+.mynav .t.on{background:var(--color-soil); border-color:var(--color-soil)}
+.mpop-go{background:var(--color-soil)}
+.mpop-go:hover{background:var(--color-soil-d)}
+.mbcard-go{background:var(--color-soil)}
+.pg.on{background:var(--color-soil); border-color:var(--color-soil)}
+.back2.login{background:var(--color-soil); border-color:var(--color-soil)}
+.back2.login:hover{background:var(--color-soil-d); border-color:var(--color-soil-d)}
+
+/* 2. 物件詳細 band, near-black to soil-d.
+
+   The pill needs its overlay flipped. It was 12 percent WHITE, which
+   read as an inset well on the old near-black band; on the lighter
+   soil-d ground it lifts the pill to #705a3d and drags the mint value
+   #8fd6a9 down to 3.84:1 — below AA, and a regression against the
+   6.04:1 it measured before. A 18 percent BLACK overlay restores the
+   inset, and lifts the mint to 6.64:1 and the white label to 11.28:1
+   without touching the authored mint, which is a membership signal. */
+.dhead{background:var(--color-soil-d)}
+.dhead .g{background:rgba(0,0,0,.18)}
+
+/* 3. ストック型 band, matching the cream heroes.
+   Only the left edge and a bottom rule are drawn here: the parent
+   warrantybox already paints a 1px frame on the other three sides
+   and clips with overflow hidden, so adding them again would show
+   as a doubled 2px seam. The sub-line opacity reset is required —
+   at .9 the stated colour is not the rendered one. */
+.wbh{background:#f4efe4; color:var(--color-ink);
+  border-left:4px solid var(--color-soil);
+  border-bottom:1px solid #ddd3c0}
+.wbh .nm{color:#3d2f1c}
+.wbh .sub{color:var(--color-ink-2); opacity:1}
+
+/* -------------------------------------------------------------
+   Step 2l: the 物件詳細 band goes cream as well.
+
+   Unlike the ストック型 band, nothing paints its edges: it has no
+   bordered parent, it IS the top half of the detail card, with
+   dbody as its sibling below. So it draws all four sides itself.
+   The bottom rule earns its place here — cream meeting dbody's
+   white needs a seam that the old dark band did not.
+
+   No opacity reset is needed: neither the band nor the pill
+   carries an opacity rule, unlike the eyebrow, the hero lead and
+   the ストック型 sub-line.
+   ------------------------------------------------------------- */
+.dhead{background:#f4efe4; color:var(--color-ink);
+  border:1px solid #ddd3c0; border-left:4px solid var(--color-soil)}
+.dhead .t{color:#3d2f1c}
+
+/* The pill inverts: an opaque white chip on cream, rather than a
+   translucent inset on a dark ground. The Step 2k black overlay is
+   overridden here, not left to composite against the new cream. */
+.dhead .g{background:#fff; border:1px solid #ddd3c0; color:var(--color-ink-2)}
+
+/* INTERIM, pending a markup change that is NOT yet made: the two
+   states share one <b> with no class, so both render ink-2. The
+   mint #8fd6a9 had to go regardless — it measures 1.70:1 on white
+   and would have been illegible. See the report. */
+.dhead .g b{color:var(--color-ink-2)}
+
+/* Logged in, the value carries the 保証 and 会員 green. It sits on the
+   white pill, not on cream, so it measures 8.07:1. The default above
+   stays ink-2 for 非会員, which is a neutral fact rather than a signal. */
+.dhead .g b.in{color:var(--color-green)}
+
+/* One continuous spine down the detail card, so the band and the body
+   read as a single panel like the heroes and the ストック型 block.
+   Without this the left edge stepped from 4px soil to 1px grey at the
+   join. Checked at every breakpoint: the only other dbody rule is a
+   padding change in the 640 query, so nothing overrides the border. */
+.dbody{border-left:4px solid var(--color-soil)}
