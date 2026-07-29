@@ -26,6 +26,14 @@ export interface SelectOption {
   label: string
 }
 
+/** The built option lists for all four selects.
+ *
+ *  Design B moved this here from SearchBar. It had lived in a component
+ *  that the filter sheet imported a type from; the header filter bar and
+ *  the sheet now both consume it from the domain module instead, so no
+ *  component owns a type another component depends on. */
+export type FieldOptions = Record<FilterSelectKey, SelectOption[]>
+
 export const PAGE_SIZE = 10
 
 /* ------------------------------ price brackets ------------------------------ */

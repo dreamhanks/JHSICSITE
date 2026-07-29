@@ -1,9 +1,11 @@
 import { useEffect } from 'react'
 import type { ChipId } from '../../context/appState'
 import { useAppState } from '../../context/useAppState'
-import { filterProperties, hasActiveFilters, type FilterSelectKey } from '../../lib/propertySearch'
+import {
+  filterProperties, hasActiveFilters,
+  type FieldOptions, type FilterSelectKey,
+} from '../../lib/propertySearch'
 import type { Property } from '../../types/property'
-import type { FieldOptions } from './SearchBar'
 
 /** The mobile filter panel. Rendered as `class="msheet fsheet"` so it
  *  inherits the existing nav-drawer overlay wholesale — .msheet, .bg,

@@ -7,8 +7,26 @@ import { applyHomilleStyle } from '../art/mapStyle'
 import { MapBottomCard } from './MapBottomCard'
 import { MapPopupCard } from './MapPopupCard'
 
-/** Same pin colours as the drawn map (mockup.html L1012). */
-const COLOR: Record<PinKind, string> = { g: '#0f5c35', o: '#e07b1e', s: '#7a5c2e' }
+/** Pin colours, DERIVED from the @theme tokens rather than duplicated, so
+ *  a palette swap reaches the map without anyone remembering to edit here.
+ *
+ *  Read lazily inside pinColor: @theme compiles to a :root rule, which is
+ *  not applied at module-evaluation time. The fallbacks are the Design B
+ *  values, used only if a token is ever removed.
+ *
+ *  The three stay semantically distinct: g is 診断済み＋10年保証, o is
+ *  診断済み, s is 会員限定. */
+const PIN_TOKEN: Record<PinKind, { token: string; fallback: string }> = {
+  g: { token: '--color-green', fallback: '#067647' },
+  o: { token: '--color-orange', fallback: '#d9480f' },
+  s: { token: '--color-soil', fallback: '#0041D9' },
+}
+
+function pinColor(kind: PinKind): string {
+  const { token, fallback } = PIN_TOKEN[kind]
+  const v = getComputedStyle(document.documentElement).getPropertyValue(token).trim()
+  return v || fallback
+}
 
 /** OpenFreeMap Positron — no key, no signup, no cookies.
  *  Attribution is a licence requirement and must stay visible. */
@@ -228,7 +246,7 @@ export function PropertyMap({
         const el = document.createElement('button')
         el.type = 'button'
         el.className = 'mkr'
-        el.style.setProperty('--mkr-color', COLOR[derivePinKind(p)])
+        el.style.setProperty('--mkr-color', pinColor(derivePinKind(p)))
         el.setAttribute('aria-label', `${formatTitle(p)} ${formatPriceMan(p)}`)
 
         const open = () => {

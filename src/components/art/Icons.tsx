@@ -11,9 +11,12 @@ export function LogoMark() {
   )
 }
 
+/* Design B ink. The rendered colour comes from the stylesheet — the
+   hamburger rule sets stroke to --color-paper on the dark header — so
+   this literal is only the fallback if that rule is ever removed. */
 export function HamburgerIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="#2a2622" strokeWidth="2" strokeLinecap="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#111116" strokeWidth="2" strokeLinecap="round">
       <path d="M4 7h16M4 12h16M4 17h16" />
     </svg>
   )

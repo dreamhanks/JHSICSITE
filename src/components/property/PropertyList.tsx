@@ -1,11 +1,13 @@
-import { SORT_OPTIONS, type SortKey } from '../../lib/propertySearch'
 import type { Property } from '../../types/property'
 import { Pagination } from './Pagination'
 import { PropertyCard } from './PropertyCard'
 
+/** One removable pill per active filter. */
+export type AppliedPill = { key: string; label: string; clear: () => void }
+
 export function PropertyList({
-  pageItems: items, total, loading, page, activeId, sortKey,
-  onOpen, onPageChange, onReset, onSortChange,
+  pageItems: items, total, loading, page, activeId, pills,
+  onOpen, onPageChange, onReset,
 }: {
   /** Just the current page's results. */
   pageItems: Property[]
@@ -14,28 +16,42 @@ export function PropertyList({
   loading: boolean
   page: number
   activeId: number | null
-  sortKey: SortKey
+  /** Applied-filter pills, built by the page from the same options the
+   *  header bar uses. */
+  pills: AppliedPill[]
   onOpen: (id: number) => void
   onPageChange: (p: number) => void
   onReset: () => void
-  onSortChange: (k: SortKey) => void
 }) {
   return (
     <div>
+      {/* Design B: the differentiator sentence and the applied-filter
+          pills sit together directly above the results, next to the
+          count. Both answer "what am I looking at", which is a result
+          concern, not a header one. 並び替え moved the other way, into
+          the sticky header row with the rest of the controls. */}
+      <div className="resctx">
+        <div className="axisnote">
+          <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
+          地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
+        </div>
+        {pills.length > 0 ? (
+          <div className="fpills" role="group" aria-label="適用中の絞り込み条件">
+            {pills.map((p) => (
+              <button key={p.key} className="fpill" onClick={p.clear}
+                aria-label={`${p.label} を解除`}>
+                {p.label}<span className="fpill-x" aria-hidden="true">×</span>
+              </button>
+            ))}
+          </div>
+        ) : null}
+      </div>
+
       <div className="listhead">
         <h2>掲載物件</h2>
         <span className="cnt">
           {loading ? null : <><b>{total}</b> 件／全件が既存住宅診断済み</>}
         </span>
-        {/* 並び替え lives here, not in the search bar: it applies
-            immediately, whereas the selects and chips need 探す. */}
-        <select
-          className="field sortsel" aria-label="並び替え"
-          value={sortKey}
-          onChange={(e) => onSortChange(e.target.value as SortKey)}
-        >
-          {SORT_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
-        </select>
       </div>
 
       {loading ? (

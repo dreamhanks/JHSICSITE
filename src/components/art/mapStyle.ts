@@ -14,16 +14,25 @@
    actual street.
    ============================================================= */
 
-/** Palette lifted from the deleted MapSvg. */
+/** Design B palette.
+ *
+ *  These are literals, NOT reads of the @theme tokens — maplibre needs
+ *  concrete colours when the style is patched, and CSS custom properties
+ *  are not resolvable there. So this block must be updated by hand
+ *  whenever the tokens change, or the map silently keeps the old palette
+ *  while the rest of the UI moves. The comments name the token each
+ *  value mirrors so the next swap does not miss it.
+ *
+ *  Design A's warm beige is on main. */
 export const MAP_PALETTE = {
-  land: '#f2efe8',
-  block: '#e8e4da',
-  green: '#dce6d5',
-  water: '#c6d8e2',
-  road: '#ffffff',
-  casing: '#e3ded4',
-  label: '#5c554d',
-  halo: '#f2efe8',
+  land: '#f5f6f8',   // mirrors --color-paper
+  block: '#e6e9ee',
+  green: '#dfe8e0',
+  water: '#cfdce9',
+  road: '#ffffff',   // mirrors --color-card
+  casing: '#e2e5e9', // mirrors --color-rule
+  label: '#5a5d66',  // mirrors --color-ink-2
+  halo: '#f5f6f8',   // mirrors --color-paper
 } as const
 
 type MinimalLayer = { id: string; type: string; layout?: Record<string, unknown> }

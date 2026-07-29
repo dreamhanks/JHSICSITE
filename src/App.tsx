@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Footer } from './components/layout/Footer'
 import { Header } from './components/layout/Header'
 import { MobileSheet } from './components/layout/MobileSheet'
-import { SearchBar } from './components/layout/SearchBar'
 import { useAppState } from './context/useAppState'
 import { DetailPage } from './pages/DetailPage'
 import { FormPage } from './pages/FormPage'
@@ -20,11 +19,11 @@ import { SupportPage } from './pages/SupportPage'
  *  The header, mobile sheet and footer sit outside <main> and render on
  *  every view.
  *
- *  The search bar also sits outside <main>, but unlike the original it
- *  renders only on 物件検索. In the mockup show() never controlled it, so
- *  it appeared on every view including 物件詳細, where it pushed the
- *  property title down. Its chip and select state lives in
- *  AppStateContext precisely so unmounting here does not reset it. */
+ *  Design B: the search bar is gone from here. Its controls became the
+ *  header's second row and are gated inside Header by the same
+ *  `view === 'list'` test that used to live on this line. Their chip and
+ *  select state still lives in AppStateContext, so unmounting the row
+ *  when leaving 物件検索 does not reset it. */
 export function App() {
   const { view } = useAppState()
   const [sheetOpen, setSheetOpen] = useState(false)
@@ -33,7 +32,6 @@ export function App() {
     <>
       <Header onOpenSheet={() => setSheetOpen(true)} />
       <MobileSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      {view === 'list' && <SearchBar />}
       <main>
         {view === 'list' && <ListPage />}
         {view === 'detail' && <DetailPage />}

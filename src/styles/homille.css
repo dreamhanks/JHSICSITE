@@ -42,7 +42,7 @@ header{background:#fff; border-bottom:1px solid var(--color-rule); position:stic
 .hwrap{max-width:1320px; margin:0 auto; padding:0 20px;
   display:flex; align-items:center; gap:28px; height:66px}
 .logo{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit}
-.logo .mark{width:36px; height:36px; border-radius:8px; background:var(--color-soil);
+.logo .mark{width:36px; height:36px; border-radius:6px; background:var(--color-soil);
   display:grid; place-items:center; flex:none}
 .logo .mark svg{width:20px; height:20px}
 .logo .lt{line-height:1.15}
@@ -93,7 +93,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
    400px; gap:20px; align-items:start`. The map/list side-by-side split
    is replaced by the .reslayout vertical stack. */
 
-.mapcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+.mapcard{background:#fff; border:1px solid var(--color-rule); border-radius:4px;
   overflow:hidden; box-shadow:var(--shadow-card)}
 .maphead{display:flex; align-items:center; gap:14px; padding:11px 15px;
   border-bottom:1px solid var(--color-rule-2); flex-wrap:wrap}
@@ -116,7 +116,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .listhead .cnt{font-size:12px; color:var(--color-ink-2)}
 .listhead .cnt b{color:var(--color-soil); font-size:15px; font-family:var(--font-gothic)}
 .plist{display:flex; flex-direction:column; gap:11px}
-.pcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+.pcard{background:#fff; border:1px solid var(--color-rule); border-radius:4px;
   padding:13px; display:grid; grid-template-columns:120px 1fr; gap:13px;
   cursor:pointer; transition:.15s; text-align:left; width:100%; font-family:inherit}
 .pcard:hover{border-color:var(--color-soil); box-shadow:var(--shadow-card)}
@@ -143,18 +143,18 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .backlink{border:0; background:transparent; color:var(--color-ink-2); font-size:12.5px;
   padding:0 0 12px; display:flex; align-items:center; gap:6px}
 .backlink:hover{color:var(--color-soil)}
-.dhead{background:var(--color-ink); color:#fff; border-radius:6px 6px 0 0;
+.dhead{background:var(--color-ink); color:#fff; border-radius:4px 4px 0 0;
   padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
 .dhead .t{font-size:15px; font-weight:700; letter-spacing:.01em}
 .dhead .g{margin-left:auto; display:flex; align-items:center; gap:7px;
   background:rgba(255,255,255,.12); border-radius:3px; padding:4px 11px; font-size:12px}
 .dhead .g b{color:#8fd6a9}
 .dbody{background:#fff; border:1px solid var(--color-rule); border-top:0;
-  border-radius:0 0 6px 6px; padding:20px; box-shadow:var(--shadow-card)}
+  border-radius:0 0 4px 4px; padding:20px; box-shadow:var(--shadow-card)}
 .dgrid{display:grid; grid-template-columns:1.15fr 1fr; gap:24px}
 
 .gal{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
-.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:6px; overflow:hidden; position:relative}
+.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:4px; overflow:hidden; position:relative}
 .gmain svg{width:100%; height:100%; display:block}
 .gmain .rb{position:absolute; left:12px; bottom:12px; background:rgba(255,255,255,.94);
   border-radius:3px; padding:4px 10px; font-size:11px; font-weight:700; color:var(--color-soil-d)}
@@ -246,7 +246,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .page{display:none}
 .page.show{display:block}
 .pagehero{background:linear-gradient(135deg,#0f5c35,#0b4527); color:#fff;
-  border-radius:8px; padding:30px 34px; margin-bottom:22px}
+  border-radius:6px; padding:30px 34px; margin-bottom:22px}
 .pagehero .ey{font-size:11px; letter-spacing:.2em; opacity:.75; margin-bottom:8px}
 .pagehero h1{font-family:var(--font-mincho); font-size:26px; font-weight:700; margin:0 0 8px}
 .pagehero p{font-size:13px; margin:0; opacity:.92; line-height:1.8; max-width:760px}
@@ -264,7 +264,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .vc p{margin:0; font-size:12.5px; color:var(--color-ink-2); line-height:1.75}
 .vc .tagm{display:inline-block; margin-top:10px; font-size:10.5px; font-weight:700;
   color:var(--color-soil); background:#f4efe4; padding:2px 9px; border-radius:3px}
-.warrantybox{background:#fff; border:1px solid var(--color-rule); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-card)}
+.warrantybox{background:#fff; border:1px solid var(--color-rule); border-radius:6px; overflow:hidden; box-shadow:var(--shadow-card)}
 .wbh{background:var(--color-soil); color:#fff; padding:16px 22px}
 .wbh .nm{font-family:var(--font-mincho); font-size:20px; font-weight:700}
 .wbh .sub{font-size:12px; opacity:.9; margin-top:2px}
@@ -285,7 +285,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .calloutbar b{font-weight:800}
 
 /* マイページ */
-.mypanel{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:22px; box-shadow:var(--shadow-card)}
+.mypanel{background:#fff; border:1px solid var(--color-rule); border-radius:6px; padding:22px; box-shadow:var(--shadow-card)}
 .mynav{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap}
 .mynav .t{border:1px solid var(--color-rule); background:#fff; border-radius:100px; padding:6px 16px;
   font-size:12.5px; font-weight:700; color:var(--color-ink-2)}
@@ -298,8 +298,8 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 
 /* フォーム */
 .formwrap{display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start}
-.formcard{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:24px; box-shadow:var(--shadow-card)}
-.formcard h2{font-family:var(--font-mincho); font-size:19px; margin:0 0 4px}
+.formcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px; padding:24px; box-shadow:var(--shadow-card)}
+.formcard h2{font-family:var(--font-mincho); font-size:19px; font-weight:700; margin:0 0 4px}
 .formcard .fd{font-size:12px; color:var(--color-ink-2); margin:0 0 18px}
 .frow{margin-bottom:15px}
 .frow label{display:block; font-size:12.5px; font-weight:700; margin-bottom:6px}
@@ -316,13 +316,13 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .checks{display:flex; flex-direction:column; gap:8px}
 .checks label{display:flex; align-items:flex-start; gap:8px; font-size:12px; font-weight:500; cursor:pointer}
 .checks input{width:auto; margin-top:2px}
-.consent{background:#faf8f4; border:1px solid var(--color-rule-2); border-radius:6px; padding:12px 14px;
+.consent{background:#faf8f4; border:1px solid var(--color-rule-2); border-radius:4px; padding:12px 14px;
   font-size:11px; color:var(--color-ink-2); line-height:1.7; margin:6px 0 16px; max-height:110px; overflow-y:auto}
-.fsubmit{width:100%; border:0; background:var(--color-green); color:#fff; border-radius:6px;
+.fsubmit{width:100%; border:0; background:var(--color-green); color:#fff; border-radius:4px;
   padding:14px; font-size:14px; font-weight:700; margin-top:4px}
 .fsubmit:hover{background:#0b4527}
 .fsubmit:disabled{background:#a9b8b1; cursor:not-allowed}
-.fside{background:#faf8f4; border:1px solid var(--color-rule); border-radius:8px; padding:20px}
+.fside{background:#faf8f4; border:1px solid var(--color-rule); border-radius:6px; padding:20px}
 .fside h3{margin:0 0 12px; font-size:14px; font-weight:700; color:var(--color-soil-d)}
 .fside .pinfo{display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--color-rule)}
 .fside .pinfo .th{width:80px; flex:none; border-radius:5px; overflow:hidden; aspect-ratio:4/3; background:#e8e3d8}
@@ -337,7 +337,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .doneview .ok{width:60px; height:60px; border-radius:50%; background:#e9f2ec; display:grid;
   place-items:center; margin:0 auto 16px}
 .doneview .ok svg{width:30px; height:30px; stroke:var(--color-green); fill:none; stroke-width:2.5}
-.doneview h2{font-family:var(--font-mincho); font-size:22px; margin:0 0 8px}
+.doneview h2{font-family:var(--font-mincho); font-size:22px; font-weight:700; margin:0 0 8px}
 .doneview p{font-size:13px; color:var(--color-ink-2); line-height:1.8; max-width:460px; margin:0 auto 8px}
 .doneview .back2{margin-top:18px; border:1px solid var(--color-rule); background:#fff; color:var(--color-ink);
   border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
@@ -373,7 +373,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
 
 @media(max-width:640px){
   .hwrap{padding:0 12px; height:56px; gap:10px}
-  .logo .mark{width:30px; height:30px; border-radius:6px}
+  .logo .mark{width:30px; height:30px; border-radius:4px}
   .logo .mark svg{width:16px; height:16px}
   .logo .lt .n{font-size:17px}
   .logo .lt .n small{display:none}
@@ -391,7 +391,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
     margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--color-rule)}
   .msheet .pane .mh b{font-family:var(--font-mincho); font-size:18px; color:var(--color-soil)}
   .msheet .pane a{text-decoration:none; color:var(--color-ink); font-size:15px;
-    font-weight:500; padding:12px 8px; border-radius:6px}
+    font-weight:500; padding:12px 8px; border-radius:4px}
   .msheet .pane a:active{background:var(--color-rule-2)}
   .msheet .pane .x{border:0; background:transparent; font-size:22px; color:var(--color-ink-2); line-height:1}
   /* Step 2b DELETION from the ported block: the horizontal scroller
@@ -566,7 +566,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
   .searchbar{padding-top:13px}
   .sw{width:calc(100% - 40px); max-width:1280px; margin-bottom:12px;
     padding:14px 16px; gap:0; background:#fff;
-    border:1px solid var(--color-rule); border-radius:6px}
+    border:1px solid var(--color-rule); border-radius:4px}
   /* 1. labels sit above; v2 sets align-items on the grid below. */
   /* Step 2f DELETION: .sw-primary .go{margin-left:0; padding:8px 26px}
      went with the 探す button. The ported .sw .go rules near the top of
@@ -648,7 +648,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
    ============================================================= */
 
 /* ---- MapLibre chrome ---- */
-.mpop .maplibregl-popup-content{padding:0; border-radius:6px; background:#fff;
+.mpop .maplibregl-popup-content{padding:0; border-radius:4px; background:#fff;
   border:1px solid var(--color-rule); box-shadow:var(--shadow-card)}
 .mpop .maplibregl-popup-tip{border-top-color:var(--color-rule)}
 .mpop .maplibregl-popup-close-button{width:24px; height:24px; right:2px; top:2px;
@@ -895,9 +895,9 @@ body.fsheet-open{overflow:hidden}
    container dimensions so there is no layout shift and no new
    motion vocabulary.
    ============================================================= */
-.sk{background:var(--color-rule-2); border-radius:6px}
+.sk{background:var(--color-rule-2); border-radius:4px}
 .sk-card{height:172px}
-.sk-gmain{aspect-ratio:16/10; border-radius:6px}
+.sk-gmain{aspect-ratio:16/10; border-radius:4px}
 .sk-gth{aspect-ratio:4/3; border-radius:4px}
 .sk-row{height:14px; margin:7px 0}
 .sk-strata{height:420px; border-radius:5px}
@@ -921,7 +921,7 @@ body.fsheet-open{overflow:hidden}
    ============================================================= */
 .logo{border:0; background:transparent; font:inherit; color:inherit;
   text-align:left; cursor:pointer; padding:6px 8px; margin:-6px -8px;
-  border-radius:6px; transition:background .15s}
+  border-radius:4px; transition:background .15s}
 .logo:hover{background:var(--color-rule-2)}
 
 /* The sheet is touch-first, so it tints on :active like .pane a. */
@@ -1169,3 +1169,119 @@ nav a.on:after{background:var(--color-orange)}
    join. Checked at every breakpoint: the only other dbody rule is a
    padding change in the 640 query, so nothing overrides the border. */
 .dbody{border-left:4px solid var(--color-soil)}
+
+/* =============================================================
+   Design B — Stage 1
+   ============================================================= */
+
+/* -------------------------------------------------------------
+   Header row 2: the filter bar.
+
+   Design A kept the four selects and four chips in a separate
+   white panel below the header, which scrolled away. They are
+   now pills in a second header row, dark like row 1 and sticky
+   with it, so the filters stay reachable down the whole list.
+   Nav stays on row 1, so nothing has to share a line and the
+   1060px width problem disappears.
+
+   Prose here avoids slashes and leading dots: Tailwind scans
+   this file as raw text and would mint utilities from them.
+   ------------------------------------------------------------- */
+.hfilters{background:var(--color-soil-d); border-top:1px solid rgba(255,255,255,.10)}
+.hfwrap{max-width:1320px; margin:0 auto; padding:0 20px; height:52px;
+  display:flex; align-items:center; gap:8px}
+.hf-spacer{flex:1}
+
+/* Pills SHRINK rather than wrap. flex:none would have let five set
+   pills carrying long values overflow the row at 1060; with shrink
+   enabled the label ellipses instead, so the row is one line at every
+   width by construction rather than by arithmetic. min-width:0 on both
+   the item and the text span is what lets the ellipsis engage. */
+.hf-pill-wrap{position:relative; flex:0 1 auto; min-width:0}
+.hf-pill{display:inline-flex; align-items:center; gap:6px; max-width:220px; width:100%;
+  border:1px solid rgba(255,255,255,.40); background:transparent; color:#c9ccd4;
+  border-radius:100px; padding:7px 14px; font-family:inherit;
+  font-size:12.5px; font-weight:500; white-space:nowrap}
+.hf-pill:hover{background:rgba(255,255,255,.10); border-color:#fff; color:#fff}
+.hf-pill-t,.hf-pill-s{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.hf-pill-s{display:none}
+.hf-caret{flex:none; font-size:10px; opacity:.8}
+
+/* A SET pill takes the accent — but a LIGHTER accent, not the token.
+   --color-soil #0041D9 measures 2.47:1 against this bar: it fails both
+   the 4.5 text and the 3.0 boundary threshold, so the raw accent is
+   unusable as text or as a border here. #5b8cff is the same hue lifted
+   to 5.95:1. The raw token is still correct on light surfaces. */
+.hf-pill.set{border-color:#5b8cff; color:#5b8cff; background:rgba(91,140,255,.12)}
+.hf-pill.set:hover{background:rgba(91,140,255,.20); border-color:#8fb2ff; color:#8fb2ff}
+.hf-n{flex:none; min-width:16px; padding:0 5px; border-radius:100px;
+  background:#5b8cff; color:#111116; font-size:10px; font-weight:700; line-height:16px}
+
+/* The dropdown is a light surface floating over content, so it uses the
+   card colours rather than the bar's. */
+.hf-panel{position:absolute; top:calc(100% + 6px); left:0; z-index:60;
+  min-width:210px; max-height:320px; overflow-y:auto; padding:6px;
+  background:var(--color-card); border:1px solid var(--color-rule);
+  border-radius:6px; box-shadow:0 8px 24px rgba(17,17,22,.18)}
+.hf-opt{display:block; width:100%; text-align:left; border:0; background:transparent;
+  font-family:inherit; font-size:12.5px; color:var(--color-ink);
+  padding:8px 10px; border-radius:4px; white-space:nowrap}
+.hf-opt:hover{background:var(--color-rule-2)}
+.hf-opt.on{background:rgba(0,65,217,.10); color:var(--color-soil); font-weight:700}
+.hf-panel.refine{min-width:236px; display:flex; flex-direction:column;
+  align-items:flex-start; gap:7px; padding:11px}
+
+/* Sort moved out of listhead into the bar. The option list is drawn by
+   the OS, so it is given explicit light colours rather than inheriting
+   the bar's. */
+.hf-sort{flex:none; border:1px solid rgba(255,255,255,.40); background:transparent;
+  color:#c9ccd4; border-radius:100px; padding:7px 12px;
+  font-family:inherit; font-size:12.5px}
+.hf-sort:hover{border-color:#fff; color:#fff}
+.hf-sort option{color:var(--color-ink); background:var(--color-card)}
+
+/* 1160px, not 1060: five pills plus sort run out of room before the nav
+   breakpoint does. Labels drop to short forms rather than the row
+   gaining a second line. */
+@media(max-width:1160px){
+  .hf-pill-t{display:none}
+  .hf-pill-s{display:inline}
+  .hf-pill{max-width:170px; padding:7px 11px}
+  .hfwrap{gap:6px}
+}
+
+/* Below 640 the pills and sort give way to the existing filter sheet,
+   which is already the right mobile pattern and is not rebuilt. */
+@media(max-width:640px){
+  .hfwrap{height:46px; padding:0 12px; gap:8px}
+  .hf-pill-wrap,.hf-spacer,.hf-sort{display:none}
+  .hfilters .filter-trigger{display:inline-flex; align-items:center; gap:7px;
+    width:auto; flex:1; justify-content:center;
+    border:1px solid rgba(255,255,255,.40); background:transparent;
+    color:#c9ccd4; border-radius:100px; padding:7px 14px;
+    font-family:inherit; font-size:12.5px; font-weight:500}
+  .hfilters .filter-trigger svg{stroke:#c9ccd4}
+  .hfilters .filter-trigger .ft-label{flex:none}
+  .hfilters .filter-trigger .ft-badge{background:#5b8cff; color:#111116}
+}
+
+/* -------------------------------------------------------------
+   Result context: the differentiator sentence and the applied
+   filter pills, directly above the list.
+
+   Both answer "what am I looking at", which belongs with the
+   count rather than in the header. axisnote was a full-width
+   band inside the old search panel, so its own centring and
+   padding are cleared — main already supplies both.
+   ------------------------------------------------------------- */
+.resctx{display:flex; flex-direction:column; gap:9px; margin-bottom:13px}
+.resctx .axisnote{max-width:none; margin:0; padding:0}
+.resctx .fpills{margin:0}
+
+/* The favourites count badge. Design A had white on orange at 2.99:1;
+   Step 2k moved the digits to ink, and the new palette lifts that to
+   4.38:1 — better, still short of the 4.5 that 10px bold text needs.
+   Neither white (4.30) nor ink clears the new orange, so the badge takes
+   the same treatment as the pill count in row 2: one badge look across
+   the header, and 5.95:1. Orange stays the 診断済み signal elsewhere. */
+.fav-n{background:#5b8cff; color:#111116}

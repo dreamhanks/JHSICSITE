@@ -8,23 +8,42 @@
    a stray utility class. */
 @import "./styles/homille.css";
 
+/* =============================================================
+   Design B — token VALUES only.
+
+   Every name is unchanged, so all 91 references in homille.css
+   follow automatically and nothing needs renaming. Design A's
+   warm palette lives on main; this branch is the cool digital
+   one. Reverting is a matter of restoring this block.
+   ============================================================= */
 @theme {
-  --color-soil:   #7a5c2e;
-  --color-soil-d: #5c4322;
-  --color-green:  #0f5c35;
-  --color-orange: #e07b1e;
-  --color-blue:   #1b5fa8;
-  --color-paper:  #fbfaf7;
+  /* Accent. --color-soil keeps its name for continuity but is no
+     longer soil-coloured; it is the primary blue everywhere Design
+     A used brown. --color-soil-d is the dark surface (header). */
+  --color-soil:   #0041D9;
+  --color-soil-d: #111116;
+  /* The 保証 signal, and the only green left in the palette. */
+  --color-green:  #067647;
+  --color-orange: #d9480f;
+  --color-blue:   #0041D9;
+  --color-paper:  #f5f6f8;
   --color-card:   #ffffff;
-  --color-ink:    #2a2622;
-  --color-ink-2:  #6b635a;
-  --color-rule:   #e3ded4;
-  --color-rule-2: #f0ece4;
+  --color-ink:    #111116;
+  --color-ink-2:  #5a5d66;
+  --color-rule:   #e2e5e9;
+  --color-rule-2: #eef0f3;
 
   /* Original --shadow. Renamed to fit Tailwind v4's --shadow-*
-     namespace; a suffix-less --shadow does not generate a utility. */
-  --shadow-card: 0 1px 2px rgba(42,38,34,.06), 0 8px 24px rgba(42,38,34,.06);
+     namespace; a suffix-less --shadow does not generate a utility.
+     Re-based on the new ink: the old rgba(42,38,34) was the warm
+     brown and left every card with a brown cast on a cool ground.
+     Two layers and both opacities are unchanged. */
+  --shadow-card: 0 1px 2px rgba(17,17,22,.06), 0 8px 24px rgba(17,17,22,.06);
 
-  --font-mincho:  "Shippori Mincho","Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
+  /* Design B is all-sans. --font-mincho is deliberately NOT deleted:
+     14 rules reference it, and pointing it at the gothic stack keeps
+     every one of them working while making the revert a one-line
+     change. Headings carry weight instead of a serif face. */
+  --font-mincho:  "Noto Sans JP","Yu Gothic","YuGothic","Hiragino Sans","Meiryo",sans-serif;
   --font-gothic:  "Noto Sans JP","Yu Gothic","YuGothic","Hiragino Sans","Meiryo",sans-serif;
 }

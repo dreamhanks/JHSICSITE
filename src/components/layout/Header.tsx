@@ -1,7 +1,12 @@
 import { useAppState } from '../../context/useAppState'
 import { HamburgerIcon, LogoMark } from '../art/Icons'
+import { HeaderFilters } from './HeaderFilters'
 import { JHS_URL, NAV_ITEMS, isNavActive } from './navItems'
 
+/** Design B: two sticky rows. Row 1 is identity and account, row 2 is the
+ *  filter bar that Design A kept in a separate panel below the header.
+ *  Both scroll together, which is the point of the move — the filters
+ *  stay reachable down the whole result list. */
 export function Header({ onOpenSheet }: { onOpenSheet: () => void }) {
   const { view, setView, goHome, isLoggedIn, goToLogin, logout, favs } = useAppState()
 
@@ -55,6 +60,11 @@ export function Header({ onOpenSheet }: { onOpenSheet: () => void }) {
           </button>
         </div>
       </div>
+
+      {/* Row 2 exists only where it has something to filter. Design A
+          gated the search panel the same way (`view === 'list'` in
+          App.tsx); that condition moves here with the controls. */}
+      {view === 'list' ? <HeaderFilters /> : null}
     </header>
   )
 }
