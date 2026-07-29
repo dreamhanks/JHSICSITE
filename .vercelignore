@@ -1,0 +1,9 @@
+# Not part of the deployment.
+#
+# reference/mockup.html is the original single-file static comp that
+# this React app was ported from. It is kept in the repo as a visual
+# comparison baseline, never served. Vite already excludes it — only
+# index.html is an entry point and only public/ is copied verbatim —
+# so this file is belt-and-braces against the output directory ever
+# being repointed, and it keeps the upload smaller.
+reference/
