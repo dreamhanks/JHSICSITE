@@ -25,31 +25,45 @@ export function Gallery({ property }: { property: Property }) {
   const isPlan = (k: ArtKey): k is 'plan2f' => k === 'plan2f'
   const Plan = ART.plan2f
 
+  /** Design B Stage 3: the four tiles are the four NOT currently large,
+   *  in GAL order. Clicking one swaps it into the large slot and the
+   *  outgoing image drops back into its own GAL position — a straight
+   *  re-render, no animation.
+   *
+   *  Consequence: no small tile is ever the selected one, so .gth.on has
+   *  no target here. Being the large image IS the selected state, which
+   *  is why the rule is not applied rather than moved. */
+  const smalls = GAL.filter((g) => g.key !== selected)
+
+  const tile = (k: ArtKey, eager = false) => (isPlan(k)
+    ? <Plan tone={p.tone} />
+    : <PropertyPhoto property={p} room={k as PhotoKey} eager={eager} />)
+
   return (
-    <>
+    <div className="dmosaic">
       <div className="gmain">
-        {isPlan(selected)
-          ? <Plan tone={p.tone} />
-          /* Largest, most visible image on the page — never lazy. */
-          : <PropertyPhoto property={p} room={selected as PhotoKey} eager />}
+        {/* Largest, most visible image on the page — never lazy.
+            間取り図 needs no object-fit: its viewBox is 400x250, exactly
+            the 16/10 the slot asks for, so it fills without distortion. */}
+        {tile(selected, true)}
         <div className="rb">{ribbon}</div>
         <FavoriteButton id={p.id} />
       </div>
       <div className="gal gthumbs">
-        {GAL.map((g) => (
+        {smalls.map((g) => (
           <button
             key={g.key}
-            className={g.key === selected ? 'gth on' : 'gth'}
+            /* 間取り図 gets its own ground: it is a pale line drawing, and
+               on the standard tile grey it reads as an empty square. */
+            className={isPlan(g.key) ? 'gth gth-plan' : 'gth'}
             aria-label={CAPMAP[g.key]}
             onClick={() => setSelected(g.key)}
           >
-            {isPlan(g.key)
-              ? <Plan tone={p.tone} />
-              : <PropertyPhoto property={p} room={g.key as PhotoKey} />}
+            {tile(g.key)}
             <span className="cap">{g.cap}</span>
           </button>
         ))}
       </div>
-    </>
+    </div>
   )
 }

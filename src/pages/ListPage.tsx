@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { getProperties } from '../api/properties'
 import { CHIPS } from '../components/layout/filterChips'
 import { MapPanel } from '../components/property/MapPanel'
+import { MapToggle } from '../components/property/MapToggle'
 import { PropertyList, type AppliedPill } from '../components/property/PropertyList'
 import { useAppState } from '../context/useAppState'
 import { useMediaQuery } from '../hooks/useMediaQuery'
@@ -19,7 +20,7 @@ export function ListPage() {
   const {
     activeId, setActiveId, setCurrentPropertyId, setView,
     appliedFilters, commitFilters, resetFilters, sortKey, page, setPage,
-    mapOpen, setMapOpen,
+    mapOpen,
   } = useAppState()
 
   /** The split only exists above 1060; below it the row card is still the
@@ -128,17 +129,12 @@ export function ListPage() {
       ) : null}
 
       <div className="splitlist">
-        {/* The toggle lives here rather than over the map, so it is in the
-            same place whether the map is showing or not. */}
-        <div className="listtop">
-          <button
-            className="map-toggle"
-            aria-expanded={mapOpen}
-            onClick={() => setMapOpen(!mapOpen)}
-          >
-            {mapOpen ? '地図を閉じる' : '地図を表示する'}
-          </button>
-        </div>
+        {/* Only when the map is closed: the map column is unmounted, so
+            its floating copy of this button is gone with it. Open, the
+            button lives over the map itself. */}
+        {mapOpen ? null : (
+          <div className="listtop"><MapToggle className="show" /></div>
+        )}
 
         <PropertyList
           pageItems={items}

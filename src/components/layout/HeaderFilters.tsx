@@ -201,6 +201,13 @@ export function HeaderFilters() {
           </button>
           {openPill === 'refine' ? (
             <div className="hf-panel refine" role="group" aria-label="こだわり条件">
+              {/* The differentiator sentence now introduces the four chips
+                  it was always about, instead of sitting above the results
+                  explaining controls that had moved into this dropdown. */}
+              <p className="refine-note">
+                <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
+                地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
+              </p>
               {CHIPS.map((c) => (
                 <button
                   key={c.id}

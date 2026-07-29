@@ -6,7 +6,9 @@ import { DetailCta } from '../components/property/DetailCta'
 import { Gallery } from '../components/property/Gallery'
 import { SpecTable } from '../components/property/SpecTable'
 import { useAppState } from '../context/useAppState'
-import { formatAddress, formatTitle } from '../lib/propertyFormat'
+import {
+  formatAddress, formatAreaShort, formatPriceMan, formatRoomsShort, formatTitle,
+} from '../lib/propertyFormat'
 import type { KarteStratum } from '../types/karte'
 import type { Property } from '../types/property'
 
@@ -50,43 +52,69 @@ export function DetailPage() {
         </span>
       </div>
       <div className="dbody">
-        <div className="dgrid">
-          <div>
-            {loadingProperty || !property ? (
-              <>
-                <div className="sk sk-gmain" />
-                <div className="gal gthumbs">
-                  {Array.from({ length: 5 }, (_, i) => <div key={i} className="sk sk-gth" />)}
-                </div>
-              </>
-            ) : (
-              <Gallery property={property} />
-            )}
+        {/* Photo mosaic across the full content width: one large image
+            and a 2x2 of the other four. */}
+        {loadingProperty || !property ? (
+          <div className="dmosaic">
+            <div className="sk sk-gmain" />
+            <div className="gal gthumbs">
+              {Array.from({ length: 4 }, (_, i) => <div key={i} className="sk sk-gth" />)}
+            </div>
           </div>
-          <div>
+        ) : (
+          <Gallery property={property} />
+        )}
+
+        <div className="dmain">
+          <div className="dcontent">
             {loadingProperty || !property ? (
               <div>
                 {Array.from({ length: 8 }, (_, i) => <div key={i} className="sk sk-row" />)}
               </div>
             ) : (
               <>
+                {/* Price leads, address beneath it — the reverse of
+                    Design A, where the headline led and the price sat
+                    inside the spec table. */}
+                <div className="dlead">
+                  <div className="dprice">{formatPriceMan(property)}</div>
+                  <div className="daddr">{formatAddress(property)}</div>
+                  <div className="dsum">
+                    {formatRoomsShort(property)} ・ {formatAreaShort(property)}
+                  </div>
+                </div>
                 <SpecTable property={property} />
-                <DetailCta propertyId={property.id} onRequest={() => setView('form')} />
               </>
             )}
           </div>
-        </div>
 
-        {/* onRegister: goToLogin records 'detail' as the origin, and
-            currentPropertyId lives in context where no navigation clears
-            it, so returning re-mounts this same property with the karte
-            unlocked. */}
-        <Karte
-          strata={strata}
-          loading={loadingKarte}
-          isMember={isMember}
-          onRegister={() => goToLogin()}
-        />
+          {/* Sticky action panel. Offset from --header-h, the variable
+              Stage 2 established — the 16px is a gutter, not a second
+              copy of the header height. */}
+          <aside className="dside">
+            {loadingProperty || !property ? null : (
+              <DetailCta propertyId={property.id} onRequest={() => setView('form')} />
+            )}
+          </aside>
+
+          {/* The karte spans BOTH columns, on its own grid row below the
+              price block and the action panel. It is the differentiator
+              and it was the thing being squeezed, so it takes the full
+              measure rather than sharing it with an empty column.
+
+              onRegister: goToLogin records 'detail' as the origin, and
+              currentPropertyId lives in context where no navigation
+              clears it, so returning re-mounts this same property with
+              the karte unlocked. */}
+          <div className="dkarte">
+            <Karte
+              strata={strata}
+              loading={loadingKarte}
+              isMember={isMember}
+              onRegister={() => goToLogin()}
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

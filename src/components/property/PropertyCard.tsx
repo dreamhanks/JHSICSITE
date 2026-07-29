@@ -1,6 +1,6 @@
 import {
-  deriveBadges, formatAgeShort, formatAreaShort, formatPriceMan, formatRoomsShort,
-  formatTitle, formatWalk,
+  deriveBadges, formatAddress, formatAgeShort, formatAreaShort, formatPriceMan,
+  formatRoomsShort, formatTitle, formatWalk,
 } from '../../lib/propertyFormat'
 import type { Property } from '../../types/property'
 import { FavoriteButton } from './FavoriteButton'
@@ -47,25 +47,36 @@ export function PropertyCard({
         <span className="pthumb">
           <PropertyPhoto property={p} room="exterior" eager={eager} />
           <span className="tg">外観</span>
-          <span className="pfav"><FavoriteButton id={p.id} /></span>
         </span>
 
         <span className="pbody">
           <div className="vprice">{formatPriceMan(p)}</div>
-          <div className="vspec">{formatRoomsShort(p)} ・ {formatAreaShort(p)}</div>
-          <div className="vaddr">{p.station} {formatWalk(p)}</div>
-          {/* Carries the accessible name and the whole-card click target.
-              The headline is not drawn in this variant — the price leads —
-              so the text is visually hidden rather than removed. */}
-          <h3 className="vhit">
-            <button className="hit" onClick={() => onOpen(p.id)}>{formatTitle(p)}</button>
+          {/* The headline is now DRAWN, so it is the card's visible
+              accessible name and the separate hidden label is gone —
+              a card with no headline was anonymous, which was the point
+              of the change. The clamp lives on a span INSIDE the button:
+              overflow on .hit itself would risk clipping the stretched
+              :after, per the invariants in homille.css. */}
+          <h3 className="vcard-t">
+            <button className="hit" onClick={() => onOpen(p.id)}>
+              <span className="vclamp">{formatTitle(p)}</span>
+            </button>
           </h3>
+          <div className="vaddr">{formatAddress(p)}</div>
+          <div className="vspec">{formatRoomsShort(p)} ・ {formatAreaShort(p)}</div>
+          <div className="vstation">{p.station} {formatWalk(p)}</div>
           <div className="badges">
             {deriveBadges(p).map((b, i) => (
               <span key={i} className={`bdg ${b.variant}`}>{b.label}</span>
             ))}
           </div>
         </span>
+
+        {/* AFTER the body, not inside the thumbnail, so Tab reaches the
+            card before the heart — the same order the row variant has.
+            It is absolutely positioned against .pcard, so it still draws
+            over the photo. */}
+        <span className="pfav"><FavoriteButton id={p.id} /></span>
       </div>
     )
   }

@@ -154,7 +154,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .dgrid{display:grid; grid-template-columns:1.15fr 1fr; gap:24px}
 
 .gal{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
-.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:4px; overflow:hidden; position:relative}
+.gmain{aspect-ratio:16/10; border-radius:4px; overflow:hidden; position:relative}
 .gmain svg{width:100%; height:100%; display:block}
 .gmain .rb{position:absolute; left:12px; bottom:12px; background:rgba(255,255,255,.94);
   border-radius:3px; padding:4px 10px; font-size:11px; font-weight:700; color:var(--color-soil-d)}
@@ -468,12 +468,44 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
 
 /* =============================================================
    .pcard stretched button
+
    NOT from the original. The original card was a
    div[role="button"] containing both an <h3> and a nested
    favourite <button> — invalid content model and nested
    interactive elements. The card is now a plain <div>; the
    <h3> holds a real <button> stretched over the whole card,
    and the favourite button sits above it on z-index:2.
+
+   ---- THIS MECHANISM HAS NOW BROKEN THREE TIMES ----
+
+   It rests on TWO invariants, and each break violated one:
+
+     A. .pcard must be the nearest POSITIONED ancestor of .hit,
+        because :after{inset:0} is measured against that box.
+     B. Anything meant to sit above the overlay needs a z-index
+        AND a box that can carry one.
+
+   Step 2c  — the row rewrite moved the heart from .pthumb to
+              .pfav, orphaning `.pthumb .favbtn{z-index:2}`.
+              Broke B: the overlay swallowed every heart click.
+   Stage 2  — the vertical card wrapped .hit in an element with
+              the visually-hidden treatment, which is
+              position:absolute with clip-path. Broke A: the
+              overlay became 1x1px and was then clipped away, so
+              NO card on the list was clickable at all.
+   (the third is whichever one comes next)
+
+   CHECK FIRST when a card stops responding:
+     1. Walk from .hit up to .pcard. Is anything in between
+        positioned? If so, :after is measuring the wrong box.
+     2. Is anything in between clipped — overflow, clip-path?
+        That erases the overlay even when it is sized right.
+     3. Does every control meant to sit above it still match a
+        z-index rule, and is that element able to take one?
+
+   Symptom that names the fault: the heart works but the card
+   does not means the overlay is absent or mis-sized, NOT that
+   z-index is winning.
    ============================================================= */
 .pcard{position:relative}
 .pcard .hit{border:0; background:transparent; padding:0; font:inherit;
@@ -503,7 +535,9 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
 .legend i.g{background:#0f5c35}
 .legend i.o{background:#e07b1e}
 .legend i.s{background:#7a5c2e}
-.pagehero.brown{background:linear-gradient(135deg,#7a5c2e,#5c4322)}
+/* Design B DELETION: .pagehero.brown was Design A's brown gradient for
+   マイページ. Stage 2j removed the tone prop, so no element can carry the
+   class — it was unreachable Design A colour sitting in the file. */
 .gthumbs{margin-top:7px}
 .callout-note{font-size:11.5px}
 .jhs-link{color:var(--color-green); font-weight:700}
@@ -1387,10 +1421,23 @@ main.mfull{max-width:none; padding:0}
 .splitwrap{display:flex; align-items:flex-start}
 
 /* ---- the map side ---- */
+/* The map is INSET, not edge-to-edge — 20px above, left and below, the
+   same 20px the list column uses, so the two sides match. No right
+   padding: the list column's own 20px left padding already supplies that
+   gutter, and doubling it would put 40px between the two halves.
+
+   box-sizing is border-box globally, so the padding comes out of the
+   calc height rather than adding to it. That is what keeps the column
+   exactly one viewport tall and the sticky offset honest. */
 .splitmap{flex:0 0 55%; min-width:0; align-self:stretch;
   display:flex; flex-direction:column;
   position:sticky; top:var(--header-h); height:calc(100vh - var(--header-h));
-  background:var(--color-rule-2)}
+  padding:20px 0 20px 20px}
+/* Radius and clip live here, around the map AND its band, so they round
+   as one box. The tile fill also moves here, off .splitmap, or it would
+   paint across the new padding. */
+.splitmap-card{flex:1; min-height:0; display:flex; flex-direction:column;
+  border-radius:4px; overflow:hidden; background:var(--color-rule-2)}
 /* HEIGHT CHAIN — read the Step 2d warning before touching any of this.
    Every link is a FLEX STRETCH against a definite height. Not one of
    them is a percentage, and that is deliberate: .mapbody sits between
@@ -1418,16 +1465,31 @@ main.mfull{max-width:none; padding:0}
 .splitmap-surface > .mapbody{flex:1; min-width:0; min-height:0;
   display:flex; flex-direction:column}
 .splitmap-surface .maphost{flex:1; width:auto; height:auto; min-height:0}
+/* Horizontal padding matches .splitlist's 20px exactly, so the band and
+   the list column start at the same inset and the two sides read as a
+   pair. The tiles above it stay edge-to-edge — only this band is inset. */
 .splitmap .mapfoot{flex:none; background:var(--color-card);
-  border-top:1px solid var(--color-rule)}
+  border-top:1px solid var(--color-rule); padding-left:20px; padding-right:20px}
 
-/* Legend floats over the map, bottom-left, clear of maplibre's own
-   bottom-left control which sits at 0. */
-.splitmap .legend{position:absolute; left:12px; bottom:34px; z-index:2;
-  margin-left:0; display:flex; flex-direction:column; gap:5px;
+/* Legend floats over the map, inset 16px from the left and bottom.
+   Nothing to clear in that corner: maplibreLogo defaults to false so no
+   logo control is added, and AttributionControl's own default position
+   is bottom-RIGHT — the bottom-left corner is empty.
+
+   flex-wrap is reset explicitly. The base .legend is a wrapping ROW; this
+   is a column, and leaving wrap on a column container lets it break into
+   extra columns whenever the height is constrained, which is the kind of
+   thing that reads as clipped text.
+
+   max-width means the box can never be wider than the surface it floats
+   over, whatever the labels grow to. */
+.splitmap .legend{position:absolute; left:16px; bottom:16px; z-index:2;
+  margin-left:0; display:flex; flex-direction:column; flex-wrap:nowrap;
+  gap:5px; max-width:calc(100% - 32px);
   background:rgba(255,255,255,.94); border:1px solid var(--color-rule);
   border-radius:4px; padding:8px 10px; font-size:11px;
   color:var(--color-ink); box-shadow:var(--shadow-card)}
+.splitmap .legend span{white-space:nowrap}
 
 /* ---- the list side ---- */
 .splitlist{flex:1 1 45%; min-width:0; padding:16px 20px 40px}
@@ -1439,6 +1501,9 @@ main.mfull{max-width:none; padding:0}
 .pcard.vcard .pthumb{display:block; width:100%; aspect-ratio:16/10;
   border-radius:0; grid-area:auto}
 .pcard.vcard .pbody{display:block; padding:11px 13px 13px}
+/* Positioned against .pcard, not .pthumb — the heart now sits last in
+   the DOM for tab order, and top:8px still lands it over the photo
+   because the photo is the card's first element. */
 .pcard.vcard .pfav{position:absolute; top:8px; right:8px; z-index:2}
 .pcard.vcard .pfav .favbtn{position:static}
 .vprice{font-size:21px; font-weight:700; color:var(--color-ink); line-height:1.2}
@@ -1464,8 +1529,11 @@ main.mfull{max-width:none; padding:0}
 @media(max-width:1060px){
   main.mfull{padding:0}
   .splitwrap{display:block}
+  /* Stacked, the map is inset on all four sides — there is no list
+     column beside it to supply the right-hand gutter. */
   .splitmap{position:static; height:auto; display:block;
-    flex:none; background:transparent}
+    flex:none; padding:20px 20px 0}
+  .splitmap-card{display:block; flex:none}
   .splitmap-surface{display:block; flex:none; height:auto}
   .splitmap-surface > .mapbody{display:block; flex:none}
   .splitmap-surface .maphost{flex:none; width:100%; height:340px}
@@ -1473,8 +1541,12 @@ main.mfull{max-width:none; padding:0}
 }
 @media(max-width:640px){
   .splitmap-surface .maphost{height:260px}
+  .splitmap{padding:12px 12px 0}
   .splitlist{padding:12px 12px 32px}
-  .splitmap .legend{left:8px; bottom:30px; font-size:10px; padding:6px 8px}
+  /* Insets track the list column's 12px at this width. */
+  .splitmap .legend{left:12px; bottom:12px; font-size:10px; padding:6px 8px;
+    max-width:calc(100% - 24px)}
+  .splitmap .mapfoot{padding-left:12px; padding-right:12px}
 }
 
 /* ---- Design A leftovers, cleared ---- */
@@ -1486,6 +1558,332 @@ main.mfull{max-width:none; padding:0}
   box-shadow:0 0 0 2px rgba(0,65,217,.20)}
 
 /* Visually hidden but still announced. Used by the map's h2, whose
-   heading band no longer exists, and by the vertical card's headline. */
-.vh,.vhit{position:absolute; width:1px; height:1px; margin:-1px;
+   heading band no longer exists, and by the vertical card's headline.
+
+   NEVER put this on an element that wraps .hit. It is position:absolute
+   with clip-path, so it becomes the containing block for the stretched
+   :after AND erases it. Put it on a span INSIDE the button instead. */
+.vh{position:absolute; width:1px; height:1px; margin:-1px;
   padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap}
+
+/* The vertical card's title row: unpositioned and unclipped, so the
+   stretched :after still resolves against .pcard. */
+.pcard.vcard .vcard-t{margin:0}
+
+/* =============================================================
+   Design B Stage 3 — 物件詳細
+
+   Design A put the gallery left and the specs right. This is the
+   listing shape instead: a photo mosaic across the full content
+   width, then content left and a sticky action panel right.
+
+   The page stays inside main's 1320px measure. Only the list page
+   is full-bleed, and keeping that difference is what makes the
+   split layout read as special.
+
+   Prose here avoids slashes and leading dots: Tailwind scans this
+   file as raw text and would mint utilities from them.
+   ============================================================= */
+
+/* ---- photo mosaic ---- */
+.dmosaic{display:grid; grid-template-columns:60fr 40fr; gap:8px; margin-bottom:22px}
+/* .gal is repeat(4,1fr) for the old thumbnail strip; here the four
+   tiles are a 2x2 filling the right of the mosaic.
+
+   Explicit 1fr rows, and NO height:100% on the tiles. .gal stretches to
+   the mosaic row that .gmain's aspect-ratio defines, the fr rows split
+   that definite height, and each tile stretches into its row — so every
+   link is a definite length, never a percentage against an auto row.
+   Same rule the map chain had to learn. */
+.dmosaic .gal{grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:8px}
+.dmosaic .gth{aspect-ratio:auto; height:auto; min-height:0}
+.dmosaic .sk-gmain{height:auto; min-height:0}
+
+/* 間取り図 is a pale line drawing, not a photograph. On the shared tile
+   grey it reads as an empty square, which is why it looked absent. */
+.gth-plan{background:var(--color-card)}
+
+/* ---- body: content left, sticky actions right ---- */
+.dmain{display:grid; grid-template-columns:1fr 320px; gap:28px; align-items:start}
+.dcontent{min-width:0}
+.dside{position:sticky; top:calc(var(--header-h) + 16px); min-width:0}
+/* The panel's own margin-top would fight the sticky offset. */
+.dside .cta{margin-top:0}
+
+/* ---- price leads ---- */
+.dlead{margin:0 0 16px}
+.dprice{font-size:30px; font-weight:700; color:var(--color-ink); line-height:1.15}
+.daddr{font-size:13.5px; color:var(--color-ink); margin-top:6px}
+.dsum{font-size:12.5px; color:var(--color-ink-2); margin-top:4px}
+
+@media(max-width:1060px){
+  /* Mosaic stacks: large image full width, tiles in a row beneath.
+     grid-template-rows must be reset — the 2x2's `1fr 1fr` would
+     otherwise declare a second, empty row under the single strip. */
+  .dmosaic{grid-template-columns:1fr; gap:7px}
+  .dmosaic .gal{grid-template-columns:repeat(4,1fr); grid-template-rows:auto}
+  .dmosaic .gth{aspect-ratio:4/3; height:auto}
+  .dmain{grid-template-columns:1fr; gap:22px}
+  .dside{position:static; top:auto}
+  .dprice{font-size:26px}
+}
+@media(max-width:640px){
+  .dmosaic .gal{grid-template-columns:repeat(4,1fr); gap:6px}
+  .dprice{font-size:23px}
+}
+
+/* ---- colour sweep: the nine Design A survivors on this page ---- */
+
+/* Thumbnail ground and caption: warm beige and old-ink rgba. */
+.gth{background:var(--color-rule-2)}
+.gth .cap{background:rgba(17,17,22,.6)}
+
+/* Karte gate: warm cream ground under a now-blue dashed border. */
+.gate{background:#f2f5fb}
+
+/* Logged-in banner, re-based on the Design B green. Text #044d2e on
+   #eef7f2 is 9.13:1; the #067647 border against it is 5.21:1. The old
+   pair was #0b4527 on #f2f8f4 — a Design A green on a Design A tint. */
+.opened{border-color:var(--color-green); background:#eef7f2; color:#044d2e}
+
+/* The eight gated documents. Disabled controls are exempt from the
+   contrast minimum, but these ARE the gate demo — being able to read
+   what you cannot open is the whole point — so they are lifted from
+   2.55:1 to 3.82:1 rather than left at the exemption. */
+.doc:disabled{background:#f1f3f6; color:#767b86}
+.doc:disabled .ic{background:#b8bcc4}
+.doc:not(:disabled):hover{background:#f5f8ff}
+
+/* Stratum document column. */
+.stratum .docs{background:#f8f9fb}
+
+/* The pressed favourite. Its LABEL is the reason this is not just a
+   background swap: --color-orange on the tint measures 3.88:1, and even
+   on plain white it is only 4.30:1, so the token can never carry this
+   text. #c2410c is the same hue a step darker, 4.68:1 on the tint and
+   5.18:1 as a border against the card. Design A was 2.79:1 here.
+   The heart fill stays --color-orange — it is a shape, not text. */
+.cta .fav.on{background:#fdf1ec; border-color:#c2410c; color:#c2410c}
+
+/* =============================================================
+   Design B — card identity, toggle placement, refine note
+   ============================================================= */
+
+/* Headline and address on the vertical card. Without them every card
+   showed the same price-and-spec shape and was indistinguishable from
+   its neighbours. The clamp is on a span inside the button, never on
+   .hit itself — see the stretched-button invariants. */
+.pcard.vcard .vcard-t{margin:7px 0 0; font-size:13.5px; font-weight:700;
+  line-height:1.45; color:var(--color-ink)}
+.vclamp{display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  overflow:hidden}
+.pcard.vcard .vaddr{font-size:11.5px; color:var(--color-ink-2); margin-top:4px;
+  overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.pcard.vcard .vspec{font-size:12.5px; color:var(--color-ink); margin-top:6px}
+.pcard.vcard .vstation{font-size:12px; color:var(--color-ink-2); margin-top:3px}
+
+/* The toggle floating over the map, top-right, clear of maplibre's own
+   top-right control slot. */
+/* 16px, matching the legend, so every floating element on the map sits
+   on the same inset. Top-right is empty: we add no navigation control,
+   and the attribution defaults to bottom-right. */
+.map-toggle.over{position:absolute; top:16px; right:16px; z-index:3;
+  background:var(--color-card); border:1px solid var(--color-rule);
+  border-radius:100px; padding:6px 13px; font-size:11.5px; font-weight:500;
+  color:var(--color-ink); text-decoration:none; box-shadow:var(--shadow-card)}
+.map-toggle.over:hover{border-color:var(--color-soil); color:var(--color-soil)}
+/* Map closed: same button at the top-left of the expanded list. */
+.listtop{display:flex; justify-content:flex-start; margin-bottom:12px}
+.map-toggle.show{border:1px solid var(--color-rule); background:var(--color-card);
+  border-radius:100px; padding:7px 15px; font-size:12px; font-weight:500;
+  color:var(--color-ink); text-decoration:none}
+.map-toggle.show:hover{border-color:var(--color-soil); color:var(--color-soil)}
+
+/* The differentiator sentence, now introducing the four chips it is
+   about. Shared by the こだわり dropdown and the mobile filter sheet. */
+.refine-note{margin:0 0 2px; font-size:11px; line-height:1.6;
+  color:var(--color-ink-2)}
+.refine-note b{color:var(--color-ink); font-weight:700}
+/* The dropdown widens to carry it without becoming a tall thin column. */
+.hf-panel.refine{min-width:320px; max-width:340px}
+.fs-chips{margin-top:2px}
+
+/* =============================================================
+   Design B — detail page: karte width, stacked actions,
+   stratum scale
+   ============================================================= */
+
+/* The karte gets its own grid ROW spanning both columns, so the action
+   panel no longer leaves an empty column beside the page's most
+   important section. Option (b) of the three offered.
+
+   Tradeoff, stated plainly: the panel's sticky travel is now limited to
+   row 1, because a grid item's sticky containing block is its grid area.
+   Beside a short price block that is only a little scrolling. The karte
+   gaining ~350px of measure is worth more than a panel that follows the
+   reader past content it has nothing to do with. */
+.dmain{grid-template-rows:auto auto}
+.dcontent{grid-column:1; grid-row:1}
+.dside{grid-column:2; grid-row:1}
+.dkarte{grid-column:1 / -1; grid-row:2; min-width:0}
+
+/* Two buttons side by side in a 320px panel gave each ~150px, which
+   broke 資料請求・内見を申し込む mid-word and left one character of
+   お気に入りに追加 stranded. Full width each, primary on top. */
+.dside .cta{grid-template-columns:1fr}
+
+@media(max-width:1060px){
+  /* Single column: the karte is already full width, and the row
+     assignments would strand it below an empty track. */
+  .dcontent,.dside,.dkarte{grid-column:1; grid-row:auto}
+}
+
+/* ---- stratum chronology scale ----
+   Was five graduating browns (#3d3a34 to #9c8560) with .s5 on the old
+   soil token. The palette swap left four browns and one blue in the
+   client's most important section.
+
+   Rebuilt as accent to neutral: s5 newest and strongest carries the raw
+   accent, and each older band steps darker and greyer — which also
+   reads as deeper in the ground, the metaphor the karte is built on.
+   Steps are evenly spaced at 1.20:1 so the gradient is legible as a
+   sequence, and every band clears AA for both the date and the phase
+   sub-label. Design A's .s4 did not: 3.54:1 label, 2.87:1 sub. */
+.s5 .when{background:#0041d9}
+.s4 .when{background:#1d4099}
+.s3 .when{background:#293967}
+.s2 .when{background:#2b2e40}
+.s1 .when{background:#212125}
+
+/* =============================================================
+   Design B — detail page: last Design A leftovers
+   ============================================================= */
+
+/* 1. The 閲覧権限 band. Stage 2i made it cream with #3d2f1c text, which
+   was a Design A treatment and survived the palette swap because both
+   values were literals — the swap only reached tokens.
+   The border shorthand is replaced outright rather than patched with a
+   later border-color. Leaving `border:1px solid #ddd3c0` in place and
+   overriding only its colour works, but it leaves a Design A literal in
+   the file for the next audit to trip over. */
+.dhead{background:var(--color-rule-2); border:1px solid var(--color-rule)}
+.dhead .t{color:var(--color-ink)}
+.dhead .g{border:1px solid var(--color-rule)}
+
+/* 2. The 4px accent spine. It was a Design A device from Step 2l, sized
+   for a card that ended at the karte; on the taller Design B page it ran
+   the full height as a saturated blue rule and dominated everything.
+   Gone from both halves — a 1px border on all sides instead.
+
+   The card still reads as one panel without it: .dhead keeps
+   `border-radius:4px 4px 0 0` and .dbody `0 0 4px 4px`, .dbody has
+   `border-top:0` so the two share one seam, and .dbody's box-shadow
+   wraps the pair. The spine was decoration, not structure. */
+.dhead{border-left-width:1px; border-left-style:solid}
+.dbody{border-left:1px solid var(--color-rule)}
+
+/* 3. The action panel no longer moves. Option (b) had already cut its
+   sticky travel to almost nothing — beside a short price block it bought
+   no reach and the drift was a distraction. */
+.dside{position:static; top:auto}
+
+/* Badges. .bdg.s carried the same cream as the old .dhead, and .bdg.o
+   kept Design A's #b7620f on #fdf1e4 at 3.96:1 — flagged in Stage 3 as
+   out of scope then, swept now. */
+.bdg.s{background:#e9edf9}
+.bdg.o{color:#9a3412; background:#fdf0ea}
+
+/* Form sidebar thumbnail ground — the last warm literal outside the
+   room art. Not on this page, but it is the same leftover. */
+.fside .pinfo .th{background:var(--color-rule-2)}
+
+/* =============================================================
+   Design B — primary CTA becomes black
+
+   The accent is doing too many jobs: pills, links, active nav,
+   stratum s5, focus rings AND the buttons. A blue CTA on a
+   blue-accented page has nothing to stand against.
+
+   Split the roles. --color-soil #0041D9 is now INTERACTIVE —
+   anything you can click into, select, or that marks state.
+   --color-ink #111116 is ACTION — the one button per screen you
+   are meant to press. Nothing else on a light surface is that
+   dark, so the CTA wins on weight rather than on hue.
+
+   Hover LIFTS to #2a2a32 rather than darkening: #111116 is
+   already near-black and a darken would be invisible. The four
+   hovers below all previously resolved to --color-soil-d, which
+   IS #111116 — left alone they would have given the new base no
+   hover feedback at all.
+   ============================================================= */
+.cta .p{background:var(--color-ink)}
+.cta .p:hover{background:#2a2a32}
+.gate .gb{background:var(--color-ink)}
+.gate .gb:hover{background:#2a2a32}
+.fsubmit{background:var(--color-ink)}
+.fsubmit:hover{background:#2a2a32}
+/* Same ログインする label as .fsubmit carries, different rule — the
+   completion screen's button. It has to move with them or two buttons
+   with identical text would differ. */
+.back2.login{background:var(--color-ink); border-color:var(--color-ink)}
+.back2.login:hover{background:#2a2a32; border-color:#2a2a32}
+
+/* Was #c4bcb0, a warm grey left from Step 2k. Disabled controls are
+   exempt from the contrast minimum, but it should not be the last warm
+   value in the file. */
+.fsubmit:disabled{background:#b9bdc6}
+
+/* .authbtn is deliberately NOT changed. It sits on the header, whose
+   background IS --color-soil-d #111116 — the same value. Black on black
+   measures 1.00:1: the button would vanish completely. On a dark bar the
+   light button already is the strongest possible CTA, which is why Step
+   2h made it white in the first place. */
+
+/* =============================================================
+   Design B — the four remaining pages
+
+   会員限定, 購入サポート, マイページ and ログイン were never
+   touched by a Design B stage, so they still carried Stage 2i's
+   cream hero, Design A browns and green section bars. Same
+   treatment .dhead received: a light neutral band, ink title,
+   1px border on every side, no accent spine.
+   ============================================================= */
+
+/* 1. PageHero, on all four pages. */
+.pagehero{background:var(--color-rule-2); color:var(--color-ink);
+  border:1px solid var(--color-rule)}
+.pagehero .ey{color:var(--color-ink-2)}
+.pagehero h1{color:var(--color-ink)}
+.pagehero p{color:var(--color-ink-2)}
+
+/* 2. Section heading bars were --color-green. Green is the 保証 signal,
+   not a structural accent; the bar marks a heading, so it takes the
+   interactive accent. One rule, six headings: two on 会員限定, four on
+   購入サポート. */
+.sec h2{border-left-color:var(--color-soil)}
+
+/* 3. The ValueCard tag on 会員限定 carried the same cream as the old
+   hero. Matches .bdg.s, which moved to this tint last round. */
+.vc .tagm{background:#e9edf9}
+
+/* 4. 建物サポートシステム ストック型 gets the hero treatment. */
+.wbh{background:var(--color-rule-2); color:var(--color-ink);
+  border-left:0; border-bottom:1px solid var(--color-rule)}
+.wbh .nm{color:var(--color-ink)}
+.wbh .sub{color:var(--color-ink-2)}
+
+/* 5. The remaining blue-filled ACTION buttons. Black is the action
+   colour; the accent stays for state and interaction.
+   .mynav .t.on is deliberately NOT here — see the report. */
+.emptyfav .go2{background:var(--color-ink)}
+.emptyfav .go2:hover{background:#2a2a32}
+.mpop-go{background:var(--color-ink)}
+.mpop-go:hover{background:#2a2a32}
+.mbcard-go{background:var(--color-ink)}
+.mbcard-go:hover{background:#2a2a32}
+
+/* 6. Warm greys: the empty-state heart, the disabled pager, and the
+   thumbnail ground behind every photo that has not loaded. */
+.emptyfav svg{stroke:#c2c7d0}
+.pg:disabled{color:#b9bdc6}
+.pthumb{background:var(--color-rule-2)}

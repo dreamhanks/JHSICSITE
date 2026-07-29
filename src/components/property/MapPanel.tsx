@@ -1,6 +1,7 @@
 import { formatRange } from '../../lib/propertySearch'
 import { pinColor } from '../../lib/pinColors'
 import type { PinKind, Property } from '../../types/property'
+import { MapToggle } from './MapToggle'
 import { PropertyMap } from './PropertyMap'
 
 /** Legend rows. The swatch colour comes from pinColor, the SAME source
@@ -35,23 +36,32 @@ export function MapPanel({
     <div className="splitmap">
       <h2 className="vh">マップから探す（墨田区・台東区・江東区周辺）</h2>
 
-      <div className="splitmap-surface">
-        <PropertyMap
-          items={pageItems} activeId={activeId}
-          onHighlight={onHighlight} onOpen={onOpen}
-        />
-        <div className="legend">
-          {LEGEND.map((l) => (
-            <span key={l.kind}>
-              <i style={{ background: pinColor(l.kind) }}></i>{l.label}
-            </span>
-          ))}
+      {/* The rounded box the map and its disclosure band share. .splitmap
+          carries the padding that insets it; this carries the radius and
+          the clip, so both halves round together instead of the band
+          hanging square off the bottom of a rounded map. */}
+      <div className="splitmap-card">
+        <div className="splitmap-surface">
+          <PropertyMap
+            items={pageItems} activeId={activeId}
+            onHighlight={onHighlight} onOpen={onOpen}
+          />
+          {/* Floats over the map, top-right. Sibling of PropertyMap, not a
+              child, so it is outside the region that unmounts. */}
+          <MapToggle className="over" />
+          <div className="legend">
+            {LEGEND.map((l) => (
+              <span key={l.kind}>
+                <i style={{ background: pinColor(l.kind) }}></i>{l.label}
+              </span>
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="mapfoot">
-        {formatRange(total, page)}<br />
-        物件所在エリア・価格・間取りは<strong>一般公開</strong>。診断報告書・図面・地盤調査報告書は<strong>会員限定</strong>で公開します。
+        <div className="mapfoot">
+          {formatRange(total, page)}<br />
+          物件所在エリア・価格・間取りは<strong>一般公開</strong>。診断報告書・図面・地盤調査報告書は<strong>会員限定</strong>で公開します。
+        </div>
       </div>
     </div>
   )

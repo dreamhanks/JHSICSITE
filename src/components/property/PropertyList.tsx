@@ -28,16 +28,10 @@ export function PropertyList({
 }) {
   return (
     <div>
-      {/* Design B: the differentiator sentence and the applied-filter
-          pills sit together directly above the results, next to the
-          count. Both answer "what am I looking at", which is a result
-          concern, not a header one. 並び替え moved the other way, into
-          the sticky header row with the rest of the controls. */}
+      {/* The axisnote moved into the こだわり dropdown, next to the four
+          chips it describes. What stays here is the applied-filter
+          pills — "what am I looking at" belongs with the results. */}
       <div className="resctx">
-        <div className="axisnote">
-          <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
-          地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
-        </div>
         {pills.length > 0 ? (
           <div className="fpills" role="group" aria-label="適用中の絞り込み条件">
             {pills.map((p) => (
@@ -50,15 +44,13 @@ export function PropertyList({
         ) : null}
       </div>
 
-      {/* Stage 1b: the bare number moved to the header bar, where it can
-          be seen while a filter is being changed. What stays here is the
-          claim the number qualifies — 全件が既存住宅診断済み is a selling
-          point, not a count, and it would be lost if the whole span went. */}
+      {/* The count lives in header row 2, where it can be seen while a
+          filter is being changed. Repeating it here 200px lower was pure
+          duplication, so the number is gone and only the claim it
+          qualified remains. Authorised label change. */}
       <div className="listhead">
         <h2>掲載物件</h2>
-        <span className="cnt">
-          {loading ? null : <><b>{total}</b> 件／全件が既存住宅診断済み</>}
-        </span>
+        <span className="cnt">{loading ? null : '全件が既存住宅診断済み'}</span>
       </div>
 
       {loading ? (

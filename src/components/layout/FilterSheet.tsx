@@ -95,6 +95,14 @@ export function FilterSheet({
           <div className="fs-sep"></div>
 
           <span className="fs-label" id="fs-chip-label">こだわり条件</span>
+          {/* The same differentiator sentence the こだわり dropdown carries.
+              It has to be here too: the dropdown does not exist below
+              640px — the pills are hidden and this sheet replaces them —
+              so putting it only there would lose it entirely on mobile. */}
+          <p className="refine-note">
+            <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
+            地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
+          </p>
           <div className="fs-chips" role="group" aria-labelledby="fs-chip-label">
             {chips.map((c) => (
               <button
