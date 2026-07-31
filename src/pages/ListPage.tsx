@@ -2,11 +2,12 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { getProperties } from '../api/properties'
 import { ListPanel } from '../components/property/ListPanel'
 import { MapPanel } from '../components/property/MapPanel'
+import { MapSheetView } from '../components/property/MapSheetView'
 import { MapStage } from '../components/property/MapStage'
 import { PropertyList } from '../components/property/PropertyList'
 import { useAppState } from '../context/useAppState'
 import { useMediaQuery } from '../hooks/useMediaQuery'
-import { WIDE_QUERY } from '../lib/breakpoints'
+import { SHEET_QUERY, WIDE_QUERY } from '../lib/breakpoints'
 import { filterProperties, pageCount, pageSlice, sortProperties } from '../lib/propertySearch'
 import type { Property } from '../types/property'
 
@@ -17,6 +18,13 @@ export function ListPage() {
   } = useAppState()
 
   const wide = useMediaQuery(WIDE_QUERY)
+  /* Design C Stage 6. Three layouts now, and they are exclusive:
+       >=1061  the full-viewport map with the floating results panel
+       641-1060 the Stage 1 stacked layout, UNCHANGED
+       <=640   the full-screen map with the draggable bottom sheet
+     641-1060 is the untouched middle because .filter-trigger and
+     .msheet.show both live inside the 640px query — see SHEET_QUERY. */
+  const sheet = useMediaQuery(SHEET_QUERY)
   const [panelCollapsed, setPanelCollapsed] = useState(false)
   const [all, setAll] = useState<Property[]>([])
   const [loading, setLoading] = useState(true)
@@ -120,10 +128,29 @@ export function ListPage() {
     )
   }
 
+  if (sheet) {
+    return (
+      <MapSheetView
+        pageItems={items}
+        total={results.length}
+        loading={loading}
+        page={safePage}
+        activeId={activeId}
+        sortKey={sortKey}
+        onOpen={open}
+        onPageChange={setPage}
+        onReset={resetFilters}
+        onSortChange={setSortKey}
+        onHighlight={setActiveId}
+      />
+    )
+  }
+
   /* Stacked fallback, unchanged from Stage 1: full-width map on top at a
-     fixed height, then the result rows, normal document scroll. This is
-     also the only branch where 地図を閉じる exists — MapPanel owns it,
-     and there the label still means what it says.
+     fixed height, then the result rows, normal document scroll. It now
+     serves 641-1060px only. This is also the only branch where
+     地図を閉じる exists — MapPanel owns it, and there the label still
+     means what it says.
 
      SearchBar is NOT rendered here: it stays a sibling of <main> in
      App.tsx, gated on the same WIDE_QUERY. See the note there. */

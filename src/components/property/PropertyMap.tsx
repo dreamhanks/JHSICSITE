@@ -1,18 +1,12 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { STYLE_URL, loadMapLibre } from '../../lib/maplibre'
 import { formatPriceMan, formatTitle } from '../../lib/propertyFormat'
 import type { Property } from '../../types/property'
 import { applyJapaneseLabels, muteMajorRoads } from '../art/mapStyle'
 import { MapBottomCard } from './MapBottomCard'
 import { MapPopupCard } from './MapPopupCard'
-
-/** OpenFreeMap Liberty — no key, no signup, no cookies. Liberty is the
- *  only OpenFreeMap style still maintained upstream, and it is a
- *  full-colour map: parks, water and a real road hierarchy, which is
- *  what a map-first design needs. Attribution is a licence requirement
- *  and must stay visible. */
-const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
 
 /** Below this the markers are plain dots; at or above it they become
  *  price pills.
@@ -60,12 +54,17 @@ const REFIT_DEBOUNCE_MS = 250
 type Status = 'loading' | 'ready' | 'failed'
 
 export function PropertyMap({
-  items, activeId, onHighlight, onOpen,
+  items, activeId, onHighlight, onOpen, onStatus,
 }: {
   items: Property[]
   activeId: number | null
   onHighlight: (id: number | null) => void
   onOpen: (id: number) => void
+  /** Design C Stage 6, ADDITIVE and optional: the mobile bottom sheet
+   *  expands to Full when the map fails, so it has to know. Callers that
+   *  omit it are byte-for-byte unaffected — nothing else in this file
+   *  reads it, and `status` already existed. */
+  onStatus?: (s: Status) => void
 }) {
   const isMobile = useMediaQuery('(max-width: 640px)')
   const hostRef = useRef<HTMLDivElement>(null)
@@ -176,36 +175,13 @@ export function PropertyMap({
 
     ;(async () => {
       try {
-        const { Map, setWorkerUrl } = await import('maplibre-gl')
-        await import('maplibre-gl/dist/maplibre-gl.css')
-
-        /* Point maplibre at a worker WE emit, before constructing the Map.
-         *
-         * Why the deep dist/ path — do not "tidy" this into a bare
-         * 'maplibre-gl' import, it will break the deployed map:
-         *
-         * v6 went ESM-only and DELETED the UMD bundles, including
-         * maplibre-gl-csp.js, which was the build that existed precisely
-         * for bundlers that cannot serve a worker as a sibling file. What
-         * remains resolves its worker at runtime as
-         *   new URL('./maplibre-gl-worker.mjs', import.meta.url)
-         * which is correct for CDN use, where the worker sits next to the
-         * entry, and wrong under any bundler: import.meta.url points at
-         * our hashed chunk in /assets/, where no such file exists. It 404s,
-         * and because a Worker built on a bad URL neither throws nor
-         * rejects, the map hangs on 'loading' forever rather than erroring.
-         *
-         * ?worker&url makes Vite compile that file as a worker entry and
-         * hand back the emitted URL. It bundles the worker's own
-         * dependency graph — maplibre-gl-shared.mjs above all — into the
-         * chunk, so there is no sibling file to keep adjacent and nothing
-         * to hand-copy into public/.
-         *
-         * The import is dynamic and sits inside this lazy path on purpose:
-         * it must not drag maplibre into the initial bundle. */
-        const { default: workerUrl } =
-          await import('maplibre-gl/dist/maplibre-gl-worker.mjs?worker&url')
-        setWorkerUrl(workerUrl)
+        /* Import, stylesheet and worker bootstrap all live in
+           lib/maplibre.ts, which carries the full explanation of why the
+           worker is wired up by hand — Stage 3 hoisted it there so the
+           detail page's location map shares one copy rather than a
+           hand-duplicated second one. Still dynamic, still inside this
+           lazy path, so maplibre stays out of the initial bundle. */
+        const { Map } = await loadMapLibre()
 
         if (cancelled || !hostRef.current) return
 
@@ -375,6 +351,19 @@ export function PropertyMap({
         // visual form never costs a screen-reader user information.
         el.setAttribute('aria-label', `${formatTitle(p)} ${formatPriceMan(p)}`)
 
+        /* Design C Stage 6: OUT OF THE TAB ORDER AT 640px AND BELOW.
+           There the map is the backdrop to a bottom sheet, and ten
+           focusable pills sat between the filter chip and the sheet's
+           drag handle — the handle was Tab #19, so a keyboard user had
+           to cross the entire map to reach the control that opens the
+           results. The pills stay tappable, keep their aria-label, and
+           every destination they offer is also a card inside the sheet.
+           Above 640px they are tab stops as before, because there the
+           map is a browsing surface in its own right. Kept in sync by
+           the effect below, so a resize across the breakpoint is
+           picked up. */
+        el.tabIndex = isMobileRef.current ? -1 : 0
+
         const open = () => {
           cancelCloseRef.current()
           setCardId(p.id)
@@ -462,6 +451,14 @@ export function PropertyMap({
     })
   }, [activeId, items, status])
 
+  /* ---------------- tab order follows the breakpoint ----------------
+     Same shape as the .active sync above: the markers are plain DOM
+     built once per item set, so anything that has to change with React
+     state is written onto them here rather than by rebuilding them. */
+  useEffect(() => {
+    markerElsRef.current.forEach((el) => { el.tabIndex = isMobile ? -1 : 0 })
+  }, [isMobile, items, status])
+
   /* ---------------- one persistent popup, moved between markers ------ */
   useEffect(() => {
     const map = mapRef.current
@@ -517,6 +514,11 @@ export function PropertyMap({
 
     return () => { cancelled = true }
   }, [carded, status, isMobile, activeId])
+
+  /* ---------------- status out (Stage 6, optional) ---------------- */
+  const onStatusRef = useRef(onStatus)
+  onStatusRef.current = onStatus
+  useEffect(() => { onStatusRef.current?.(status) }, [status])
 
   /* ---------------- Escape closes ---------------- */
   useEffect(() => {

@@ -30,3 +30,18 @@ export const WIDE_QUERY = '(min-width: 1061px)'
  *  to its widest value; one pixel below it the row would start eating
  *  into that margin. */
 export const HEADER_PILLS_QUERY = '(min-width: 1320px)'
+
+/** Design C Stage 6. At or below this 物件検索 becomes a full-screen map
+ *  with a draggable bottom sheet.
+ *
+ *  640, not 1060, and the reason is mechanical rather than aesthetic:
+ *  .filter-trigger is display:none above 640px and .msheet.show lives
+ *  INSIDE the 640px media query, so FilterSheet is structurally
+ *  unopenable above it. Extending the sheet layout to 1060 would have
+ *  meant lifting those rules out of that query — rules MobileSheet's
+ *  nav drawer depends on. 641-1060px therefore keeps the Stage 1
+ *  stacked layout exactly as it is.
+ *
+ *  It is also the breakpoint PropertyMap already uses for isMobile, so
+ *  the map's tap-to-open card behaviour and this view coincide. */
+export const SHEET_QUERY = '(max-width: 640px)'

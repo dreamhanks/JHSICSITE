@@ -14,27 +14,39 @@ export function SupportPage() {
       </PageHero>
 
       <Section title="既存住宅向け 10年品質保証" lead="築25年までの既存住宅を対象とした、JHSの品質保証サービスです。">
-        <div className="warrantybox">
-          <div className="wbh">
-            <div className="nm">建物サポートシステム ストック型</div>
-            <div className="sub">中古住宅を、保証付きの安心な住まいへ</div>
-          </div>
-          <div className="wbrow">
-            <div className="k">対象</div>
-            <div className="v">築25年までの既存戸建住宅。JHSのインスペクション（建物状況調査）を実施した物件が対象です。</div>
-          </div>
-          <div className="wbrow">
-            <div className="k">保証期間</div>
-            <div className="v"><b>最長10年間</b>の品質保証。引渡し後の主要構造部・雨水の浸入を防止する部分の不具合をカバーします。</div>
-          </div>
-          <div className="wbrow">
-            <div className="k">保証の承継</div>
-            <div className="v">売買時に保証を次のオーナーへ引き継げる物件もあります。資産価値の維持につながります。</div>
-          </div>
-          <div className="wbrow">
-            <div className="k">背景</div>
-            <div className="v">見えにくい劣化・不具合への不安、信頼できるリフォーム事業者の選定の難しさ。こうした課題に、豊富なインスペクション実績で応えます。</div>
-          </div>
+        {/* Design C Stage 5 §2.2: the .warrantybox table became two
+            cards. Every string is the one that was in the table, in the
+            same words and the same order:
+              .wbh  -> .wcaption, above both cards, because it names the
+                       product and that covers the pair
+              対象 + 保証期間      -> card 1, what the guarantee IS
+              保証の承継 + 背景    -> card 2, why it matters
+            The <b>最長10年間</b> emphasis is carried across intact. */}
+        <div className="wcaption">
+          <div className="nm">建物サポートシステム ストック型</div>
+          <div className="sub">中古住宅を、保証付きの安心な住まいへ</div>
+        </div>
+        <div className="wcards">
+          <dl className="wcard">
+            <div className="wc-row">
+              <dt>対象</dt>
+              <dd>築25年までの既存戸建住宅。JHSのインスペクション（建物状況調査）を実施した物件が対象です。</dd>
+            </div>
+            <div className="wc-row">
+              <dt>保証期間</dt>
+              <dd><b>最長10年間</b>の品質保証。引渡し後の主要構造部・雨水の浸入を防止する部分の不具合をカバーします。</dd>
+            </div>
+          </dl>
+          <dl className="wcard">
+            <div className="wc-row">
+              <dt>保証の承継</dt>
+              <dd>売買時に保証を次のオーナーへ引き継げる物件もあります。資産価値の維持につながります。</dd>
+            </div>
+            <div className="wc-row">
+              <dt>背景</dt>
+              <dd>見えにくい劣化・不具合への不安、信頼できるリフォーム事業者の選定の難しさ。こうした課題に、豊富なインスペクション実績で応えます。</dd>
+            </div>
+          </dl>
         </div>
       </Section>
 
@@ -67,13 +79,20 @@ export function SupportPage() {
       </Section>
 
       <Section title="ご購入までの流れ">
+        {/* Design C Stage 5: the numbered-circle treatment. The circle and
+            its numeral still come from the ported CSS counter on .step,
+            but STEP is now REAL TEXT rather than part of a `content`
+            string. It was the client's word and CSS-generated content is
+            not dependable in the accessibility tree, is not selectable
+            and is not translatable — so the word lives in the document
+            and only the numeral stays generated. */}
         <div className="steps">
-          <div className="step"><h4>物件を探す</h4><p>マップやこだわり条件から、診断済み・保証付きの物件を探します。</p></div>
+          <div className="step"><span className="stepn">STEP</span><h4>物件を探す</h4><p>マップやこだわり条件から、診断済み・保証付きの物件を探します。</p></div>
           {/* Step 2g: the heading named a registration flow that no longer
               exists, so it moves to ログイン along with the body copy. */}
-          <div className="step"><h4>ログイン・資料請求</h4><p>ログインすると全記録を閲覧いただけます。気になる物件は資料請求・内見をお申し込みください。</p></div>
-          <div className="step"><h4>内見・ご相談</h4><p>担当不動産会社が対応。診断結果や保証内容を確認しながら検討できます。</p></div>
-          <div className="step"><h4>ご契約・保証開始</h4><p>ご契約後、10年保証が適用。購入後も定期点検やサポートが続きます。</p></div>
+          <div className="step"><span className="stepn">STEP</span><h4>ログイン・資料請求</h4><p>ログインすると全記録を閲覧いただけます。気になる物件は資料請求・内見をお申し込みください。</p></div>
+          <div className="step"><span className="stepn">STEP</span><h4>内見・ご相談</h4><p>担当不動産会社が対応。診断結果や保証内容を確認しながら検討できます。</p></div>
+          <div className="step"><span className="stepn">STEP</span><h4>ご契約・保証開始</h4><p>ご契約後、10年保証が適用。購入後も定期点検やサポートが続きます。</p></div>
         </div>
       </Section>
 
