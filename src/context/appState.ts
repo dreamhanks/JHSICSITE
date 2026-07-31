@@ -100,9 +100,24 @@ export interface AppState {
   setPage: (p: number) => void
 
   /** 地図を閉じる / 地図を表示する. Held here rather than in MapPanel so
-   *  the choice survives navigating away from 物件検索 and back. */
+   *  the choice survives navigating away from 物件検索 and back —
+   *  MapPanel unmounts on every navigation, so local state would reset.
+   *
+   *  Design C Stage 2 narrowed WHERE this is consumed, not where it
+   *  lives: the control only exists in the stacked layout below
+   *  1061px, because on the full-viewport layout the map IS the page
+   *  and 地図を閉じる would leave an empty screen. It cannot move into
+   *  MapPanel for the reason above. */
   mapOpen: boolean
   setMapOpen: (v: boolean) => void
+
+  /** Design C Stage 2. The full-viewport results panel calls this with
+   *  its scroll container on mount and with null on unmount, so the
+   *  "scroll to top" in setView / goHome / logout / commitFilters /
+   *  applyFilters / resetFilters / goToPage reaches the panel instead
+   *  of a document that no longer scrolls. Nothing registers below the
+   *  breakpoint, where the document is the scroller as before. */
+  registerScrollTarget: (el: HTMLElement | null) => void
 }
 
 /** Kept out of AppStateContext.tsx so that file only exports a

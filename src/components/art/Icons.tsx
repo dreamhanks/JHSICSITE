@@ -11,9 +11,11 @@ export function LogoMark() {
   )
 }
 
+/* Design C ink, was #2a2622 — the Design A warm brown. The header is
+   light in Design C, so this literal is what actually renders. */
 export function HamburgerIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="#2a2622" strokeWidth="2" strokeLinecap="round">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#1a1a18" strokeWidth="2" strokeLinecap="round">
       <path d="M4 7h16M4 12h16M4 17h16" />
     </svg>
   )

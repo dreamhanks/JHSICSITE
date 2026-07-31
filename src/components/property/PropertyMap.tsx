@@ -1,18 +1,30 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useMediaQuery } from '../../hooks/useMediaQuery'
-import { derivePinKind, formatPriceMan, formatTitle } from '../../lib/propertyFormat'
-import type { PinKind, Property } from '../../types/property'
-import { applyHomilleStyle } from '../art/mapStyle'
+import { formatPriceMan, formatTitle } from '../../lib/propertyFormat'
+import type { Property } from '../../types/property'
+import { applyJapaneseLabels, muteMajorRoads } from '../art/mapStyle'
 import { MapBottomCard } from './MapBottomCard'
 import { MapPopupCard } from './MapPopupCard'
 
-/** Same pin colours as the drawn map (mockup.html L1012). */
-const COLOR: Record<PinKind, string> = { g: '#0f5c35', o: '#e07b1e', s: '#7a5c2e' }
+/** OpenFreeMap Liberty — no key, no signup, no cookies. Liberty is the
+ *  only OpenFreeMap style still maintained upstream, and it is a
+ *  full-colour map: parks, water and a real road hierarchy, which is
+ *  what a map-first design needs. Attribution is a licence requirement
+ *  and must stay visible. */
+const STYLE_URL = 'https://tiles.openfreemap.org/styles/liberty'
 
-/** OpenFreeMap Positron — no key, no signup, no cookies.
- *  Attribution is a licence requirement and must stay visible. */
-const STYLE_URL = 'https://tiles.openfreemap.org/styles/positron'
+/** Below this the markers are plain dots; at or above it they become
+ *  price pills.
+ *
+ *  Picked from the data, not by eye. A pill is about 64x24px including
+ *  its gap; counting overlapping pairs across all ten pages gives 33 at
+ *  the current layout's fit zoom (11.8-12.7) and 4 at the full-viewport
+ *  fit Stage 2 will produce (13.0-13.9). Zero overlap needs zoom 14.5,
+ *  which NEITHER layout reaches when framing ten pins — so 13 is the
+ *  point where pills start being readable rather than the point where
+ *  they stop colliding. See the report. */
+const PILL_MIN_ZOOM = 13
 
 const MAX_BOUNDS: [[number, number], [number, number]] = [
   [139.7400, 35.6490],
@@ -103,6 +115,55 @@ export function PropertyMap({
     let map: import('maplibre-gl').Map | null = null
     let loaded = false
     let timeoutId: ReturnType<typeof setTimeout> | undefined
+    let ro: ResizeObserver | null = null
+    let cancelFrame: (() => void) | null = null
+
+    /** Size audit. Two distinct faults, both invisible to every other
+     *  check because MapLibre loads happily into either:
+     *
+     *    1. the container has no size at all;
+     *    2. the container is right but the CANVAS is smaller, which is
+     *       tiles filling only part of the box with dead space below.
+     *
+     *  (2) is what a stale canvas looks like, and a container-only
+     *  version of this guard does not catch it. Never sets 'failed':
+     *  the map is working, its box is not. */
+    const checkSize = (m: import('maplibre-gl').Map) => {
+      const host = hostRef.current
+      if (!host) return
+      const box = host.getBoundingClientRect()
+      if (box.width < 1 || box.height < 1) {
+        console.error(
+          `[map] CONTAINER HAS NO SIZE — ${Math.round(box.width)}x${Math.round(box.height)}px. ` +
+          'MapLibre loaded fine, so the map is working and simply invisible. ' +
+          'Check the height chain in homille.css: PropertyMap renders .mapbody ' +
+          'between the layout and .maphost, and .mapbody has no height of its own, ' +
+          'so any percentage height on .maphost collapses to 0. Give .maphost an ' +
+          'outright length, or a flex stretch from a definite-height ancestor.',
+        )
+        return
+      }
+      const c = m.getCanvas().getBoundingClientRect()
+      // 2px covers sub-pixel layout and devicePixelRatio rounding.
+      if (Math.abs(c.width - box.width) > 2 || Math.abs(c.height - box.height) > 2) {
+        console.error(
+          `[map] CANVAS DOES NOT MATCH ITS CONTAINER — canvas ${Math.round(c.width)}x${Math.round(c.height)}px ` +
+          `inside a ${Math.round(box.width)}x${Math.round(box.height)}px container. ` +
+          'Tiles will fill only part of the box. Either the container resized after ' +
+          'MapLibre measured it and no resize followed, or a stale height rule is ' +
+          'still on .maphost — check that nothing sets an explicit height on it ' +
+          'that the current layout does not expect.',
+        )
+      }
+    }
+
+    /** Reads the live zoom and flips the host between dot and pill mode. */
+    const syncPillMode = () => {
+      const host = hostRef.current
+      const map = mapRef.current
+      if (!host || !map) return
+      host.classList.toggle('pills', map.getZoom() >= PILL_MIN_ZOOM)
+    }
 
     /** Single route to the failed state, so every cause logs its reason.
      *  Ignores anything arriving after a successful load, and after
@@ -163,14 +224,47 @@ export function PropertyMap({
         m.touchZoomRotate.disableRotation()
         m.setMaxPitch(0)
 
+        /* Dots below PILL_MIN_ZOOM, price pills at or above it. One class
+           on the host rather than touching every marker: the markers are
+           plain DOM, so CSS can switch their whole presentation and this
+           stays cheap enough to run on every zoom frame. */
+        m.on('zoom', syncPillMode)
+
         m.on('load', () => {
           if (cancelled) return
           loaded = true
           clearTimeout(timeoutId)
-          const report = applyHomilleStyle(m)
-          console.log('[map] style:', report.recoloured, 'of', report.total,
-            'layers recoloured;', report.labelsChanged, 'of', report.symbolTotal,
-            'symbol layers set to name:ja')
+
+          /* A 0-size container is INVISIBLE BUT NOT BROKEN, so nothing
+             else catches it: the style loads, `load` fires, status goes
+             ready, and the 10s timeout never runs. That has now cost a
+             full debugging round three times, so measure and shout.
+             Deliberately NOT setStatus('failed') — the map is working
+             correctly; its container is the fault. */
+          // Design C Stage 2 made the host's height viewport-derived
+          // rather than a fixed 380px, so it can settle after
+          // construction. Square the canvas with it before measuring.
+          m.resize()
+          checkSize(m)
+
+          const report = applyJapaneseLabels(m)
+          console.log('[map] labels:', report.labelsChanged, 'of', report.symbolTotal,
+            'symbol layers set to name:ja;', report.labelsLeftAlone.length,
+            'left alone (route refs);', report.total, 'layers total')
+          if (report.failed.length) console.warn('[map] label failures:', report.failed)
+
+          /* Stage 2: mute the motorway and trunk classes only. At the
+             fit zoom the yellow casing outshouted the price pills. This
+             is an allow-list of 30 named road layers out of 111 — see
+             the block above muteMajorRoads for why it is not the
+             Design A recolour returning. */
+          const roads = muteMajorRoads(m)
+          console.log('[map] roads muted:', roads.muted.length, 'flat +',
+            roads.expressionsFlattened.length, 'expression =',
+            roads.muted.length + roads.expressionsFlattened.length, 'of', report.total, 'layers')
+          if (roads.failed.length) console.warn('[map] road mute failures:', roads.failed)
+
+          syncPillMode()
           setStatus('ready')
         })
 
@@ -190,6 +284,34 @@ export function PropertyMap({
           fail(`no load event after ${LOAD_TIMEOUT_MS}ms — the worker script or the style may have failed to load`)
         }, LOAD_TIMEOUT_MS)
 
+        /* Follow the container for the rest of the map's life.
+         *
+         * MapLibre v6 already observes the container itself (throttled
+         * 50ms, and trackResize does default to true — it is in the
+         * options defaults, despite the `=== true` read). This is
+         * deliberately kept anyway: its observer SKIPS its own first
+         * callback, so a size that settles once right after
+         * construction can be the one it ignores. Under Design C
+         * Stage 2 that is not hypothetical — the host is
+         * calc(100dvh - var(--header-h)), and the results panel
+         * collapsing changes nothing about the host while a browser
+         * chrome change (mobile URL bar, zoom) changes everything.
+         * rAF throttling coalesces a drag-resize to one resize per
+         * frame instead of thrashing the GL context. */
+        if (hostRef.current && typeof ResizeObserver !== 'undefined') {
+          let frame = 0
+          ro = new ResizeObserver(() => {
+            if (frame) return
+            frame = requestAnimationFrame(() => {
+              frame = 0
+              if (cancelled || !mapRef.current) return
+              mapRef.current.resize()
+            })
+          })
+          ro.observe(hostRef.current)
+          cancelFrame = () => { if (frame) cancelAnimationFrame(frame) }
+        }
+
         map = m
         mapRef.current = m
       } catch (err) {
@@ -200,6 +322,8 @@ export function PropertyMap({
     return () => {
       cancelled = true
       clearTimeout(timeoutId)
+      ro?.disconnect()
+      cancelFrame?.()
       cancelClose()
       markersRef.current.forEach((mk) => mk.remove())
       markersRef.current = []
@@ -225,10 +349,30 @@ export function PropertyMap({
       setCardId(null)
 
       markersRef.current = items.map((p) => {
+        /* Price pills. EVERY chip carries a price, 会員限定 included: the
+           price is public everywhere else in the product — PropertyCard
+           renders it for member-only records too — so hiding it on the
+           map would have withheld nothing and cost the client ten
+           readings of the market. 会員限定 is marked by the dashed
+           border instead.
+
+           The chip carries formatPriceMan verbatim — a new formatter was
+           out of scope — so it reads 8,980万円, not 8,980万.
+
+           The two flags are INDEPENDENT and both can apply, which is why
+           this reads the booleans directly rather than derivePinKind:
+           that helper collapses them into one of three values for the
+           old three-colour legend, and would have dropped the 保証 dot
+           from every member-only record. */
         const el = document.createElement('button')
         el.type = 'button'
-        el.className = 'mkr'
-        el.style.setProperty('--mkr-color', COLOR[derivePinKind(p)])
+        const cls = ['mkr']
+        if (p.isMemberOnly) cls.push('gated')
+        if (p.hasWarranty10y) cls.push('warranty')
+        el.className = cls.join(' ')
+        el.textContent = formatPriceMan(p)
+        // The label keeps the price in every case, so the pill's shorter
+        // visual form never costs a screen-reader user information.
         el.setAttribute('aria-label', `${formatTitle(p)} ${formatPriceMan(p)}`)
 
         const open = () => {

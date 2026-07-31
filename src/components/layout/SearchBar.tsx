@@ -4,40 +4,24 @@ import type { ChipId } from '../../context/appState'
 import { useAppState } from '../../context/useAppState'
 import {
   buildAreaOptions, buildPlanOptions, buildPriceOptions, buildStationOptions,
-  countActiveFilters, hasActiveFilters, type FilterSelectKey, type SelectOption,
+  countActiveFilters, hasActiveFilters, type FilterSelectKey,
 } from '../../lib/propertySearch'
 import type { Property } from '../../types/property'
 import { SearchIcon } from '../art/Icons'
+import { AxisNote } from './AxisNote'
+import { CHIPS, FIELDS, PLACEHOLDER, stripCount, type FieldOptions } from './filterFields'
 import { FilterSheet } from './FilterSheet'
 
-/** UI configuration, not domain data — kept as module constants here
- *  rather than routed through types/ data/ api/. */
-const CHIPS: { id: ChipId; variant: '' | 'o' | 'b'; label: string }[] = [
-  { id: 'warranty', variant: '', label: '10年保証付き' },
-  { id: 'inspected', variant: 'o', label: '既存住宅診断済み' },
-  { id: 'ground', variant: 'b', label: '地盤評価 A・B' },
-  { id: 'newbuild', variant: '', label: '新築時履歴あり' },
-]
+/* CHIPS, FieldOptions, PLACEHOLDER, FIELDS and stripCount were defined
+   here until Design C Stage 2b. HeaderFilters needs the same five and
+   had been carrying a second copy, so they moved to filterFields.ts and
+   both surfaces import them. Nothing about this component's markup,
+   labels or behaviour changed with the move. */
 
-export type FieldOptions = Record<FilterSelectKey, SelectOption[]>
-
-/** Shown only for the ~300ms before the record set arrives. */
-const PLACEHOLDER: FieldOptions = {
-  ward: [{ value: '', label: 'すべて' }],
-  station: [{ value: '', label: 'すべて' }],
-  price: [{ value: '', label: 'すべて' }],
-  plan: [{ value: '', label: 'すべて' }],
-}
-
-const FIELDS: { key: FilterSelectKey; id: string; label: string }[] = [
-  { key: 'ward', id: 'f-ward', label: 'エリア' },
-  { key: 'station', id: 'f-station', label: '沿線・駅' },
-  { key: 'price', id: 'f-price', label: '価格帯' },
-  { key: 'plan', id: 'f-plan', label: '間取り' },
-]
-
-/** `墨田区（62）` -> `墨田区` for the applied-filter pills. */
-const stripCount = (label: string) => label.replace(/（\d+）$/, '')
+/** Re-exported so FilterSheet's `import type { FieldOptions } from
+ *  './SearchBar'` keeps resolving — that file is byte-identical to main
+ *  and this keeps it that way. */
+export type { FieldOptions }
 
 export function SearchBar() {
   const {
@@ -153,10 +137,7 @@ export function SearchBar() {
         </button>
       </div>
 
-      <div className="axisnote">
-        <b>この4つの絞り込みは、他の不動産ポータルには存在しません。</b>
-        地盤調査・建物検査・保証を自社で行うJHS様だからこそ提供できる検索軸です。
-      </div>
+      <AxisNote />
 
       <FilterSheet
         open={sheetOpen}

@@ -1,12 +1,31 @@
 import { useAppState } from '../../context/useAppState'
+import { useMediaQuery } from '../../hooks/useMediaQuery'
+import { WIDE_QUERY } from '../../lib/breakpoints'
 import { HamburgerIcon, LogoMark } from '../art/Icons'
+import { HeaderFilters } from './HeaderFilters'
 import { JHS_URL, NAV_ITEMS, isNavActive } from './navItems'
 
 export function Header({ onOpenSheet }: { onOpenSheet: () => void }) {
   const { view, setView, goHome, isLoggedIn, goToLogin, logout, favs } = useAppState()
 
+  /* Design C Stage 2b. The filter row exists on exactly one view at
+     exactly one size range, and the header has to know because the
+     tagline is dropped in the same breath — hfilters is what carries
+     that to the CSS.
+
+     It is NOT body.mapview, though it describes the same condition.
+     body.mapview is added in a ListPage effect, so it lands one paint
+     LATE: the tagline would render at its full 221.73px for a frame,
+     against a row that only has 19.10px of slack, and the header would
+     visibly reflow on every entry to the list view. useMediaQuery seeds
+     its state synchronously in a useState initialiser, so this class is
+     on the very first paint, in the same render as the pills it has to
+     make room for. */
+  const wide = useMediaQuery(WIDE_QUERY)
+  const hfilters = view === 'list' && wide
+
   return (
-    <header>
+    <header className={hfilters ? 'hfilters' : undefined}>
       <div className="hwrap">
         {/* First in the DOM, so it leads the tab order with no tabindex.
             A real button activates on Enter and on Space, and picks up
@@ -33,6 +52,10 @@ export function Header({ onOpenSheet }: { onOpenSheet: () => void }) {
             </a>
           ))}
         </nav>
+        {/* Between the nav and the actions, a thin vertical rule at each
+            end. HeaderFilters renders nothing at all below 1061px, where
+            SearchBar is the filter surface instead. */}
+        {view === 'list' ? <HeaderFilters /> : null}
         <div className="hactions">
           {/* Takes the slot the memtoggle held, and like it stays visible
               at every width — the MOCKUP bar points here. */}

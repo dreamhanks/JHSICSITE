@@ -39,10 +39,14 @@ button{font-family:inherit; cursor:pointer}
    component are gone; nothing was positioned relative to its height. */
 
 header{background:#fff; border-bottom:1px solid var(--color-rule); position:sticky; top:0; z-index:40}
+/* --header-h is defined once in the Design C Stage 2 block at the end of
+   this file, with its own 640px variant. It replaced the 66px that was
+   here and the 56px that was in the 640px block, because the
+   full-viewport map sizes itself from it and the three could drift. */
 .hwrap{max-width:1320px; margin:0 auto; padding:0 20px;
-  display:flex; align-items:center; gap:28px; height:66px}
+  display:flex; align-items:center; gap:28px; height:var(--header-h)}
 .logo{display:flex; align-items:center; gap:11px; text-decoration:none; color:inherit}
-.logo .mark{width:36px; height:36px; border-radius:8px; background:var(--color-soil);
+.logo .mark{width:36px; height:36px; border-radius:4px; background:var(--color-soil);
   display:grid; place-items:center; flex:none}
 .logo .mark svg{width:20px; height:20px}
 .logo .lt{line-height:1.15}
@@ -93,7 +97,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
    400px; gap:20px; align-items:start`. The map/list side-by-side split
    is replaced by the .reslayout vertical stack. */
 
-.mapcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+.mapcard{background:#fff; border:1px solid var(--color-rule); border-radius:3px;
   overflow:hidden; box-shadow:var(--shadow-card)}
 .maphead{display:flex; align-items:center; gap:14px; padding:11px 15px;
   border-bottom:1px solid var(--color-rule-2); flex-wrap:wrap}
@@ -116,11 +120,14 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .listhead .cnt{font-size:12px; color:var(--color-ink-2)}
 .listhead .cnt b{color:var(--color-soil); font-size:15px; font-family:var(--font-gothic)}
 .plist{display:flex; flex-direction:column; gap:11px}
-.pcard{background:#fff; border:1px solid var(--color-rule); border-radius:6px;
+.pcard{background:#fff; border:1px solid var(--color-rule); border-radius:3px;
   padding:13px; display:grid; grid-template-columns:120px 1fr; gap:13px;
   cursor:pointer; transition:.15s; text-align:left; width:100%; font-family:inherit}
 .pcard:hover{border-color:var(--color-soil); box-shadow:var(--shadow-card)}
-.pcard.active{border-color:var(--color-soil); box-shadow:0 0 0 2px rgba(122,92,46,.15)}
+/* Design C: was rgba(122,92,46,.15), the Design A warm brown. Stage 1
+   swept the tokens but not this literal. Re-based on --color-ink
+   #1a1a18 = rgb(26,26,24) at the same .15 alpha. */
+.pcard.active{border-color:var(--color-soil); box-shadow:0 0 0 2px rgba(26,26,24,.15)}
 .pthumb{aspect-ratio:4/3; border-radius:5px; overflow:hidden; background:#e8e3d8; position:relative}
 .pthumb svg{width:100%; height:100%; display:block}
 .pthumb .tg{position:absolute; left:5px; top:5px; background:rgba(15,92,53,.92);
@@ -143,18 +150,18 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .backlink{border:0; background:transparent; color:var(--color-ink-2); font-size:12.5px;
   padding:0 0 12px; display:flex; align-items:center; gap:6px}
 .backlink:hover{color:var(--color-soil)}
-.dhead{background:var(--color-ink); color:#fff; border-radius:6px 6px 0 0;
+.dhead{background:var(--color-ink); color:#fff; border-radius:3px 3px 0 0;
   padding:14px 20px; display:flex; align-items:center; gap:14px; flex-wrap:wrap}
 .dhead .t{font-size:15px; font-weight:700; letter-spacing:.01em}
 .dhead .g{margin-left:auto; display:flex; align-items:center; gap:7px;
   background:rgba(255,255,255,.12); border-radius:3px; padding:4px 11px; font-size:12px}
 .dhead .g b{color:#8fd6a9}
 .dbody{background:#fff; border:1px solid var(--color-rule); border-top:0;
-  border-radius:0 0 6px 6px; padding:20px; box-shadow:var(--shadow-card)}
+  border-radius:0 0 3px 3px; padding:20px; box-shadow:var(--shadow-card)}
 .dgrid{display:grid; grid-template-columns:1.15fr 1fr; gap:24px}
 
 .gal{display:grid; grid-template-columns:repeat(4,1fr); gap:7px}
-.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:6px; overflow:hidden; position:relative}
+.gmain{grid-column:1/-1; aspect-ratio:16/10; border-radius:3px; overflow:hidden; position:relative}
 .gmain svg{width:100%; height:100%; display:block}
 .gmain .rb{position:absolute; left:12px; bottom:12px; background:rgba(255,255,255,.94);
   border-radius:3px; padding:4px 10px; font-size:11px; font-weight:700; color:var(--color-soil-d)}
@@ -246,7 +253,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .page{display:none}
 .page.show{display:block}
 .pagehero{background:linear-gradient(135deg,#0f5c35,#0b4527); color:#fff;
-  border-radius:8px; padding:30px 34px; margin-bottom:22px}
+  border-radius:4px; padding:30px 34px; margin-bottom:22px}
 .pagehero .ey{font-size:11px; letter-spacing:.2em; opacity:.75; margin-bottom:8px}
 .pagehero h1{font-family:var(--font-mincho); font-size:26px; font-weight:700; margin:0 0 8px}
 .pagehero p{font-size:13px; margin:0; opacity:.92; line-height:1.8; max-width:760px}
@@ -264,7 +271,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .vc p{margin:0; font-size:12.5px; color:var(--color-ink-2); line-height:1.75}
 .vc .tagm{display:inline-block; margin-top:10px; font-size:10.5px; font-weight:700;
   color:var(--color-soil); background:#f4efe4; padding:2px 9px; border-radius:3px}
-.warrantybox{background:#fff; border:1px solid var(--color-rule); border-radius:8px; overflow:hidden; box-shadow:var(--shadow-card)}
+.warrantybox{background:#fff; border:1px solid var(--color-rule); border-radius:4px; overflow:hidden; box-shadow:var(--shadow-card)}
 .wbh{background:var(--color-soil); color:#fff; padding:16px 22px}
 .wbh .nm{font-family:var(--font-mincho); font-size:20px; font-weight:700}
 .wbh .sub{font-size:12px; opacity:.9; margin-top:2px}
@@ -285,7 +292,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .calloutbar b{font-weight:800}
 
 /* マイページ */
-.mypanel{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:22px; box-shadow:var(--shadow-card)}
+.mypanel{background:#fff; border:1px solid var(--color-rule); border-radius:4px; padding:22px; box-shadow:var(--shadow-card)}
 .mynav{display:flex; gap:6px; margin-bottom:18px; flex-wrap:wrap}
 .mynav .t{border:1px solid var(--color-rule); background:#fff; border-radius:100px; padding:6px 16px;
   font-size:12.5px; font-weight:700; color:var(--color-ink-2)}
@@ -298,8 +305,8 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 
 /* フォーム */
 .formwrap{display:grid; grid-template-columns:1fr 340px; gap:22px; align-items:start}
-.formcard{background:#fff; border:1px solid var(--color-rule); border-radius:8px; padding:24px; box-shadow:var(--shadow-card)}
-.formcard h2{font-family:var(--font-mincho); font-size:19px; margin:0 0 4px}
+.formcard{background:#fff; border:1px solid var(--color-rule); border-radius:4px; padding:24px; box-shadow:var(--shadow-card)}
+.formcard h2{font-family:var(--font-mincho); font-size:19px; font-weight:700; margin:0 0 4px}
 .formcard .fd{font-size:12px; color:var(--color-ink-2); margin:0 0 18px}
 .frow{margin-bottom:15px}
 .frow label{display:block; font-size:12.5px; font-weight:700; margin-bottom:6px}
@@ -316,13 +323,13 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .checks{display:flex; flex-direction:column; gap:8px}
 .checks label{display:flex; align-items:flex-start; gap:8px; font-size:12px; font-weight:500; cursor:pointer}
 .checks input{width:auto; margin-top:2px}
-.consent{background:#faf8f4; border:1px solid var(--color-rule-2); border-radius:6px; padding:12px 14px;
+.consent{background:#faf8f4; border:1px solid var(--color-rule-2); border-radius:3px; padding:12px 14px;
   font-size:11px; color:var(--color-ink-2); line-height:1.7; margin:6px 0 16px; max-height:110px; overflow-y:auto}
-.fsubmit{width:100%; border:0; background:var(--color-green); color:#fff; border-radius:6px;
+.fsubmit{width:100%; border:0; background:var(--color-green); color:#fff; border-radius:3px;
   padding:14px; font-size:14px; font-weight:700; margin-top:4px}
 .fsubmit:hover{background:#0b4527}
 .fsubmit:disabled{background:#a9b8b1; cursor:not-allowed}
-.fside{background:#faf8f4; border:1px solid var(--color-rule); border-radius:8px; padding:20px}
+.fside{background:#faf8f4; border:1px solid var(--color-rule); border-radius:4px; padding:20px}
 .fside h3{margin:0 0 12px; font-size:14px; font-weight:700; color:var(--color-soil-d)}
 .fside .pinfo{display:flex; gap:12px; padding-bottom:14px; margin-bottom:14px; border-bottom:1px solid var(--color-rule)}
 .fside .pinfo .th{width:80px; flex:none; border-radius:5px; overflow:hidden; aspect-ratio:4/3; background:#e8e3d8}
@@ -337,7 +344,7 @@ main{max-width:1320px; margin:0 auto; padding:20px}
 .doneview .ok{width:60px; height:60px; border-radius:50%; background:#e9f2ec; display:grid;
   place-items:center; margin:0 auto 16px}
 .doneview .ok svg{width:30px; height:30px; stroke:var(--color-green); fill:none; stroke-width:2.5}
-.doneview h2{font-family:var(--font-mincho); font-size:22px; margin:0 0 8px}
+.doneview h2{font-family:var(--font-mincho); font-size:22px; font-weight:700; margin:0 0 8px}
 .doneview p{font-size:13px; color:var(--color-ink-2); line-height:1.8; max-width:460px; margin:0 auto 8px}
 .doneview .back2{margin-top:18px; border:1px solid var(--color-rule); background:#fff; color:var(--color-ink);
   border-radius:5px; padding:10px 22px; font-size:13px; font-weight:700}
@@ -372,8 +379,9 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
 }
 
 @media(max-width:640px){
-  .hwrap{padding:0 12px; height:56px; gap:10px}
-  .logo .mark{width:30px; height:30px; border-radius:6px}
+  /* height comes from --header-h; see the note at .hwrap above. */
+  .hwrap{padding:0 12px; gap:10px}
+  .logo .mark{width:30px; height:30px; border-radius:3px}
   .logo .mark svg{width:16px; height:16px}
   .logo .lt .n{font-size:17px}
   .logo .lt .n small{display:none}
@@ -391,7 +399,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
     margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid var(--color-rule)}
   .msheet .pane .mh b{font-family:var(--font-mincho); font-size:18px; color:var(--color-soil)}
   .msheet .pane a{text-decoration:none; color:var(--color-ink); font-size:15px;
-    font-weight:500; padding:12px 8px; border-radius:6px}
+    font-weight:500; padding:12px 8px; border-radius:3px}
   .msheet .pane a:active{background:var(--color-rule-2)}
   .msheet .pane .x{border:0; background:transparent; font-size:22px; color:var(--color-ink-2); line-height:1}
   /* Step 2b DELETION from the ported block: the horizontal scroller
@@ -500,9 +508,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
    Named classes replacing the original's inline style=
    attributes. Same declarations, moved out of the markup.
    ============================================================= */
-.legend i.g{background:#0f5c35}
-.legend i.o{background:#e07b1e}
-.legend i.s{background:#7a5c2e}
+/* Design C DELETION: the three dot swatches. The legend explains chips now — see the Design C block at the end of this file. */
 .pagehero.brown{background:linear-gradient(135deg,#7a5c2e,#5c4322)}
 .gthumbs{margin-top:7px}
 .callout-note{font-size:11.5px}
@@ -566,7 +572,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
   .searchbar{padding-top:13px}
   .sw{width:calc(100% - 40px); max-width:1280px; margin-bottom:12px;
     padding:14px 16px; gap:0; background:#fff;
-    border:1px solid var(--color-rule); border-radius:6px}
+    border:1px solid var(--color-rule); border-radius:3px}
   /* 1. labels sit above; v2 sets align-items on the grid below. */
   /* Step 2f DELETION: .sw-primary .go{margin-left:0; padding:8px 26px}
      went with the 探す button. The ported .sw .go rules near the top of
@@ -589,11 +595,55 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
    21px halo, and on .active a 2.5px white ring plus the halo at
    28% opacity.
    ============================================================= */
-/* The map host owns its height outright rather than stretching to fill
-   .mapbody via inset:0. An absolutely-positioned host resolves its
-   height only from its parent, so any failure to apply .mapbody's
-   height silently handed MapLibre a 0px-tall container — which is
-   exactly what happened: the console reported 1278.67 x 0. */
+/* ====================================================================
+   READ THIS BEFORE TOUCHING ANY MAP HEIGHT.
+
+   .mapbody IS THE ELEMENT THAT BREAKS HEIGHT CHAINS.
+
+   PropertyMap renders .mapbody as its own root, so the real DOM is
+       parent -> .mapbody -> .maphost
+   NOT parent -> .maphost. .mapbody carries position:relative and a
+   background and NOTHING ELSE — no height, ever. So:
+
+     height:100% on .maphost resolves against .mapbody, .mapbody is
+     auto, a percentage against auto is indeterminate, and BOTH
+     collapse to 0. MapLibre then loads perfectly into a 0px box: the
+     style fetches, `load` fires, status goes ready, and the map is
+     invisible with no error anywhere.
+
+   This has now cost a debugging round three times.
+
+     Step 2d      .maphost was absolute with inset:0 -> 1278.67 x 0.
+     Design B
+     Stage 2      .maphost was height:100% inside .splitmap-surface,
+                  and whoever wrote it (me) read the chain off the CSS
+                  instead of the rendered tree and never saw .mapbody
+                  in between.
+     Design C
+     Stage 2      the third occasion, and the reason this warning was
+                  brought onto this branch. The host's height stopped
+                  being a FIXED 380px and became a DERIVED one, which
+                  is the exact transition that invites a percentage:
+                  "fill the viewport below the header" reads as
+                  height:100% and is not. It is written as
+                    calc(100dvh - var(--header-h))
+                  an outright length that never consults .mapbody.
+                  Note the derived height also means the box can
+                  settle AFTER MapLibre measures it, which is why
+                  PropertyMap now calls m.resize() before checkSize()
+                  and keeps a ResizeObserver for the map's lifetime.
+
+   THE RULE: give .maphost a height that does not depend on .mapbody.
+   An outright length is best — that is what both layouts do. Where the
+   height must track the viewport, use viewport units or a flex stretch
+   chain with a definite height at the top, never a percentage. Both
+   are safe; percentages through .mapbody are not.
+
+   A runtime guard backs this up: PropertyMap measures the host on
+   `load` and console.errors if it has no size, or if the CANVAS does
+   not match the container. If you are reading this because of one of
+   those messages, the chain above is where to look.
+   ==================================================================== */
 /* .mapcard takes no width rule at all: it is a stretch child of
    .reslayout, whose box IS main's content box (max-width:1320px minus
    20px padding = 1280px at 1440). That is exactly .sw's computed width,
@@ -607,18 +657,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
   background:var(--color-rule-2); padding:16px; text-align:center;
   font-size:11.5px; color:var(--color-ink-2); line-height:1.7}
 
-.mkr{width:18px; height:18px; padding:0; border:0; border-radius:50%;
-  background:var(--mkr-color); cursor:pointer; position:relative;
-  box-shadow:0 0 0 2px rgba(255,255,255,.9)}
-.mkr:before{content:""; position:absolute; left:50%; top:50%;
-  width:42px; height:42px; margin:-21px 0 0 -21px; border-radius:50%;
-  background:var(--mkr-color); opacity:0; transition:.2s}
-.mkr:hover:before,.mkr.active:before{opacity:.28}
-.mkr.active{box-shadow:0 0 0 2.5px #fff, 0 1px 4px rgba(42,38,34,.35)}
-/* The white dot at the centre of the old pin. */
-.mkr:after{content:""; position:absolute; left:50%; top:50%;
-  width:6.8px; height:6.8px; margin:-3.4px 0 0 -3.4px;
-  border-radius:50%; background:#fff}
+/* Design C DELETION: the .mkr dot treatment. Markers are price pills now — see the Design C block at the end of this file. */
 
 /* Attribution is a licence requirement — keep it legible, never hide it. */
 .maplibregl-ctrl-attrib{font-size:10px}
@@ -648,7 +687,7 @@ footer{border-top:1px solid var(--color-rule); margin-top:36px; background:#fff}
    ============================================================= */
 
 /* ---- MapLibre chrome ---- */
-.mpop .maplibregl-popup-content{padding:0; border-radius:6px; background:#fff;
+.mpop .maplibregl-popup-content{padding:0; border-radius:3px; background:#fff;
   border:1px solid var(--color-rule); box-shadow:var(--shadow-card)}
 .mpop .maplibregl-popup-tip{border-top-color:var(--color-rule)}
 .mpop .maplibregl-popup-close-button{width:24px; height:24px; right:2px; top:2px;
@@ -895,9 +934,9 @@ body.fsheet-open{overflow:hidden}
    container dimensions so there is no layout shift and no new
    motion vocabulary.
    ============================================================= */
-.sk{background:var(--color-rule-2); border-radius:6px}
+.sk{background:var(--color-rule-2); border-radius:3px}
 .sk-card{height:172px}
-.sk-gmain{aspect-ratio:16/10; border-radius:6px}
+.sk-gmain{aspect-ratio:16/10; border-radius:3px}
 .sk-gth{aspect-ratio:4/3; border-radius:4px}
 .sk-row{height:14px; margin:7px 0}
 .sk-strata{height:420px; border-radius:5px}
@@ -912,8 +951,9 @@ body.fsheet-open{overflow:hidden}
    The padding/negative-margin pairs enlarge only the hover and
    focus area — outer size is unchanged, so nothing shifts. In
    the sheet the vertical padding stays 0 because .mh is
-   auto-height and would otherwise grow; .hwrap is a fixed 66px
-   and centres its items, so the header can pad both axes.
+   auto-height and would otherwise grow; .hwrap has a definite
+   height (--header-h) and centres its items, so the header can
+   pad both axes.
 
    Hover matches the nav links (--color-rule-2); the focus ring
    is the global :focus-visible rule. Enter/Space come from the
@@ -921,7 +961,7 @@ body.fsheet-open{overflow:hidden}
    ============================================================= */
 .logo{border:0; background:transparent; font:inherit; color:inherit;
   text-align:left; cursor:pointer; padding:6px 8px; margin:-6px -8px;
-  border-radius:6px; transition:background .15s}
+  border-radius:3px; transition:background .15s}
 .logo:hover{background:var(--color-rule-2)}
 
 /* The sheet is touch-first, so it tints on :active like .pane a. */
@@ -1169,3 +1209,447 @@ nav a.on:after{background:var(--color-orange)}
    join. Checked at every breakpoint: the only other dbody rule is a
    padding change in the 640 query, so nothing overrides the border. */
 .dbody{border-left:4px solid var(--color-soil)}
+
+/* =============================================================
+   Design C — map markers as price pills, and the legend
+
+   The map is the interface, so the markers carry information
+   rather than just position. Two states plus one modifier:
+
+     default   near-black chip, white text, the price
+     gated     outlined chip, DASHED border, reading 会員限定
+     warranty  a green dot before the price
+
+   The dashed border is what keeps a gated chip distinguishable
+   from an ACTIVE default chip — both are light-on-dark inverted,
+   so without it the two states would collide.
+
+   Below PILL_MIN_ZOOM (13) the host loses its .pills class and
+   every chip collapses to a dot. font-size:0 is what hides the
+   text without a second DOM shape to keep in sync.
+
+   Prose here avoids slashes and leading dots: Tailwind scans this
+   file as raw text and would mint utilities from them.
+   ============================================================= */
+
+/* ---- dot mode: below the threshold ---- */
+.mkr{width:14px; height:14px; padding:0; font-size:0; line-height:0;
+  border:2px solid var(--color-card); border-radius:50%;
+  background:var(--color-ink); cursor:pointer; position:relative;
+  box-shadow:0 1px 3px rgba(26,26,24,.4); font-family:inherit}
+.mkr.gated{background:var(--color-card); border-color:var(--color-ink)}
+.mkr.active{box-shadow:0 0 0 3px rgba(26,26,24,.25), 0 1px 3px rgba(26,26,24,.4)}
+
+/* ---- pill mode: at or above the threshold ---- */
+.pills .mkr{width:auto; height:auto; border-radius:100px;
+  padding:4px 9px; font-size:11px; font-weight:700; line-height:1.4;
+  color:var(--color-card); background:var(--color-ink);
+  border:1px solid var(--color-ink); white-space:nowrap;
+  display:flex; align-items:center; gap:5px}
+.pills .mkr:hover,.pills .mkr.active{background:var(--color-card);
+  color:var(--color-ink)}
+/* 会員限定. Dashed so it never reads as an active default chip. */
+.pills .mkr.gated{background:var(--color-card); color:var(--color-ink);
+  border-style:dashed}
+.pills .mkr.gated:hover,.pills .mkr.gated.active{background:var(--color-ink);
+  color:var(--color-card); border-style:solid}
+/* 10年保証付. The dot's colour follows the CHIP's ground, not the hover
+   state, because a chip can be light for two independent reasons — it is
+   gated, or it is active — and 4 records are both.
+
+     dark chip  -> #2f9e6b, the token hue lifted; --color-green itself is
+                   only 2.85:1 there and would not read
+     light chip -> --color-green at 6.02:1
+
+   A gated chip is light by default and dark when active, so it takes the
+   opposite pair from a plain one. */
+/* Stage 2 fix 3: was a 5x5 round dot, and at 11px it did not read
+   against the near-black chip. The colour was never the problem —
+   #2f9e6b on #1a1a18 is 5.17:1, well past the 3:1 a non-text graphic
+   needs. The SIZE was: 19.6 square px of ink, and only 5px of vertical
+   extent inside a 15.4px line box, so it registered as a speck.
+
+   Now a 3x15 bar pinned to the left of the price: 45 square px, 2.3x
+   the area, and 3x the vertical extent, so it reads as a deliberate
+   marker at a glance. A bar also survives the 会員限定 case, where the
+   pill's own border is dashed — a second round dot next to a dashed
+   outline was the least legible combination of the three.
+   Contrast is unchanged; only the geometry moved. */
+.pills .mkr.warranty:before{content:""; flex:none; width:3px; height:15px;
+  border-radius:2px; background:#2f9e6b}
+.pills .mkr.warranty:hover:before,
+.pills .mkr.warranty.active:before,
+.pills .mkr.gated.warranty:before{background:var(--color-green)}
+.pills .mkr.gated.warranty:hover:before,
+.pills .mkr.gated.warranty.active:before{background:#2f9e6b}
+
+/* ---- legend, matching the chips ---- */
+.legend i{width:auto; height:auto; border-radius:0; background:none}
+.legend i.price{width:14px; height:9px; border-radius:100px;
+  background:var(--color-ink); display:block}
+.legend i.warranty{width:9px; height:9px; border-radius:50%;
+  background:#2f9e6b; display:block}
+.legend i.gated{width:14px; height:9px; border-radius:100px;
+  background:var(--color-card); border:1px dashed var(--color-ink);
+  display:block}
+
+/* =============================================================
+   Design C Stage 2: map-first layout
+
+   Above 1060px the map IS the page: it fills the viewport below
+   the header, the document does not scroll, and the results
+   float over the map in a panel with its own scroll.
+
+   At or below 1060px NONE of this applies. The Stage 1 stacked
+   layout is used unchanged — fixed-height map, list below,
+   normal document scroll — so every rule here is either scoped
+   to body.mapview (a class ListPage only adds above the
+   breakpoint) or to a class that only the wide tree renders.
+
+   The one number this layout needs is --header-h. Everything
+   vertical is derived from it, so the header bar and the map
+   cannot drift apart.
+   ============================================================= */
+
+:root{--header-h:66px}
+@media(max-width:640px){ :root{--header-h:56px} }
+
+/* ---- 1. the document stops scrolling ---- */
+
+/* A CLASS, not an inline style on body. The mobile filter sheet
+   sets and clears body.fsheet-open, and its cleanup runs
+   classList.remove — which cannot disturb a separate class. Had
+   both written body.style.overflow, whichever cleanup ran last
+   would have won and one of the two would have leaked. */
+body.mapview{overflow:hidden; height:100dvh}
+body.mapview main{max-width:none; margin:0; padding:0}
+
+/* The footer cannot be reached on a page that does not scroll,
+   so it is hidden rather than left clipped at an arbitrary
+   point. It renders normally on every other view. SEE THE
+   REPORT: the footer carries the Unsplash credit line, and this
+   is the one view that shows the most photos. */
+body.mapview footer{display:none}
+
+/* ---- 2. the search bar floats over the map ---- */
+
+/* Stage 2b DELETION. Two rules stood here, body.mapview .searchbar
+   (position:fixed at top:--header-h, click-through band) and
+   body.mapview .sw (the card inside it). Both are gone: above 1061px
+   SearchBar no longer MOUNTS — App.tsx gates it on WIDE_QUERY — so
+   there is nothing left to take out of flow, and the filter controls
+   are in the header row instead. See the Stage 2b block at the end of
+   this file. Nothing was positioned relative to either rule; the map's
+   calc(100dvh - var(--header-h)) never referenced them. */
+
+/* ---- 3. the stage ---- */
+
+.mapview-root{position:relative}
+
+/* The host owns its height as an OUTRIGHT LENGTH. Read the
+   warning block above .maphost before changing this — a
+   percentage here resolves against .mapbody and collapses to 0. */
+.mapstage{position:relative; height:calc(100dvh - var(--header-h))}
+.mapview-root .maphost{width:100%; height:calc(100dvh - var(--header-h))}
+
+/* Edge to edge: no card, no border, no radius. */
+.mapview-root .mapbody{background:var(--color-rule-2)}
+
+/* The legend outlives .maphead — it explains the price pills,
+   which are this design's entire marker vocabulary. Bottom left,
+   because MapLibre's attribution control sits bottom right. */
+.maplegend{position:absolute; left:12px; bottom:12px; z-index:5;
+  margin-left:0; gap:12px; padding:7px 11px;
+  background:rgba(255,253,249,.94); border:1px solid var(--color-rule);
+  border-radius:6px; box-shadow:var(--shadow-card)}
+
+/* ---- 4. the floating results panel ---- */
+
+.lpanel{position:absolute; top:12px; right:12px; bottom:12px; width:330px;
+  z-index:20; display:flex; flex-direction:column; overflow:hidden;
+  background:rgba(255,253,249,.97); border:1px solid var(--color-rule);
+  border-radius:8px;
+  box-shadow:0 2px 8px rgba(26,26,24,.10), 0 12px 32px rgba(26,26,24,.14);
+  transition:transform .22s ease, opacity .22s ease}
+.lpanel.collapsed{transform:translateX(calc(100% + 24px)); opacity:0;
+  pointer-events:none}
+
+/* head and foot are flex:none, the scroller is flex:1 — so the
+   count, the range and the sort stay put while cards move. */
+.lpanel-head{flex:none; display:flex; flex-wrap:wrap; align-items:baseline;
+  gap:5px 8px; padding:11px 12px 10px; background:var(--color-card);
+  border-bottom:1px solid var(--color-rule-2)}
+.lpanel-head h2{margin:0; font-size:14px; font-weight:700; letter-spacing:.02em}
+.lpanel-head .cnt{font-size:11px; color:var(--color-ink-2)}
+.lpanel-head .cnt b{color:var(--color-ink); font-size:14px; font-family:var(--font-gothic)}
+/* formatRange, moved here from .mapfoot. */
+.lpanel-head .lrange{flex-basis:100%; font-size:11px; color:var(--color-ink-2)}
+/* .field has no bare rule anywhere in this file, so the select is
+   styled here rather than inherited. */
+.lpanel-head .sortsel{flex-basis:100%; width:100%; margin:2px 0 0;
+  border:1px solid var(--color-rule); border-radius:4px; padding:6px 9px;
+  font-size:12px; font-family:inherit; color:var(--color-ink); background:#fff}
+
+.lpanel-scroll{flex:1; overflow-y:auto; overscroll-behavior:contain;
+  padding:10px; min-height:0}
+.lstack{display:flex; flex-direction:column; gap:10px}
+
+/* The disclosure, moved here from .mapfoot, pinned below the
+   pagination. 11px on --color-card is the same size and colour
+   .mapfoot used, so nothing was shrunk to make it fit. */
+.lpanel-foot{flex:none; padding:9px 12px; font-size:11px; line-height:1.6;
+  color:var(--color-ink-2); background:var(--color-card);
+  border-top:1px solid var(--color-rule-2)}
+.lpanel-foot strong{color:var(--color-ink)}
+/* Unsplash credit — same 11px as the disclosure, per the licence
+   requirement. Separated by a hairline, not shrunk. */
+.lcredit{margin-top:6px; padding-top:6px; border-top:1px solid var(--color-rule-2)}
+.lcredit a{color:var(--color-ink); text-underline-offset:2px}
+
+/* Compact pager: 9 controls at 30px plus 8 gaps of 4px is 302px,
+   inside the 308px scroller, so it stays one row. */
+.lpanel-scroll .pager{gap:4px; margin-top:12px}
+.lpanel-scroll .pg{min-width:28px; padding:5px 8px; font-size:11.5px}
+.lpanel-scroll .emptyfav{padding:32px 8px}
+
+/* ---- 5. the collapse control ---- */
+
+/* A SIBLING of the panel, never a child, so it stays on screen
+   when the panel translates off. One button in both states: it
+   flips its glyph, its label and aria-expanded, and that is what
+   brings the panel back. */
+.lpanel-tog{position:absolute; z-index:21; top:50%; right:342px;
+  transform:translateY(-50%); width:22px; height:54px;
+  display:flex; align-items:center; justify-content:center;
+  border:1px solid var(--color-rule); border-right:0;
+  border-radius:6px 0 0 6px; background:rgba(255,253,249,.97);
+  color:var(--color-ink-2); font-size:14px; font-family:inherit;
+  cursor:pointer; box-shadow:-2px 2px 8px rgba(26,26,24,.10);
+  transition:right .22s ease, color .15s}
+.lpanel-tog:hover{color:var(--color-ink)}
+.lpanel-tog.collapsed{right:12px}
+.lpanel-tog:focus-visible{outline:2px solid var(--color-ink); outline-offset:2px}
+
+/* ---- 6. the panel card ---- */
+
+/* A NEW CLASS. .pcard is already redefined five times in this
+   file and its stretched-button pattern has been broken three
+   times by that layering; a sixth override would have been the
+   fourth break. Nothing here touches .pcard. */
+.lcard{position:relative; background:#fff;
+  border:1px solid var(--color-rule); border-radius:6px;
+  overflow:hidden; transition:.15s}
+.lcard:hover{border-color:var(--color-ink); box-shadow:var(--shadow-card)}
+.lcard.active{border-color:var(--color-ink); box-shadow:0 0 0 2px rgba(26,26,24,.15)}
+
+.lthumb{display:block; position:relative; aspect-ratio:16 / 10;
+  background:#e8e3d8; overflow:hidden}
+.lthumb svg{width:100%; height:100%; display:block}
+.lthumb .tg{position:absolute; left:5px; top:5px; background:rgba(31,111,74,.92);
+  color:#fff; font-size:9px; font-weight:700; padding:1px 6px;
+  border-radius:2px; letter-spacing:.02em}
+
+.lbody{display:block; padding:9px 10px 10px}
+.lprice{font-family:var(--font-mincho); font-size:17px; font-weight:700;
+  line-height:1.25; color:var(--color-soil-d); letter-spacing:-.01em}
+/* One line, ellipsised. The button is the stretched hit area, so
+   the clamp goes on the button itself, not on the heading. */
+.lhead{margin:2px 0 0; font-size:12.5px; font-weight:700; line-height:1.4}
+.lhead .hit{display:block; width:100%; min-width:0}
+/* The clamp is on the inner span. .hit must carry NO overflow, clip
+   or transform — its :after is the stretched hit area. */
+.lhead .hit .ltext{display:block; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap}
+.lstn{display:flex; gap:8px; margin-top:4px; font-size:11px;
+  line-height:1.4; color:var(--color-ink-2)}
+/* The separators are borders, so no punctuation is invented. */
+.lfacts{display:flex; flex-wrap:wrap; margin-top:5px; font-size:10.5px;
+  line-height:1.4; color:var(--color-ink-2)}
+.lfacts span + span{margin-left:7px; padding-left:7px;
+  border-left:1px solid var(--color-rule)}
+
+/* Same two invariants as the .pcard pattern: .lcard is the nearest
+   positioned ancestor so inset:0 measures the whole card, and the
+   favourite is a SIBLING of .hit that sits above it. .lfav is
+   position:absolute, which is a box that can take a z-index — a
+   static box could not. */
+.lcard .hit{border:0; background:transparent; padding:0; font:inherit;
+  color:inherit; text-align:left; cursor:pointer}
+.lcard .hit:after{content:""; position:absolute; inset:0; z-index:1}
+.lcard .hit:focus-visible{outline:none}
+.lcard:has(.hit:focus-visible){outline:2px solid var(--color-ink); outline-offset:2px}
+.lcard .lfav{position:absolute; right:0; top:0; width:42px; height:42px; z-index:2}
+
+.sk-lcard{height:292px}
+
+/* ---- 7. reduced motion ---- */
+@media (prefers-reduced-motion: reduce){
+  .lpanel,.lpanel-tog{transition:none}
+}
+
+/* =============================================================
+   Stage 2b DELETION: "Design C Stage 2 fixes 4 and 5".
+
+   An @media(min-width:1061px) block of nine rules stood here,
+   all scoped to body.mapview, which compressed the floated
+   SearchBar card into one row and gave the floating axisnote its
+   own chip surface: .sw, .sw-primary, .sw-refine, .field-label,
+   .sw .field, .chip, .refine-label and .axisnote.
+
+   Every one of them is gone. Above 1061px SearchBar does not
+   mount, so there is no card to compress and no floating
+   axisnote to give a surface to — the controls are pills in the
+   header row and the axisnote is inside the こだわり panel. The
+   rules were scoped to body.mapview throughout, so their
+   deletion cannot reach the stacked layout at or below 1061px,
+   which still renders SearchBar exactly as it did.
+   ============================================================= */
+
+/* =============================================================
+   Design C Stage 2b: the filter controls move into the header
+
+   ONE header row, 66px, --header-h unchanged:
+
+     [mark] Homille | トップ 物件検索 会員限定 購入サポート |
+       エリア▾ 沿線・駅▾ 価格帯▾ 間取り▾ こだわり▾ | [ログイン] [♡ 0]
+
+   The map is then clean: nothing floats on it but the results
+   panel and the legend.
+
+   WHY THERE ARE TWO PILL LAYOUTS, AND WHY THE BOUNDARY IS 1320.
+
+   The row's fixed furniture does not shrink with the viewport.
+   Measured, at the dark header's real type and the real webfont:
+   logo without the tagline 197.19, nav 331.00 (トップ 65 +
+   物件検索 78 + 会員限定 78 + 購入サポート 104 + gaps), .hactions
+   203.33. That is 731.52px before a single filter, and .hwrap's
+   content box is min(1320, vw) - 40.
+
+   At and above 1320 the content box is pinned at 1280, so the
+   slack is constant. Below it the box loses a pixel per pixel of
+   viewport while the furniture does not, and by 1061 there are
+   only 1021px for a row that needs about 1265. No amount of
+   label shortening closes a 240px gap — so at or below 1320 the
+   five pills collapse into one 絞り込み pill carrying the active
+   filter count, which is 125.90px including its rules and gaps.
+   1320 is not a new number: it is .hwrap's own max-width, i.e.
+   exactly the width at which the expanded row stops being
+   width-independent. It is duplicated in breakpoints.ts.
+
+   THE TAGLINE. Dropping .logo .lt .c is worth 224.87px — more
+   than every other saving combined, and the only reason the
+   expanded row fits at all. Scoped to header.hfilters, which is
+   the list view above 1061px and nothing else.
+   ============================================================= */
+
+/* Set by Header.tsx on 物件検索 above 1061px. NOT body.mapview:
+   that class is added in a ListPage effect and so lands a paint
+   late, which would show the 221.73px tagline for one frame in a
+   row with 15px of slack, and reflow the header on every entry to
+   the list view. useMediaQuery seeds synchronously, so this class
+   is present on the first paint. */
+header.hfilters .logo .lt .c{display:none}
+
+/* 28 -> 20 buys 24px across the three .hwrap gaps, which is what
+   pays for the separator rules' margins and the count badge. It
+   applies to the list view only; every other header keeps 28. */
+header.hfilters .hwrap{gap:20px}
+
+/* ---- the pill group ---- */
+
+/* flex:none deliberately: if this ever does overflow, it must push
+   visibly out of the row rather than silently squashing the nav
+   and the actions into ellipsis. */
+.cfilters{display:flex; align-items:center; gap:4px; flex:none}
+
+/* The thin vertical rule at each end. 3.38:1 against the black
+   header — a separator, but a visible one. */
+.cfil-rule{width:1px; height:26px; flex:none; margin:0 4px;
+  background:rgba(255,255,255,.38)}
+
+/* The positioning context for the popover. */
+.cfil-slot{position:relative; display:flex}
+
+.cfil-pill{display:inline-flex; align-items:center; gap:4px;
+  border:1px solid rgba(255,255,255,.38); background:rgba(255,255,255,.08);
+  color:#e8ded0; border-radius:100px; padding:5px 10px;
+  font-size:11.5px; font-weight:500; line-height:1.2; font-family:inherit;
+  white-space:nowrap; cursor:pointer; transition:.15s}
+.cfil-pill:hover{background:rgba(255,255,255,.18); border-color:#e8ded0; color:#fff}
+.cfil-pill[aria-expanded="true"]{background:rgba(255,255,255,.18);
+  border-color:#fff; color:#fff}
+
+/* A set pill reads as active without going solid white — solid is
+   ログイン's, and five of them would out-shout the primary action. */
+.cfil-pill.set{background:rgba(255,255,255,.18); border-color:#e8ded0;
+  color:#fff; font-weight:700}
+
+/* THE CLAMP. 112px is the whole pill, not the text: it is the width
+   at which the four select pills stop growing, and only one option
+   in the data reaches it — 6,000〜9,000万円, measured 126.69. Every
+   other value is already under. The untruncated string stays in the
+   title and in the composed aria-label, both set in HeaderFilters. */
+.cfil-pill.set{max-width:112px}
+.cfil-t{overflow:hidden; text-overflow:ellipsis; white-space:nowrap; min-width:0}
+.cfil-caret{flex:none; font-size:8px; opacity:.75}
+
+/* The count, so collapsing can never hide that filters are applied.
+   Same orange-on-ink pair .fav-n was corrected to at line 1076 —
+   4.06:1 as a shape on the header, 5.02:1 for the digits. */
+.cfil-n{flex:none; background:var(--color-orange); color:var(--color-ink);
+  border-radius:9px; padding:0 4px; font-size:9.5px; font-weight:700;
+  line-height:1.6}
+
+/* ---- the popovers ---- */
+
+.cfil-pop{position:absolute; top:calc(100% + 9px); left:0; z-index:50;
+  background:var(--color-card); border:1px solid var(--color-rule);
+  border-radius:8px; padding:8px;
+  box-shadow:0 2px 8px rgba(26,26,24,.10), 0 12px 32px rgba(26,26,24,.14)}
+/* The last pill sits against .hactions, so its panel opens leftward
+   and cannot run off the right edge of the viewport. */
+.cfil-slot:last-of-type .cfil-pop{left:auto; right:0}
+
+.cfil-opts{display:flex; flex-direction:column; gap:1px;
+  min-width:100%; width:max-content; max-width:260px;
+  max-height:min(58vh, 400px); overflow-y:auto; overscroll-behavior:contain}
+.cfil-opt{border:0; background:transparent; font-family:inherit; font-size:12px;
+  color:var(--color-ink); text-align:left; padding:6px 9px; border-radius:5px;
+  white-space:nowrap; cursor:pointer}
+.cfil-opt:hover{background:var(--color-rule-2)}
+.cfil-opt.on{background:var(--color-ink); color:var(--color-card); font-weight:700}
+
+.cfil-pop-refine{width:326px}
+.cfil-pop-all{width:360px}
+
+/* The axisnote, off the map and into the panel, above the chips.
+   The ported .axisnote carries a 1320px max-width, an auto margin
+   and 20px of page padding, all of which are meaningless in a
+   360px panel — reset here rather than edited there. */
+.cfil-note{max-width:none; margin:0 0 8px; padding:0;
+  font-size:10.5px; line-height:1.55}
+
+.cfil-chips{margin-left:0; gap:6px}
+.cfil-chips .chip{padding:4px 10px; font-size:11.5px}
+
+.cfil-reset{display:block; margin-top:9px; padding-top:8px;
+  border-top:1px solid var(--color-rule-2); width:100%; text-align:left}
+
+/* ---- the collapsed panel's four selects ---- */
+
+/* Wrapping <label>s, exactly as FilterSheet does, so nothing here
+   mints an id that could collide with SearchBar's f-* ids. */
+.cfil-rows{display:flex; flex-direction:column; gap:8px}
+.cfil-row{display:grid; grid-template-columns:64px 1fr; align-items:center; gap:8px}
+.cfil-rowlabel{font-size:11px; color:var(--color-ink-2)}
+/* .field has no bare rule in this file — see the note at
+   .lpanel-head .sortsel — so the select is styled here. */
+.cfil-row .field{width:100%; border:1px solid var(--color-rule); border-radius:4px;
+  padding:6px 9px; font-size:12px; font-family:inherit;
+  color:var(--color-ink); background:#fff}
+.cfil-sep{height:1px; background:var(--color-rule-2); margin:10px 0 9px}
+.cfil-pop-all .cfil-rowlabel{display:block; margin-bottom:6px}
+
+@media (prefers-reduced-motion: reduce){
+  .cfil-pill{transition:none}
+}

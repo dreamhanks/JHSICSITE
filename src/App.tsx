@@ -4,6 +4,8 @@ import { Header } from './components/layout/Header'
 import { MobileSheet } from './components/layout/MobileSheet'
 import { SearchBar } from './components/layout/SearchBar'
 import { useAppState } from './context/useAppState'
+import { useMediaQuery } from './hooks/useMediaQuery'
+import { WIDE_QUERY } from './lib/breakpoints'
 import { DetailPage } from './pages/DetailPage'
 import { FormPage } from './pages/FormPage'
 import { ListPage } from './pages/ListPage'
@@ -20,20 +22,34 @@ import { SupportPage } from './pages/SupportPage'
  *  The header, mobile sheet and footer sit outside <main> and render on
  *  every view.
  *
- *  The search bar also sits outside <main>, but unlike the original it
- *  renders only on 物件検索. In the mockup show() never controlled it, so
- *  it appeared on every view including 物件詳細, where it pushed the
- *  property title down. Its chip and select state lives in
- *  AppStateContext precisely so unmounting here does not reset it. */
+ *  Design C Stage 2b GATED THE SEARCH BAR ON WIDTH. It used to render on
+ *  物件検索 at every width and was then floated over the map by
+ *  position:fixed above 1061px. There are now two filter surfaces
+ *  instead of one floated at two sizes — HeaderFilters in the header
+ *  above 1061px, SearchBar at or below it — so it renders only in the
+ *  narrow range now. Unmounting it above the breakpoint is what clears
+ *  the map, in place of the deleted float rules.
+ *
+ *  It stays HERE, a sibling of <main>, rather than moving into
+ *  ListPage's narrow branch: ListPage renders inside <main>, which is
+ *  max-width:1320px with 20px of padding, so a .searchbar in there would
+ *  stop being full-bleed and .sw's calc(100% - 40px) would resolve
+ *  against an already-inset box. Both are visible changes below 1061px,
+ *  which 2.6 rules out. The mount CONDITION changes; the DOM position
+ *  does not.
+ *
+ *  Its chip and select state lives in AppStateContext, so unmounting on
+ *  navigation or across the breakpoint does not reset it. */
 export function App() {
   const { view } = useAppState()
+  const wide = useMediaQuery(WIDE_QUERY)
   const [sheetOpen, setSheetOpen] = useState(false)
 
   return (
     <>
       <Header onOpenSheet={() => setSheetOpen(true)} />
       <MobileSheet open={sheetOpen} onClose={() => setSheetOpen(false)} />
-      {view === 'list' && <SearchBar />}
+      {view === 'list' && !wide && <SearchBar />}
       <main>
         {view === 'list' && <ListPage />}
         {view === 'detail' && <DetailPage />}

@@ -21,10 +21,16 @@ export function MapPanel({
     <div className="mapcard">
       <div className="maphead">
         <h2>マップから探す（墨田区・台東区・江東区周辺）</h2>
+        {/* Design C: the markers are price chips, not coloured dots, so the
+            legend explains the chips. Every word here already exists in the
+            product vocabulary — 販売価格 from the spec table, 10年保証付 from
+            the badge set, 会員限定公開 from the legend this replaces.
+            診断済み is gone because all 100 records carry it, so as a legend
+            entry it never distinguished anything. */}
         <div className="legend">
-          <span><i className="g"></i>診断済み＋10年保証</span>
-          <span><i className="o"></i>診断済み</span>
-          <span><i className="s"></i>会員限定公開</span>
+          <span><i className="price"></i>販売価格</span>
+          <span><i className="warranty"></i>10年保証付</span>
+          <span><i className="gated"></i>会員限定公開</span>
         </div>
         <button
           className="map-toggle"

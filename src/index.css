@@ -8,23 +8,41 @@
    a stray utility class. */
 @import "./styles/homille.css";
 
+/* =============================================================
+   Design C — token VALUES only.
+
+   Every name is unchanged, so the ~200 references in homille.css
+   follow automatically and nothing needs renaming.
+
+   The map is the page in Design C, so the UI recedes: panels stay
+   near-neutral and let a full-colour Liberty basemap carry the
+   colour. --color-soil keeps its name for continuity but is no
+   longer soil — it is the near-black primary action.
+   ============================================================= */
 @theme {
-  --color-soil:   #7a5c2e;
-  --color-soil-d: #5c4322;
-  --color-green:  #0f5c35;
-  --color-orange: #e07b1e;
-  --color-blue:   #1b5fa8;
-  --color-paper:  #fbfaf7;
-  --color-card:   #ffffff;
-  --color-ink:    #2a2622;
-  --color-ink-2:  #6b635a;
-  --color-rule:   #e3ded4;
-  --color-rule-2: #f0ece4;
+  --color-soil:   #1a1a18;
+  --color-soil-d: #000000;
+  --color-green:  #1f6f4a;
+  --color-orange: #c2410c;
+  --color-blue:   #2f5d8a;
+  --color-paper:  #f7f5f1;
+  --color-card:   #fffdf9;
+  --color-ink:    #1a1a18;
+  --color-ink-2:  #5c574e;
+  --color-rule:   #ded7c8;
+  --color-rule-2: #efebe3;
 
   /* Original --shadow. Renamed to fit Tailwind v4's --shadow-*
-     namespace; a suffix-less --shadow does not generate a utility. */
-  --shadow-card: 0 1px 2px rgba(42,38,34,.06), 0 8px 24px rgba(42,38,34,.06);
+     namespace; a suffix-less --shadow does not generate a utility.
+     Re-based on the new ink: rgba(42,38,34) was the old warm brown
+     and left every card with a brown cast. Two layers and both
+     opacities unchanged. */
+  --shadow-card: 0 1px 2px rgba(26,26,24,.06), 0 8px 24px rgba(26,26,24,.06);
 
-  --font-mincho:  "Shippori Mincho","Yu Mincho","YuMincho","Hiragino Mincho ProN",serif;
+  /* One face, weight and size carry the hierarchy. --font-mincho is
+     deliberately NOT deleted: 14 rules reference it, and pointing it
+     at the gothic stack keeps every one working while making the
+     revert a one-line change. */
+  --font-mincho:  "Noto Sans JP","Yu Gothic","YuGothic","Hiragino Sans","Meiryo",sans-serif;
   --font-gothic:  "Noto Sans JP","Yu Gothic","YuGothic","Hiragino Sans","Meiryo",sans-serif;
 }
