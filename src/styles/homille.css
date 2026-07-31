@@ -1887,3 +1887,101 @@ main.mfull{max-width:none; padding:0}
 .emptyfav svg{stroke:#c2c7d0}
 .pg:disabled{color:#b9bdc6}
 .pthumb{background:var(--color-rule-2)}
+
+/* =============================================================
+   Design B mobile — 物件検索 一覧 / 地図 toggle at 640px and below
+
+   Everything here is inside @media(max-width:640px) or scoped to
+   body.bmap / .bmap-map / .bmap-list, classes only this layout
+   sets. 641-1060px and the desktop are untouched.
+
+   The bug, not a style gap: the inherited layout stacked a 260px
+   map above the list, mid-document, so it ran below the fold and
+   a finger meant for the page landed on the map and panned it —
+   the failure NN g describes for interactive maps on mobile
+   result pages. One view at a time, and the two gestures cannot
+   collide. 一覧 is the default, per the same source: higher
+   information density, faster selection.
+
+   Prose here avoids slashes and leading dots: Tailwind scans this
+   file as raw text and would mint utilities from them.
+   ============================================================= */
+
+/* Row 1 56 + row 2 46 + 1px rule = 103, already declared as
+   --header-h. This is the third band, and the map's calc needs it as
+   a name rather than a literal for the same reason. */
+:root{--vtoggle-h:44px}
+
+@media(max-width:640px){
+
+  /* ---- 1. the toggle bar ---- */
+
+  /* FIXED, directly under the sticky header. z-index 35 puts it below
+     the header (40) and far below the filter sheet (60), so neither
+     the account row nor 絞り込み is ever covered by it. */
+  .vtoggle{position:fixed; top:var(--header-h); left:0; right:0; z-index:35;
+    height:var(--vtoggle-h); display:flex; align-items:center; gap:10px;
+    padding:0 12px; background:var(--color-card);
+    border-bottom:1px solid var(--color-rule)}
+
+  /* One bordered track holding two buttons, so the pair reads as a
+     single control rather than two loose pills. The radius, padding and
+     12.5px type are the header pills' own, on a light surface. */
+  .vtseg{display:flex; flex:none; padding:2px; gap:2px;
+    background:var(--color-rule-2); border:1px solid var(--color-rule);
+    border-radius:100px}
+  .vtbtn{border:0; background:transparent; border-radius:100px;
+    padding:5px 18px; font-family:inherit; font-size:12.5px; font-weight:500;
+    color:var(--color-ink-2); white-space:nowrap}
+  /* The RAW accent token, which is correct on a light surface — the
+     header bar needs the lifted #5b8cff only because it is dark. Same
+     pairing .hf-opt.on already uses. */
+  .vtbtn.on{background:var(--color-card); color:var(--color-soil);
+    font-weight:700; box-shadow:var(--shadow-card)}
+  .vtcount{font-size:12.5px; color:var(--color-ink-2); white-space:nowrap}
+  .vtcount b{color:var(--color-ink); font-size:14px; font-weight:700}
+
+  /* ---- 2. 一覧 view ---- */
+
+  /* Clear of the fixed bar. The map is not in the DOM at all here —
+     ListPage unmounts MapPanel — so nothing can capture the scroll. */
+  .splitwrap.bmap-list .splitlist{padding-top:calc(var(--vtoggle-h) + 12px)}
+  /* The disclosure after the pager, at the map band's own size. */
+  .mapfoot.listfoot{margin-top:16px; padding:10px 0 0;
+    border-top:1px solid var(--color-rule-2)}
+
+  /* ---- 3. 地図 view ---- */
+
+  /* The document stops scrolling. Paired with the fixed map below: the
+     list stays in flow UNDERNEATH rather than being display:none, so
+     the browser keeps its scroll offset and returning to 一覧 lands
+     where the reader left it, with no save-and-restore code. */
+  body.bmap{overflow:hidden; height:100dvh}
+
+  /* Fixed, filling everything below the header and the bar. */
+  .splitwrap.bmap-map .splitmap{position:fixed; z-index:1;
+    top:calc(var(--header-h) + var(--vtoggle-h)); left:0; right:0; bottom:0;
+    padding:0}
+  .splitwrap.bmap-map .splitmap-card{border-radius:0}
+  /* An OUTRIGHT LENGTH. Read the warning above .maphost before changing
+     it: PropertyMap renders .mapbody between the layout and .maphost,
+     .mapbody never has a height, and a percentage through it collapses
+     to 0 with the map loading perfectly into a 0px box. The 1060px
+     block has already unwound the flex chain to display:block, so this
+     is the only rule that sizes the map here. */
+  .splitwrap.bmap-map .splitmap-surface .maphost{
+    height:calc(100dvh - var(--header-h) - var(--vtoggle-h))}
+
+  /* 地図を閉じる is the toggle's job now. Hidden rather than removed
+     from MapPanel because 641-1060px still uses it — and display:none
+     takes it out of the tab order, so it cannot be reached invisibly. */
+  .splitwrap.bmap-map .map-toggle.over{display:none}
+
+  /* MapBottomCard is ~84px and sits at the bottom of .mapbody, which
+     would put the legend behind it. The existing .mapbody.card-open
+     rules cannot reach the legend — it is a SIBLING of .mapbody, not a
+     descendant — so the lift is hung off the shared ancestor. :has is
+     already used in this file for the card focus ring. */
+  .splitwrap.bmap-map .splitmap-surface:has(.mapbody.card-open) .legend{
+    bottom:96px}
+}

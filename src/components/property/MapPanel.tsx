@@ -1,8 +1,8 @@
-import { formatRange } from '../../lib/propertySearch'
 import { pinColor } from '../../lib/pinColors'
 import type { PinKind, Property } from '../../types/property'
+import { MapFoot } from './MapFoot'
 import { MapToggle } from './MapToggle'
-import { PropertyMap } from './PropertyMap'
+import { PropertyMap, type MapCamera } from './PropertyMap'
 
 /** Legend rows. The swatch colour comes from pinColor, the SAME source
  *  the markers use — Design A hardcoded these and they silently drifted
@@ -22,6 +22,7 @@ const LEGEND: { kind: PinKind; label: string }[] = [
  *  the list column so it stays reachable when the map is closed. */
 export function MapPanel({
   pageItems, total, page, activeId, onHighlight, onOpen,
+  initialCamera, onCameraChange,
 }: {
   /** Only the current page's results are pinned — at most 10. */
   pageItems: Property[]
@@ -31,6 +32,10 @@ export function MapPanel({
   /** null clears the selection, which also closes the popup. */
   onHighlight: (id: number | null) => void
   onOpen: (id: number) => void
+  /** Passed straight through to PropertyMap. Set only by the ≤640px
+   *  toggle, which remounts the map on every switch. */
+  initialCamera?: MapCamera | null
+  onCameraChange?: (c: MapCamera) => void
 }) {
   return (
     <div className="splitmap">
@@ -45,6 +50,7 @@ export function MapPanel({
           <PropertyMap
             items={pageItems} activeId={activeId}
             onHighlight={onHighlight} onOpen={onOpen}
+            initialCamera={initialCamera} onCameraChange={onCameraChange}
           />
           {/* Floats over the map, top-right. Sibling of PropertyMap, not a
               child, so it is outside the region that unmounts. */}
@@ -58,10 +64,10 @@ export function MapPanel({
           </div>
         </div>
 
-        <div className="mapfoot">
-          {formatRange(total, page)}<br />
-          物件所在エリア・価格・間取りは<strong>一般公開</strong>。診断報告書・図面・地盤調査報告書は<strong>会員限定</strong>で公開します。
-        </div>
+        {/* Extracted to MapFoot so the ≤640px 一覧 view, which unmounts
+            this whole component, can render the same disclosure without
+            a second copy of the text. */}
+        <MapFoot total={total} page={page} />
       </div>
     </div>
   )

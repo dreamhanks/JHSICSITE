@@ -37,6 +37,10 @@ const LOAD_TIMEOUT_MS = 10_000
 const FIT_PADDING = 40
 const FIT_DURATION = 400
 const CENTRE: [number, number] = [139.81210, 35.70540]
+const START_ZOOM = 12.2
+
+/** Enough to rebuild the camera after a remount. */
+export type MapCamera = { center: [number, number]; zoom: number }
 
 /** Grace period so the pointer can cross the offset:18 gap between the
  *  marker and the card without the card closing underneath it. */
@@ -48,12 +52,19 @@ const REFIT_DEBOUNCE_MS = 250
 type Status = 'loading' | 'ready' | 'failed'
 
 export function PropertyMap({
-  items, activeId, onHighlight, onOpen,
+  items, activeId, onHighlight, onOpen, initialCamera, onCameraChange,
 }: {
   items: Property[]
   activeId: number | null
   onHighlight: (id: number | null) => void
   onOpen: (id: number) => void
+  /** Camera to construct at instead of the default framing. Set only by
+   *  the ≤640px 一覧 / 地図 toggle, which unmounts this component on every
+   *  switch; null everywhere else, so ≥641px behaviour is unchanged. */
+  initialCamera?: MapCamera | null
+  /** Reports the camera after every settled move, so the caller can hand
+   *  it back through initialCamera on the next mount. */
+  onCameraChange?: (c: MapCamera) => void
 }) {
   const isMobile = useMediaQuery('(max-width: 640px)')
   const hostRef = useRef<HTMLDivElement>(null)
@@ -63,8 +74,23 @@ export function PropertyMap({
   const popupRef = useRef<import('maplibre-gl').Popup | null>(null)
   const popupNodeRef = useRef<HTMLDivElement | null>(null)
   const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
-  /** Ids of the marker set the camera last framed. */
-  const lastFitRef = useRef<string>('')
+  /** Read ONCE, at first render — the camera to construct at is a mount
+   *  fact, and a later prop change must not retro-move a live map. */
+  const startCameraRef = useRef(initialCamera ?? null)
+  const onCameraChangeRef = useRef(onCameraChange)
+  onCameraChangeRef.current = onCameraChange
+
+  /** Ids of the marker set the camera last framed.
+   *
+   *  Seeded when a camera is restored, so the refit below sees the
+   *  current set as already framed and leaves the restored camera alone.
+   *  Without this the restore would be visibly undone ~250ms later by
+   *  fitBounds. The caller only passes initialCamera when the marker set
+   *  is unchanged since the camera was recorded, so a filter applied
+   *  while the map was unmounted still re-frames normally. */
+  const lastFitRef = useRef<string>(
+    initialCamera ? items.map((p) => p.id).join(',') : '',
+  )
   const [status, setStatus] = useState<Status>('loading')
 
   /** Which property's card is showing. A DISTINCT fact from activeId:
@@ -189,11 +215,12 @@ export function PropertyMap({
 
         if (cancelled || !hostRef.current) return
 
+        const start = startCameraRef.current
         const m = new Map({
           container: hostRef.current,
           style: STYLE_URL,
-          center: CENTRE,
-          zoom: 12.2,
+          center: start?.center ?? CENTRE,
+          zoom: start?.zoom ?? START_ZOOM,
           maxBounds: MAX_BOUNDS,
           minZoom: MIN_ZOOM,
           maxZoom: MAX_ZOOM,
@@ -225,6 +252,15 @@ export function PropertyMap({
             'layers recoloured;', report.labelsChanged, 'of', report.symbolTotal,
             'symbol layers set to name:ja')
           setStatus('ready')
+        })
+
+        /* Report the settled camera. `moveend` rather than `move`: the
+           latter fires per frame of every pan and animation, and the
+           only consumer wants a value to restore, not a stream. */
+        m.on('moveend', () => {
+          if (cancelled || !onCameraChangeRef.current) return
+          const c = m.getCenter()
+          onCameraChangeRef.current({ center: [c.lng, c.lat], zoom: m.getZoom() })
         })
 
         m.on('error', (e) => {

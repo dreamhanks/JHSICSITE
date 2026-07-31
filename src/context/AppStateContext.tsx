@@ -23,7 +23,22 @@ export function AppStateProvider({ children }: { children: ReactNode }) {
   const [appliedFilters, setAppliedFilters] = useState<SearchFilters>(INITIAL_FILTERS)
   const [sortKey, setSortKey] = useState<SortKey>('recommended')
   const [page, setPage] = useState(1)
-  const [mapOpen, setMapOpen] = useState(true)
+  /** Design B mobile: the ≤640px 一覧 / 地図 toggle DRIVES this, so its
+   *  initial value is which view mobile opens on — and NN/g is explicit
+   *  that the list should be the default, for information density and
+   *  faster selection.
+   *
+   *  A viewport-aware INITIALISER, not an effect. `true` here would have
+   *  opened mobile on 地図; flipping it to `false` outright would have
+   *  blanked the desktop map column on first paint; and an effect that
+   *  forced `false` on mobile would re-fire on every crossing of 640px,
+   *  clobbering a 地図 the user had deliberately chosen. Evaluated once
+   *  at provider mount, this does none of those: ≥641px is `true` and
+   *  byte-identical to before, ≤640px is `false`, and a later resize or
+   *  rotation never overrides a choice already made. */
+  const [mapOpen, setMapOpen] = useState(() =>
+    typeof window === 'undefined' ||
+    !window.matchMedia('(max-width: 640px)').matches)
 
   /** Replaces the original show(). The scroll matches
    *  window.scrollTo({top:0,behavior:"instant"}) at mockup.html L1107. */
