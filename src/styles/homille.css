@@ -1876,48 +1876,43 @@ header.hfilters .hwrap{gap:20px}
    times on design-b. There is nothing to declare in this section —
    grep the file for any of those literals and it returns nothing. */
 
-/* ---- 2. 会員限定: the locked karte ---- */
+/* ---- 2. 会員限定: DELETED IN FULL ---- */
 
-.mlock{position:relative; margin-bottom:18px}
-/* Newest legible, older progressively out of focus. The blur is
-   decoration over content that is inert and aria-hidden, so nothing
-   readable depends on resolving it. */
-.mlock:not(.open) .mlock-tl{user-select:none}
-.mlock:not(.open) .ktl-item:nth-child(2){filter:blur(1.6px); opacity:.72}
-.mlock:not(.open) .ktl-item:nth-child(3){filter:blur(3px);   opacity:.54}
-.mlock:not(.open) .ktl-item:nth-child(4){filter:blur(4.4px); opacity:.4}
-.mlock:not(.open) .ktl-item:nth-child(5){filter:blur(5.8px); opacity:.3}
-/* A wash so the button never sits on busy text. Transparent at the top
-   so the legible newest stratum stays legible. */
-.mlock:not(.open):after{content:""; position:absolute; inset:0; z-index:1;
-  background:linear-gradient(180deg,
-    rgba(255,255,255,0) 0%, rgba(255,255,255,.55) 34%, rgba(255,255,255,.86) 100%);
-  pointer-events:none}
-.mlock-over{position:absolute; inset:0; z-index:2; display:flex;
-  align-items:center; justify-content:center; padding:16px}
-/* .go2 is only styled as `.emptyfav .go2` in the ported block, so a
-   .go2 outside .emptyfav inherits nothing at all — it rendered as a bare
-   button. These two rules give it the same box the empty-favourites
-   button has, rather than widening the ported selector. */
-.mlock .go2{border:0; border-radius:5px; background:var(--color-soil); color:#fff;
-  padding:12px 26px; font-size:13.5px; font-weight:700; font-family:inherit;
-  cursor:pointer; transition:background .15s}
-.mlock .go2:hover{background:var(--color-soil-d)}
-.mlock-over .go2{box-shadow:0 6px 22px rgba(26,26,24,.22)}
-.mlock-act{margin-top:14px}
+/* Stage 7 DELETION, the whole of what was section 2. 会員限定 no longer
+   demonstrates the karte and no longer lists the permissions, so both
+   halves of this section are gone and the section is empty.
 
-/* The four permissions, as a list rather than four cards. */
-.permlist{margin:0; display:flex; flex-direction:column; gap:1px;
-  background:var(--color-rule-2); border:1px solid var(--color-rule);
-  border-radius:7px; overflow:hidden}
-.permrow{background:#fff; padding:13px 16px}
-.permrow dt{font-size:13px; font-weight:700; color:var(--color-ink);
-  display:flex; align-items:center; gap:9px; flex-wrap:wrap}
-.permrow dd{margin:4px 0 0; font-size:12px; line-height:1.75;
-  color:var(--color-ink-2)}
-/* The tag was identical on all four cards, so it is one caption per
-   row rather than four repeated blocks. */
-.permrow .tagm{margin-top:0; flex:none}
+   The locked karte: .mlock, .mlock:not(.open) .mlock-tl, the four
+   .mlock:not(.open) .ktl-item:nth-child(2..5) blur/opacity steps,
+   .mlock:not(.open):after, .mlock-over, .mlock .go2, .mlock .go2:hover,
+   .mlock-over .go2 and .mlock-act. Every one was .mlock-scoped and
+   LockedKarte.tsx was the only thing that ever rendered .mlock — the
+   component is deleted, so all eleven are unreachable.
+
+   The permissions list: .permlist, .permrow, .permrow dt, .permrow dd
+   and .permrow .tagm. The four permissions are four .vc cards in a
+   .grid2 again — see MemberPage. MemberPage was their only consumer.
+
+   NOTHING ELSE LOSES STYLING, and two near misses are worth naming:
+
+   .go2 — the base button is NOT defined here. It is `.emptyfav .go2`
+   (~line 293), and the four surviving .go2 buttons (ListPanel,
+   MapSheetView, PropertyList, MyPage) all sit inside .emptyfav and take
+   their box from that rule. Only LockedKarte's two sat outside it, which
+   is why .mlock .go2 existed at all. Deleting it orphans no button.
+
+   .ktl-item — the blur ramp was scoped to .mlock:not(.open), never to
+   .ktl itself. The timeline's own rules (Stage 3, ~line 1750) are
+   untouched and 物件詳細 renders exactly as before.
+
+   The restoration of the cards added NO CSS. .vc, .vc .ic, .vc h3,
+   .vc p, .vc .tagm and .grid2 are already in this file (~line 260) and
+   already carry Design C, because the palette lives in the @theme token
+   VALUES in index.css and not in these rules — which is also why
+   購入サポート has been rendering tagged .vc cards in the C palette all
+   along. Do not add a .vc override for this page: design-b needed one
+   (.vc .tagm{#e9edf9}) and that hex is exactly the kind of literal the
+   Stage 4 sweep note above warns about. */
 
 /* ---- 3. ログイン ---- */
 
